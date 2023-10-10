@@ -1,5 +1,8 @@
+const dotenv = require("dotenv"); 
 const mongoose = require('mongoose');
 const userModel = require("./model");
+
+dotenv.config({path: "../.env"});
 
 async function addDummyUser(userInfo){
     const user = new userModel(userInfo);
@@ -11,7 +14,7 @@ async function addDummyUser(userInfo){
       }
 }
 
-mongoose.connect('mongodb://localhost:27017/testdb',
+mongoose.connect(process.env.MONGODB_TEST_URI,
     {
       useNewUrlParser: true,
       useUnifiedTopology: true
