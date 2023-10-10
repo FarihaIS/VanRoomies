@@ -5,10 +5,10 @@ const ListingSchema = new mongoose.Schema({
     name: {type: String, required: true, minlength: 5, maxlength: 30},
     description: {type: String},
     rental_price: {type: Number, required: true},
-    date: {type: Date},
+    date: {type: Date, required: true},
     pet_friendly: {type: Boolean},
-    active: {type: Boolean, default: true},
-    location: {type: { type: String }, coordinates: [Number]},
+    active: {type: Boolean, default: true, required: true},
+    location: {type: { type: String }, coordinates: [Number], required: true},
 });
 
 const Listing = mongoose.model("Listing", ListingSchema);
