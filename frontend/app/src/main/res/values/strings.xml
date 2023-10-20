@@ -1,4 +1,33 @@
 <resources>
     <string name="app_name">VanRoomies</string>
     <string name="placeholder">FREE HOUSE</string>
+
+    <!-- Navigation and Fragments -->
+    <string name="menu_listings">Listings</string>
+    <string name="menu_profile">Profile</string>
+    <string name="menu_matches">Matches</string>
+    <string name="menu_chat">Chat</string>
+
+    <string name="placeholder_listings">Listings Fragment</string>
+    <string name="placeholder_profile">Profile Fragment</string>
+    <string name="placeholder_matches">Matches Fragment</string>
+    <string name="placeholder_chat">Chat Fragment</string>
+
+    <!-- Profile Fragment -->
+    <string name="profile_blurb">Profile Blurb</string>
+    <string name="profile_blurb_text">Lorum Ipsum Tandem Bike Something Something Ride A Trike Einee Meeny Minee Moe Catch A Tiger By Its Toe Something Something About A Doe Expecto Patronum</string>
+    <string name="profile_blurb_desc">Profile Name</string>
+
+    <!-- Listings Fragment -->
+    <string name="listings_image_desc">The image for a given listing</string>
+    <string name="listings_image">placeholder</string>
+    <string name="listings_title">placeholder</string>
+
+
+    <!-- Content Descriptions -->
+    <string name="home_screen_logo">App Logo</string>
+    <string name="profile_name">Test Person</string>
+    <string name="profile_name_desc">Profile Name</string>
+    <string name="profile_image_desc">Profile Picture</string>
+
 </resources>

@@ -5,7 +5,6 @@ import androidx.appcompat.app.AppCompatActivity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
-import android.widget.Button;
 
 import com.google.android.gms.auth.api.signin.GoogleSignIn;
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
@@ -60,7 +59,7 @@ public class MainActivity extends AppCompatActivity {
         try {
             GoogleSignInAccount account = completedTask.getResult(ApiException.class);
             // Signed in successfully, show authenticated UI.
-            Intent listingsIntent = new Intent(MainActivity.this, ViewListingsActivity.class); // intent for listings
+            Intent listingsIntent = new Intent(MainActivity.this, HomeActivity.class); // intent for listings
             startActivity(listingsIntent); // Go to listings
 
         } catch (ApiException e) {
@@ -77,7 +76,7 @@ public class MainActivity extends AppCompatActivity {
         // the GoogleSignInAccount will be non-null.
         GoogleSignInAccount account = GoogleSignIn.getLastSignedInAccount(this);
         if (account != null){
-            Intent listingsIntent = new Intent(MainActivity.this, ViewListingsActivity.class); // intent for listings
+            Intent listingsIntent = new Intent(MainActivity.this, HomeActivity.class); // intent for listings
             startActivity(listingsIntent); // Go to listings
         }
     }
