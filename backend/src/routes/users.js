@@ -17,21 +17,45 @@ router.post('/', (req, res) => {
 });
 
 router.get('/:userId', (req, res) => {
-	User.findById(req.params.userId).then((user) => {
-		res.json(user);
-	});
+    User.findById(req.params.userId)
+        .then((user) => {
+            if (user) {
+                res.json(user);
+            } else {
+                res.status(404).json({ error: 'User not found' });
+            }
+        })
+        .catch((err) => {
+            res.status(400).json({ error: err.message });
+        });
 });
 
 router.put('/:userId', (req, res) => {
-	User.findByIdAndUpdate(req.params.userId, req.body, { new: true }).then((user) => {
-		res.json(user);
-	});
+    User.findByIdAndUpdate(req.params.userId, req.body, { new: true })
+        .then((user) => {
+            if (user) {
+                res.json(user);
+            } else {
+                res.status(404).json({ error: 'User not found' });
+            }
+        })
+        .catch((err) => {
+            res.status(400).json({ error: err.message });
+        });
 });
 
 router.delete('/:userId', (req, res) => {
-	User.findByIdAndRemove(req.params.userId).then((user) => {
-		res.json(user);
-	});
+    User.findByIdAndRemove(req.params.userId)
+        .then((user) => {
+            if (user) {
+                res.json(user);
+            } else {
+                res.status(404).json({ error: 'User not found' });
+            }
+        })
+        .catch((err) => {
+            res.status(400).json({ error: err.message });
+        });
 });
 
 module.exports = router;
