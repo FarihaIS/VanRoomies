@@ -29,3 +29,5 @@ db.once('open', function () {
 console.log('TESTING INSERT');
 addDummyUser({ first_name: 'Denis', last_name: 'Lalaj', age: 23 });
 addDummyUser({ first_name: 'Matt', last_name: 'Anderson', age: 36 });
+
+// curl --request POST --header 'Content-Type: application/json' --data '{"minPrice":800,"maxPrice":1600,"housingType":"studio","roommateCount":2,"petFriendly":"true","smoker":"non-smoker","partying":"no-party","drinking":"neutral","noise":"neutral","gender":"neutral","moveInDate":"2023-10-22","leaseLength":6}' localhost:3000/api/user/0123456789abcdefABCDEF

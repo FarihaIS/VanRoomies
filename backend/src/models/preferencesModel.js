@@ -14,7 +14,7 @@ const PreferencesSchema = new mongoose.Schema({
     gender: {type: String, enum: ['male', 'female', 'neutral'], required: true},
     moveInDate: { type: Date, required: true },
     leaseLength: { type: Number, required: true },
-    location: { type: String, coordinates: [Number], required: true },
+    location: { type: String, coordinates: [Number]},
 });
 
 const Preferences = mongoose.model('Preferences', PreferencesSchema);

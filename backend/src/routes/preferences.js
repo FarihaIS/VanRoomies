@@ -1,4 +1,5 @@
 const express = require('express');
+var mongoose = require('mongoose');
 const Preferences = require("../models/preferencesModel");
 const router = express.Router();
 
@@ -30,12 +31,13 @@ router.get('/:userId/preferences', async (req, res) => {
  * Body: {userId: ObjectId, minPrice: Number, maxPrice: Number ....}
  */
 router.post('/:userId', async (req, res) => {
-    const preferences = new Preferences(req.body);
+    console.log(typeof req.params.userId);
+    let preferenceData = {"userID": new mongoose.Types.ObjectId(req.params.userId.trim()), ...req.body};
+    console.log(preferenceData);
+    const preferences = new Preferences(preferenceData);
     try {
-        // TODO: Need to figure out path here, gets a little confusing with the user in there
         await preferences.save();
-        res.location(`/api/listing/${preferences._id}`);
-        res.status(201).json(listing);
+        res.status(201).json(preferences);
     } catch (error) {
         console.log(error);
         res.status(500).json({ error: 'Internal Server Error' });
@@ -53,9 +55,9 @@ router.post('/:userId', async (req, res) => {
  */
 router.put('/:userId', async (req, res) => {
     try {
-        const updatedListing = await Preferences.findOneAndUpdate({userId: req.params.userId}, req.body, {new: true});
-        if(updatedListing){
-            res.status(200).json(updatedListing);
+        const updatedPreferences = await Preferences.findOneAndUpdate({userId: req.params.userId}, req.body, {new: true});
+        if(updatedPreferences){
+            res.status(200).json(updatedPreferences);
         }else{
             res.status(404).send();
         }
