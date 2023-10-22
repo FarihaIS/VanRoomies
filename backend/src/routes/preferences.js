@@ -6,19 +6,19 @@ const router = express.Router();
 /**
  * Get Preferences Object from Preferences Collection by Id of respective user
  * 
- * Route: GET /api/user/:userId/preferences where userId is the ID of user
+ * Route: GET /api/users/:userId/preferences where userId is the ID of user
  */
-router.get('/:userId/preferences', async (req, res) => {
+router.get('/:userId/preferences', async (req, res, next) => {
     try {
-        const preferences = await Preferences.findOne({userId: req.params.userId});
+        const preferences = await Preferences.findOne({userID: req.params.userId});
         if(preferences){
             res.status(200).json(preferences);
         }else{
-            res.status(404).send();
+            res.status(404).json({error: "Did not match any user!"});
         }
     } catch (error) {
-        console.log(error);
-        res.status(500).json({ error: 'Internal Server Error' });
+        res.status(400).json({ error: error.message });
+        next(error);
     }
 });
 
@@ -26,21 +26,19 @@ router.get('/:userId/preferences', async (req, res) => {
  * Create a new Preferences object and save it on the database. This demands that the userId
  * information is provided in the body of the request as shown below.
  * 
- * Route: POST /api/user/:userId
+ * Route: POST /api/users/:userId/preferences where userId is the ID of user
  * 
  * Body: {userId: ObjectId, minPrice: Number, maxPrice: Number ....}
  */
-router.post('/:userId', async (req, res) => {
-    console.log(typeof req.params.userId);
-    let preferenceData = {"userID": new mongoose.Types.ObjectId(req.params.userId.trim()), ...req.body};
-    console.log(preferenceData);
+router.post('/:userId/preferences', async (req, res) => {
+    const preferenceData = {"userID": new mongoose.Types.ObjectId(req.params.userId.trim()), ...req.body};
     const preferences = new Preferences(preferenceData);
     try {
         await preferences.save();
         res.status(201).json(preferences);
     } catch (error) {
-        console.log(error);
-        res.status(500).json({ error: 'Internal Server Error' });
+        res.status(400).json({ error: error.message });
+        next(error);
     }
 });
 
@@ -49,21 +47,22 @@ router.post('/:userId', async (req, res) => {
  * Update an existing Preferences object and save changes on the database. This demands that for the fields 
  * that need to be updated, information is provided in the body of the request as shown below.
  * 
- * Route: PUT /api/user/:userId
+ * Route: PUT /api/users/:userId/preferences where userId is the ID of user
  * 
  * Body: {title: String <new_title>, rentalPrice: Number<new_price> ....}
  */
-router.put('/:userId', async (req, res) => {
+router.put('/:userId/preferences', async (req, res) => {
     try {
-        const updatedPreferences = await Preferences.findOneAndUpdate({userId: req.params.userId}, req.body, {new: true});
+        const userId = new mongoose.Types.ObjectId(req.params.userId);
+        const updatedPreferences = await Preferences.findOneAndUpdate({userID: userId}, req.body, {new: true});
         if(updatedPreferences){
             res.status(200).json(updatedPreferences);
         }else{
-            res.status(404).send();
+            res.status(404).json({error: "Did not match any user!"});
         }
     } catch (error) {
-        console.log(error);
-        res.status(500).json({ error: 'Internal Server Error' });
+        res.status(400).json({ error: error.message });
+        next(error);
     }
 });
 
@@ -71,11 +70,11 @@ router.put('/:userId', async (req, res) => {
  * Recommend a list of best roommate matches for the user noted by userId based on their set of preferences.
  * Might permit for filters here and those will go through the body of the request.
  * 
- * Route: GET /api/user/:userId/recommendations/users
+ * Route: GET /api/users/:userId/recommendations/users
  * 
  * Body: {....filters???}
  */
-router.get('/:userId/recommendations/users', async (req, res) => {
+router.get('/:userId/recommendations/users', async (req, res, next) => {
     // TODO: Implement recommendation algorithm here
     res.send("I will give you recommendations for user matches here");
 });
@@ -84,11 +83,11 @@ router.get('/:userId/recommendations/users', async (req, res) => {
  * Recommend a list of best housing matches for the user noted by userId based on their set of preferences.
  * Might permit for filters here and those will go through the body of the request.
  * 
- * Route: GET /api/user/:userId/recommendations/listings
+ * Route: GET /api/users/:userId/recommendations/listings
  * 
  * Body: {....filters???}
  */
-router.get('/:userId/recommendations/listings', async (req, res) => {
+router.get('/:userId/recommendations/listings', async (req, res, next) => {
     // TODO: Implement recommendation algorithm here
     res.send("I will give you recommendations for best fit housing options");
 });

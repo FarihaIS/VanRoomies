@@ -28,7 +28,7 @@ app.use(bodyParser.raw());
 
 // routes
 app.use('/api/listings', require('./routes/listings'));
-app.use('/api/user', require('./routes/preferences'));
+app.use('/api/users', require('./routes/preferences'));
 app.use('/api/users', require('./routes/users'));
 
 app.get('/', (req, res) => {
