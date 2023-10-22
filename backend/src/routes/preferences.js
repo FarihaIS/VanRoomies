@@ -10,11 +10,11 @@ const router = express.Router();
  */
 router.get('/:userId/preferences', async (req, res) => {
     try {
-        const preferences = await Preferences.findOne({userId: req.params.userId});
+        const preferences = await Preferences.findOne({userID: req.params.userId});
         if(preferences){
             res.status(200).json(preferences);
         }else{
-            res.status(404).send();
+            res.status(404).json({"status": 404, "message": "Did not match any user!"});
         }
     } catch (error) {
         console.log(error);
@@ -31,9 +31,7 @@ router.get('/:userId/preferences', async (req, res) => {
  * Body: {userId: ObjectId, minPrice: Number, maxPrice: Number ....}
  */
 router.post('/:userId', async (req, res) => {
-    console.log(typeof req.params.userId);
     let preferenceData = {"userID": new mongoose.Types.ObjectId(req.params.userId.trim()), ...req.body};
-    console.log(preferenceData);
     const preferences = new Preferences(preferenceData);
     try {
         await preferences.save();
@@ -55,11 +53,11 @@ router.post('/:userId', async (req, res) => {
  */
 router.put('/:userId', async (req, res) => {
     try {
-        const updatedPreferences = await Preferences.findOneAndUpdate({userId: req.params.userId}, req.body, {new: true});
+        const updatedPreferences = await Preferences.findOneAndUpdate({userID: req.params.userId}, req.body, {new: true});
         if(updatedPreferences){
             res.status(200).json(updatedPreferences);
         }else{
-            res.status(404).send();
+            res.status(404).json({"status": 404, "message": "Did not match any user!"});
         }
     } catch (error) {
         console.log(error);
