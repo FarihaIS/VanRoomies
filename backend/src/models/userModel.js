@@ -22,6 +22,16 @@ const UserSchema = new mongoose.Schema({
         trim: true,
         match: /.+@.+\..+/,
         unique: true,
+        validate: {
+            validator: async function (email) {
+                const user = await User.findOne({ email: email });
+                if (user) {
+                    return false;
+                }
+                return true;
+            },
+            message: 'Email already exists',
+        },
     },
     gender: {
         type: String,
