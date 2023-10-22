@@ -1,10 +1,47 @@
 const mongoose = require('mongoose');
 
 const UserSchema = new mongoose.Schema({
-    first_name: { type: String, required: true },
-    last_name: { type: String, required: true },
-    email: { type: String, required: true, unique: true },
-    password: { type: String, required: true, minength: 8, maxlength: 30 },
+    firstName: { 
+		type: String,
+		required: true,
+		trim: true,
+		minength: 2,
+		maxlength: 30
+	},
+    lastName: {
+		type: String,
+		required: true,
+		trim: true,
+		minength: 2,
+		maxlength: 30
+	},
+    email: {
+		type: String,
+		required: true,
+		trim: true,
+		match: /.+@.+\..+/,
+		unique: true
+	},
+	gender: {
+		type: String,
+		enum: ['male', 'female', 'non-binary', 'other'],
+	},
+	birthday: {
+		type: Date,
+		required: true,
+	},
+	phoneNumber: {
+		type: String,
+		required: true,
+		trim: true,
+	},
+	profilePicture: {
+		type: String,
+	},
+	bio: {
+		type: String,
+	}
+    // password: { type: String, required: true, minength: 8, maxlength: 30 },
 });
 
 const User = mongoose.model('User', UserSchema);

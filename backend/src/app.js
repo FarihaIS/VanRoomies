@@ -28,6 +28,7 @@ app.use(bodyParser.raw());
 
 // routes
 app.use('/api/listings', require('./routes/listings'));
+app.use('/api/users', require('./routes/users'));
 
 app.get('/', (req, res) => {
     res.send('Hello World!');
