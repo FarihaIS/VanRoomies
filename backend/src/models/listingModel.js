@@ -2,13 +2,16 @@ const mongoose = require('mongoose');
 
 const ListingSchema = new mongoose.Schema({
     listerID: { type: mongoose.Schema.Types.ObjectId, required: true },
-    name: { type: String, required: true, minlength: 5, maxlength: 30 },
+    title: { type: String, required: true, minlength: 5, maxlength: 30 },
     description: { type: String },
-    rental_price: { type: Number, required: true },
-    date: { type: Date, required: true },
-    pet_friendly: { type: Boolean },
-    active: { type: Boolean, default: true, required: true },
-    location: { type: String, coordinates: [Number], required: true },
+    housingType: {type: String, enum: ['studio', '1-bedroom', '2-bedroom', 'other'], required: true},
+    rentalPrice: { type: Number, required: true },
+    listingDate: { type: Date, required: true },
+    moveInDate: {type: Date, required: true},
+    petFriendly: { type: Boolean, required: true },
+    status: { type: String, enum: ['active', 'pending', 'inactive'], required: true, default: 'active' },
+    location: { type: {latitude: {type: Number, required: true}, longitude: {type: Number, required: true}}, required: true },
+    images: [{type: String}]
 });
 
 const Listing = mongoose.model('Listing', ListingSchema);
