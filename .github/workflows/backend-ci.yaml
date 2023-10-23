@@ -4,6 +4,8 @@ on:
   pull_request:
     branches:
       - main
+    paths:
+      - backend/**
 
 jobs:
   lint:
@@ -13,6 +15,7 @@ jobs:
         node-version: [16.x, 18.x, 20.x]
     steps:
     - uses: actions/checkout@v4
+    - run: cd backend
     - name: Use Node.js ${{ matrix.node-version }}
       uses: actions/setup-node@v3
       with:
