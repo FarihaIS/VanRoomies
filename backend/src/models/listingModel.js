@@ -1,7 +1,7 @@
 const mongoose = require('mongoose');
 
 const ListingSchema = new mongoose.Schema({
-    listerID: { 
+    userID: { 
         type: mongoose.Schema.Types.ObjectId, 
         required: true 
     },
@@ -46,7 +46,8 @@ const ListingSchema = new mongoose.Schema({
             latitude: {type: Number, required: true}, 
             longitude: {type: Number, required: true}
         }, 
-        required: true },
+        required: true 
+    },
     images: [{type: String}]
 });
 

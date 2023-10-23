@@ -28,7 +28,7 @@ router.get('/:listingId', async (req, res, next) => {
  */
 router.get('/user/:userId', async (req, res, next) => {
     try {
-        let listings = await Listing.find({listerID: req.params.userId});
+        let listings = await Listing.find({userID: req.params.userId});
         if(listings){
             res.status(200).json(listings);
         }else{
