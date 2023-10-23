@@ -34,6 +34,11 @@ db.once('open', () => {
     console.log('Connection successful!');
 });
 
+// middleware
+app.use(bodyParser.json());
+app.use(bodyParser.urlencoded({ extended: true }));
+app.use(bodyParser.raw());
+
 // routes
 app.use('/api/listings', require('./routes/listings'));
 app.use('/api/users', require('./routes/preferences'));
@@ -43,10 +48,6 @@ app.get('/', (req, res) => {
     res.send('Hello World!');
 });
 
-// middleware
-app.use(bodyParser.json());
-app.use(bodyParser.urlencoded({ extended: true }));
-app.use(bodyParser.raw());
 app.use(logErrors);
 app.use(errorHandler);
 

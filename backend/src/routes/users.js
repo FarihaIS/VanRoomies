@@ -49,7 +49,7 @@ router.post('/', async (req, res, next) => {
  */
 router.get('/:userId', async (req, res, next) => {
     try {
-        const user = await User.findOne({ _id: req.params.userId });
+        const user = await User.findById(req.params.userId);
         if (user) {
             res.status(200).json(user);
         } else {
@@ -74,7 +74,7 @@ router.get('/:userId', async (req, res, next) => {
  */
 router.put('/:userId', async (req, res, next) => {
     try {
-        const updatedUser = await User.findOneAndUpdate({ _id: req.params.userId }, req.body, { new: true });
+        const updatedUser = await User.findByIdAndUpdate(req.params.userId, req.body, { new: true });
         if (updatedUser) {
             res.status(200).json(updatedUser);
         } else {
@@ -92,7 +92,7 @@ router.put('/:userId', async (req, res, next) => {
  */
 router.delete('/:userId', async (req, res, next) => {
     try {
-        const deletedUser = await User.findOneAndDelete({ _id: req.params.userId });
+        const deletedUser = await User.findByIdAndDelete(req.params.userId);
         if (deletedUser) {
             res.status(200).json(deletedUser);
         } else {
