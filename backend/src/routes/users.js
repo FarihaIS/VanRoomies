@@ -1,5 +1,8 @@
 const express = require('express');
 const User = require('../models/userModel');
+const { default: mongoose } = require('mongoose');
+const Listing = require('../models/listingModel');
+const Preferences = require('../models/preferencesModel');
 const router = express.Router();
 
 /**
@@ -91,15 +94,26 @@ router.put('/:userId', async (req, res, next) => {
  * Route: DELETE /api/users/:userId
  */
 router.delete('/:userId', async (req, res, next) => {
+    const session = await mongoose.startSession();
+
     try {
+        session.startTransaction();
+
+        const userId = req.params.userId;
         const deletedUser = await User.findByIdAndDelete(req.params.userId);
+        await Listing.deleteMany({ userId: userId });
+        await Preferences.deleteOne({ userId: userId });
+        await session.commitTransaction();
         if (deletedUser) {
             res.status(200).json(deletedUser);
         } else {
             res.status(404).json({ error: 'User not found' });
         }
     } catch (err) {
+        await session.abortTransaction();
         next(err);
+    } finally {
+        session.endSession();
     }
 });
 

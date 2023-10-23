@@ -1,5 +1,4 @@
 const mongoose = require('mongoose');
-const Listing = require('./listingModel');
 
 const UserSchema = new mongoose.Schema({
     firstName: {
@@ -53,11 +52,6 @@ const UserSchema = new mongoose.Schema({
         type: String,
     },
     // password: { type: String, required: true, minength: 8, maxlength: 30 },
-});
-
-UserSchema.pre('remove', (next) => {
-    Listing.deleteMany({ user: this._id }).exec();
-    next();
 });
 
 const User = mongoose.model('User', UserSchema);
