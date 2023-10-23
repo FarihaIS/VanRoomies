@@ -16,4 +16,22 @@ router.post('/', (req, res) => {
     });
 });
 
+router.get('/:userId', (req, res) => {
+	User.findById(req.params.userId).then((user) => {
+		res.json(user);
+	});
+});
+
+router.put('/:userId', (req, res) => {
+	User.findByIdAndUpdate(req.params.userId, req.body, { new: true }).then((user) => {
+		res.json(user);
+	});
+});
+
+router.delete('/:userId', (req, res) => {
+	User.findByIdAndRemove(req.params.userId).then((user) => {
+		res.json(user);
+	});
+});
+
 module.exports = router;
