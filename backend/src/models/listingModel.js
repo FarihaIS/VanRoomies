@@ -1,54 +1,54 @@
 const mongoose = require('mongoose');
 
 const ListingSchema = new mongoose.Schema({
-    userID: { 
-        type: mongoose.Schema.Types.ObjectId, 
-        required: true 
+    userId: {
+        type: mongoose.Schema.Types.ObjectId,
+        required: true,
     },
-    title: { 
-        type: String, 
-        required: true, 
-        minlength: 5, 
-        maxlength: 100 
+    title: {
+        type: String,
+        required: true,
+        minlength: 5,
+        maxlength: 100,
     },
-    description: { 
-        type: String 
+    description: {
+        type: String,
     },
     housingType: {
-        type: String, 
-        enum: ['studio', '1-bedroom', '2-bedroom', 'other'], 
-        required: true
+        type: String,
+        enum: ['studio', '1-bedroom', '2-bedroom', 'other'],
+        required: true,
     },
-    rentalPrice: { 
-        type: Number, 
-        required: true 
+    rentalPrice: {
+        type: Number,
+        required: true,
     },
-    listingDate: { 
-        type: Date, 
-        required: true 
+    listingDate: {
+        type: Date,
+        required: true,
     },
     moveInDate: {
-        type: Date, 
-        required: true
+        type: Date,
+        required: true,
     },
-    petFriendly: { 
-        type: Boolean, 
-        required: true 
+    petFriendly: {
+        type: Boolean,
+        required: true,
     },
-    status: { 
-        type: String, 
-        enum: ['active', 'pending', 'inactive'], 
-        required: true, 
-        default: 'active' 
+    status: {
+        type: String,
+        enum: ['active', 'pending', 'inactive'],
+        required: true,
+        default: 'active',
     },
-    location: { 
+    location: {
         type: {
-            latitude: {type: Number, required: true}, 
-            longitude: {type: Number, required: true}
-        }, 
-        required: true 
+            latitude: { type: Number, required: true },
+            longitude: { type: Number, required: true },
+        },
+        required: true,
     },
-    images: [{type: String}]
+    images: [{ type: String }],
 });
 
 const Listing = mongoose.model('Listing', ListingSchema);

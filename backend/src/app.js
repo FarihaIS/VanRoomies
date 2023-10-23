@@ -9,6 +9,19 @@ const port = 3000;
 // Configure environment variable path
 dotenv.config({ path: '.env' });
 
+function logErrors(err, req, res, next) {
+    console.error(err.message);
+    next(err);
+}
+
+function errorHandler(err, req, res, next) {
+    if (res.headersSent) {
+        return next(err);
+    }
+    res.status(500);
+    res.json({ error: err.message });
+}
+
 // Connect to MongoDB server through URI from environment variable
 mongoose.connect(process.env.MONGODB_TEST_URI, {
     useNewUrlParser: true,
@@ -34,6 +47,9 @@ app.use('/api/users', require('./routes/users'));
 app.get('/', (req, res) => {
     res.send('Hello World!');
 });
+
+app.use(logErrors);
+app.use(errorHandler);
 
 app.listen(port, () => {
     console.log(`Example app listening on port ${port}`);
