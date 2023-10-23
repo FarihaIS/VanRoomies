@@ -5,15 +5,34 @@ const router = express.Router();
 /**
  * Get a Listing from Listing Collection by id
  * 
- * Route: GET /api/listing/:id where id is the ID of the listing in the database
+ * Route: GET /api/listing/:listingId where listingId is the ID of the listing in the database
  */
-router.get('/:id', async (req, res) => {
+router.get('/:listingId', async (req, res) => {
     try {
-        const listing = await Listing.findById(req.params.id);
+        const listing = await Listing.findById(req.params.listingId);
         if(listing){
             res.status(200).json(listing);
         }else{
-            res.status(404).send();
+            res.status(404).json({error: "Listing not found"});
+        }
+    } catch (error) {
+        console.log(error);
+        res.status(500).json({ error: 'Internal Server Error' });
+    }
+});
+
+/**
+ * Get all Listings under a given userId
+ * 
+ * Route: GET /api/listing/user/:userId where userId is the ID of the user
+ */
+router.get('/user/:userId', async (req, res) => {
+    try {
+        let listings = await Listing.find({listerID: req.params.userId});
+        if(listings){
+            res.status(200).json(listings);
+        }else{
+            res.status(404).json({error: "Could not match user ID"});
         }
     } catch (error) {
         console.log(error);
@@ -25,9 +44,9 @@ router.get('/:id', async (req, res) => {
  * Create a new Listing and save it on the database. This demands that the listingID 
  * information is provided in the body of the request as shown below.
  * 
- * Route: POST /api/listing/
+ * Route: POST /api/listing
  * 
- * Body: {listerID: ObjectId, title: String .... images: [String]}
+ * Body: {listerID: String, title: String .... images: [String]}
  */
 router.post('/', async (req, res) => {
     const listing = new Listing(req.body);
@@ -45,17 +64,17 @@ router.post('/', async (req, res) => {
  * Update an existing Listing and save it on the database. This demands that for the fields 
  * that need to be updated, information is provided in the body of the request as shown below.
  * 
- * Route: PUT /api/listing/
+ * Route: PUT /api/listing/:listingId
  * 
  * Body: {title: String <new_title>, rentalPrice: Number<new_price> ....}
  */
-router.put('/:id', async (req, res) => {
+router.put('/:listingId', async (req, res) => {
     try {
-        const updatedListing = await Listing.findByIdAndUpdate(req.params.id, req.body, { new: true });
+        const updatedListing = await Listing.findByIdAndUpdate(req.params.listingId, req.body, { new: true });
         if(updatedListing){
             res.status(200).json(updatedListing);
         }else{
-            res.status(404).send();
+            res.status(404).json({error: "Listing not found"});
         }
     } catch (error) {
         console.log(error);
@@ -66,15 +85,15 @@ router.put('/:id', async (req, res) => {
 /**
  * Delete a listing from the database based on the listingID
  * 
- * Route: DELETE /api/listing/:id where id is the ID of the listing in the database
+ * Route: DELETE /api/listing/:listingId where listingId is the ID of the listing in the database
  */
-router.delete('/:id', async (req, res) => {
+router.delete('/:listingId', async (req, res) => {
     try {
-        const deletedListing = Listing.findByIdAndDelete(req.params.id);
+        const deletedListing = Listing.findByIdAndDelete(req.params.listingId);
         if(deletedListing){
             res.status(200).json();
         }else{
-            res.status(404).send();
+            res.status(404).json({error: "Listing not found"});
         }
     } catch (error) {
         console.log(error);
