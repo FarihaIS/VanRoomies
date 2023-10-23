@@ -27,7 +27,7 @@ app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.raw());
 
 // routes
-app.use('/api/listing', require('./routes/listing'));
+app.use('/api/listings', require('./routes/listings'));
 app.use('/api/users', require('./routes/preferences'));
 app.use('/api/users', require('./routes/users'));
 
