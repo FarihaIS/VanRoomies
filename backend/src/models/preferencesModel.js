@@ -27,7 +27,7 @@ const PreferencesSchema = new mongoose.Schema({
         type: Boolean, 
         required: true 
     },
-    smoker: {
+    smoking: {
         type: String, 
         enum: ['no-smoking', 'neutral', 'regular'], 
         required: true
