@@ -4,18 +4,21 @@ const bodyParser = require('body-parser');
 const https = require('https');
 const fs = require('fs');
 const path = require('path');
+const { Server } = require('socket.io');
+
+const app = express();
+const httpsServer = https.createServer(credentials, app);
+const io = new Server(httpsServer);
 
 // Configure environment variable path
 require('dotenv').config({ path: `./.env.${process.env.NODE_ENV}` });
 
-const app = express();
 const credentials = {
     key: fs.readFileSync(path.resolve(process.env.KEY_PATH)),
     cert: fs.readFileSync(path.resolve(process.env.CERT_PATH)),
 };
 
-const httpsServer = https.createServer(credentials, app);
-const port = 3000;
+const port = process.env.PORT || 3000;
 
 function logErrors(err, req, res, next) {
     console.error(err.message);
@@ -31,10 +34,7 @@ function errorHandler(err, req, res, next) {
 }
 
 // Connect to MongoDB server through URI from environment variable
-mongoose.connect(process.env.MONGODB_TEST_URI, {
-    useNewUrlParser: true,
-    useUnifiedTopology: true,
-});
+mongoose.connect(process.env.MONGODB_TEST_URI || 'mongodb://localhost:27017/vanroomies');
 
 const db = mongoose.connection;
 db.on('error', console.error.bind(console, 'Connection error! Make sure MongoDB server is running! '));
@@ -58,6 +58,37 @@ app.get('/', (req, res) => {
 
 app.use(logErrors);
 app.use(errorHandler);
+
+// socketio middleware
+const authMiddleware = (socket, next) => {
+	const username = socket.handshake.auth.username;
+	if (!username) {
+		console.error("invalid username: " + username);
+		return next(new Error("invalid username"));
+	}
+	socket.username = username;
+	next();
+}
+
+io.use(authMiddleware);
+
+io.on('connection', (socket) => {
+	const users = [];
+	for (let [id, socket] of io.of("/").sockets) {
+		users.push({
+			userID: id,
+			username: socket.username,
+		});
+	}
+	socket.emit("users", users);
+});
+
+
+// function to perdiocoally send messages to all socketio clients
+// setInterval(() => {
+// 	console.log("interval")
+// 	io.emit('chat message', "hello world");
+// }, 1000);
 
 httpsServer.listen(port, () => {
     console.log(`Example app listening on port ${port}`);
