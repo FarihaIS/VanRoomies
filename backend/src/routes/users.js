@@ -3,6 +3,8 @@ const User = require('../models/userModel');
 const { default: mongoose } = require('mongoose');
 const Listing = require('../models/listingModel');
 const Preferences = require('../models/preferencesModel');
+const validateGoogleIdToken = require('../authentication/googleAuthentication');
+const { generateAuthenticationToken, authenticateJWT } = require('../authentication/jwtAuthentication');
 const router = express.Router();
 
 /**
@@ -24,20 +26,36 @@ router.get('/', async (req, res, next) => {
  * Create a new User object and save it to the database. This demands that all fields are provided
  * in the body of the request as shown below.
  *
- * Route: POST /api/users
+ * Route: POST /api/users/login
  * Content-Type: application/json
  * Body: {
- *    "firstName": "John",
+ *   "idToken": String
+ *   "firstName": "John",
  *   "lastName": "Doe",
  *   "email": "
  * 	  ...
  * }
+ * Returns:
+ *      status(200): User Object
+ *      status(201): {userToken: String, user: User}
  */
-router.post('/', async (req, res, next) => {
+router.post('/login', validateGoogleIdToken, async (req, res, next) => {
     try {
-        const user = new User(req.body);
-        const savedUser = await user.save();
-        res.status(201).json(savedUser);
+        const currentUser = await User.findOne({ email: req.body.email });
+        if (currentUser) {
+            // Set status 200 if user user already exists
+            res.status(200).json(currentUser);
+        } else {
+            const user = new User({
+                firstName: req.body.firstName,
+                lastName: req.body.lastName,
+                email: req.body.email,
+            });
+            const savedUser = await user.save();
+            const userToken = generateAuthenticationToken(savedUser);
+            // Set status 201 if a new user was created
+            req.status(201).json({ userToken: userToken, user: savedUser });
+        }
     } catch (err) {
         res.status(400).json({ error: err.message });
         next(err);
@@ -50,7 +68,7 @@ router.post('/', async (req, res, next) => {
  * Route: GET /api/users/:userId
  * Content-Type: application/json
  */
-router.get('/:userId', async (req, res, next) => {
+router.get('/:userId', authenticateJWT, async (req, res, next) => {
     try {
         const user = await User.findById(req.params.userId);
         if (user) {
@@ -75,7 +93,7 @@ router.get('/:userId', async (req, res, next) => {
  *     "email": "testing@github.com"
  * 		...
  */
-router.put('/:userId', async (req, res, next) => {
+router.put('/:userId', authenticateJWT, async (req, res, next) => {
     try {
         const updatedUser = await User.findByIdAndUpdate(req.params.userId, req.body, { new: true });
         if (updatedUser) {
@@ -93,7 +111,7 @@ router.put('/:userId', async (req, res, next) => {
  * Content-Type: application/json
  * Route: DELETE /api/users/:userId
  */
-router.delete('/:userId', async (req, res, next) => {
+router.delete('/:userId', authenticateJWT, async (req, res, next) => {
     const session = await mongoose.startSession();
 
     try {

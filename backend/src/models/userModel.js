@@ -38,11 +38,9 @@ const UserSchema = new mongoose.Schema({
     },
     birthday: {
         type: Date,
-        required: true,
     },
     phoneNumber: {
         type: String,
-        required: true,
         trim: true,
     },
     profilePicture: {
@@ -55,7 +53,6 @@ const UserSchema = new mongoose.Schema({
         type: [{ type: mongoose.Types.ObjectId }],
         default: [],
     },
-    // password: { type: String, required: true, minength: 8, maxlength: 30 },
 });
 
 const User = mongoose.model('User', UserSchema);
