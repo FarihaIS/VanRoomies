@@ -1,12 +1,14 @@
 package com.chads.vanroomies;
 
 import android.os.Bundle;
-
-import androidx.fragment.app.Fragment;
-
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Toast;
+import androidx.fragment.app.Fragment;
+import java.util.ArrayList;
+import com.daprlabs.cardstack.SwipeDeck;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -15,6 +17,8 @@ import android.view.ViewGroup;
  */
 public class MatchesFragment extends Fragment {
     final static String TAG = "MatchesFragment";
+    private SwipeDeck cardStack;
+    private ArrayList<MatchModal> matchModalArrayList;
 
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
@@ -59,7 +63,49 @@ public class MatchesFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
+
         // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_matches, container, false);
+        View v = inflater.inflate(R.layout.fragment_matches, container, false);
+
+        matchModalArrayList = new ArrayList<>();
+        cardStack = (SwipeDeck) v.findViewById(R.id.matches_swipe_deck);
+
+        // Example matches for now
+        matchModalArrayList.add(new MatchModal("Denis", 45, "Late-night owl, messy, smokes regularly", R.drawable.ic_listings));
+        matchModalArrayList.add(new MatchModal("Fariha", 22, "Early riser, clean, 2-bedroom house", R.drawable.ic_profile));
+        matchModalArrayList.add(new MatchModal("Matt", 30, "Early-riser, drinks regularly", R.drawable.ic_match));
+        matchModalArrayList.add(new MatchModal("Max", 83, "Early-riser, clean, no smoking, no drinking", R.drawable.ic_chat));
+
+        final MatchDeckAdapter adapter = new MatchDeckAdapter(matchModalArrayList, v.getContext());
+        cardStack.setAdapter(adapter);
+
+        cardStack.setEventCallback(new SwipeDeck.SwipeEventCallback() {
+            @Override
+            public void cardSwipedLeft(int position) {
+                Toast.makeText(v.getContext(), "Match Rejected", Toast.LENGTH_SHORT).show();
+            }
+
+            @Override
+            public void cardSwipedRight(int position) {
+                Toast.makeText(v.getContext(), "Match Accepted", Toast.LENGTH_SHORT).show();
+            }
+
+            @Override
+            public void cardsDepleted() {
+                Toast.makeText(v.getContext(), "No more matches", Toast.LENGTH_SHORT).show();
+            }
+
+            @Override
+            public void cardActionDown() {
+                Log.d(TAG, "CARDS MOVED DOWN");
+            }
+
+            @Override
+            public void cardActionUp() {
+                Log.d(TAG, "CARDS MOVED UP");
+            }
+        });
+
+        return v;
     }
 }

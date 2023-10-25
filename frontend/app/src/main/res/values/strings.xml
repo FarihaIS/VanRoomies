@@ -8,6 +8,11 @@
     <string name="menu_matches">Matches</string>
     <string name="menu_chat">Chat</string>
 
+    <!-- Matching Fragment -->
+    <string name="matches_name_string">First Last</string>
+    <string name="matches_age_string">23</string>
+    <string name="matches_preferences_string">Preferences</string>
+
     <string name="placeholder_listings">Listings Fragment</string>
     <string name="placeholder_profile">Profile Fragment</string>
     <string name="placeholder_matches">Matches Fragment</string>
