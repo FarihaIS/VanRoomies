@@ -64,20 +64,23 @@ public class MatchesFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
 
-        // Inflate the layout for this fragment
-        View v = inflater.inflate(R.layout.fragment_matches, container, false);
+        View v = inflater.inflate(R.layout.fragment_matches, container, true);
+        Log.d(TAG, "Line 69");
 
         matchModalArrayList = new ArrayList<>();
         cardStack = (SwipeDeck) v.findViewById(R.id.matches_swipe_deck);
+        Log.d(TAG, "Line 73");
 
         // Example matches for now
         matchModalArrayList.add(new MatchModal("Denis", 45, "Late-night owl, messy, smokes regularly", R.drawable.ic_listings));
-        matchModalArrayList.add(new MatchModal("Fariha", 22, "Early riser, clean, 2-bedroom house", R.drawable.ic_profile));
+        matchModalArrayList.add(new MatchModal("Fariha", 23, "Early riser, clean, 2-bedroom house", R.drawable.ic_profile));
         matchModalArrayList.add(new MatchModal("Matt", 30, "Early-riser, drinks regularly", R.drawable.ic_match));
         matchModalArrayList.add(new MatchModal("Max", 83, "Early-riser, clean, no smoking, no drinking", R.drawable.ic_chat));
+        Log.d(TAG, "Line 80");
 
         final MatchDeckAdapter adapter = new MatchDeckAdapter(matchModalArrayList, v.getContext());
         cardStack.setAdapter(adapter);
+        Log.d(TAG, "Line 84");
 
         cardStack.setEventCallback(new SwipeDeck.SwipeEventCallback() {
             @Override
@@ -106,6 +109,7 @@ public class MatchesFragment extends Fragment {
             }
         });
 
+        Log.d(TAG, "Line 113");
         return v;
     }
 }

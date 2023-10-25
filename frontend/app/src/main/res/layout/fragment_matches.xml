@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:swipedeck="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
@@ -10,7 +11,6 @@
     <!--on below line we are creating a swipe
         frame layout for providing a swipe action-->
     <com.daprlabs.cardstack.SwipeFrameLayout
-        xmlns:swipedeck="http://schemas.android.com/apk/res-auto"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:orientation="vertical">
@@ -31,5 +31,4 @@
             swipedeck:rotation_degrees="15" />
 
     </com.daprlabs.cardstack.SwipeFrameLayout>
-
 </RelativeLayout>
