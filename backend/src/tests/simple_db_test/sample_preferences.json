@@ -1,0 +1,78 @@
+{
+    "maryjane@github.com":
+        {
+            "minPrice": 1000,
+            "maxPrice": 2000,
+            "housingType": "2-bedroom",
+            "roommateCount": 1,
+            "petFriendly": "true",
+            "smoking": "no-smoking",
+            "partying": "no-partying",
+            "drinking": "no-drinking",
+            "noise": "no-noise",
+            "gender": "female",
+            "moveInDate": "2023-11-01",
+            "leaseLength": 6,
+            "location": {
+                "latitude": 0,
+                "longitude": 0
+            }
+        },
+    "johndoe@github.com":
+        {
+            "minPrice": 1800,
+            "maxPrice": 2500,
+            "housingType": "studio",
+            "roommateCount": 0,
+            "petFriendly": "false",
+            "smoking": "regular",
+            "partying": "regular",
+            "drinking": "regular",
+            "noise": "regular",
+            "gender": "neutral",
+            "moveInDate": "2024-01-01",
+            "leaseLength": 12,
+            "location": {
+                "latitude": 0,
+                "longitude": 0
+            }
+        },
+    "paulmoolan@github.com":
+        {
+            "minPrice": 800,
+            "maxPrice": 1200,
+            "housingType": "other",
+            "roommateCount": 2,
+            "petFriendly": "false",
+            "smoking": "neutral",
+            "partying": "neutral",
+            "drinking": "neutral",
+            "noise": "neutral",
+            "gender": "neutral",
+            "moveInDate": "2024-01-01",
+            "leaseLength": 4,
+            "location": {
+                "latitude": 0,
+                "longitude": 0
+            }
+        },
+    "kevinzhang@github.com":
+        {
+            "minPrice": 800,
+            "maxPrice": 1400,
+            "housingType": "other",
+            "roommateCount": 3,
+            "petFriendly": "false",
+            "smoking": "neutral",
+            "partying": "neutral",
+            "drinking": "regular",
+            "noise": "neutral",
+            "gender": "neutral",
+            "moveInDate": "2024-01-01",
+            "leaseLength": 8,
+            "location": {
+                "latitude": 0,
+                "longitude": 0
+            }
+        }
+}

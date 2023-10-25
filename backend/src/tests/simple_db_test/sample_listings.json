@@ -1,0 +1,51 @@
+{
+    "johnman@github.com": [
+        {
+            "title": "Studio in Kits Area",
+            "description": "Beautiful studio around the Kitsilano area, very close to all buses.",
+            "housingType": "studio",
+            "rentalPrice": 1900,
+            "listingDate": "2023-10-25",
+            "moveInDate": "2023-11-01",
+            "petFriendly": "false",
+            "status": "active",
+            "location": {
+                "latitude": 0,
+                "longitude": 0
+            },
+            "images": []
+        },
+        {
+            "title": "3-bedroom house near Joyce Station",
+            "description": "Spacious 3 bedroom, 2 bathroom house with a backside yard and in proximity to the train station.",
+            "housingType": "other",
+            "rentalPrice": 1100,
+            "listingDate": "2023-10-20",
+            "moveInDate": "2024-01-01",
+            "petFriendly": "true",
+            "status": "active",
+            "location": {
+                "latitude": 0,
+                "longitude": 0
+            },
+            "images": []
+        }
+    ],
+    "miles@github.com": [
+        {
+            "title": "2-bedroom house at UBC Wesbrook",
+            "description": "Renting a 2-bedroom house located at the heart of Wesbrook Village, close to Save-Ons food",
+            "housingType": "2-bedroom",
+            "rentalPrice": 1400,
+            "listingDate": "2023-09-30",
+            "moveInDate": "2024-01-01",
+            "petFriendly": "true",
+            "status": "active",
+            "location": {
+                "latitude": 0,
+                "longitude": 0
+            },
+            "images": []
+        }
+    ]
+}

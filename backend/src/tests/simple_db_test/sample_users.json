@@ -1,0 +1,64 @@
+{
+    "users": [
+        { 
+            "firstName": "John",
+            "lastName": "Man",
+            "email": "johnman@github.com",
+            "gender": "male",
+            "birthday": "2000-01-01",
+            "phoneNumber": "1234567890",
+            "profilePicture": "base64encodingofpictureJohnMan",
+            "bio": "This is supposed to be stuff about John Man"
+        },
+        { 
+            "firstName": "Mary",
+            "lastName": "Jane",
+            "email": "maryjane@github.com",
+            "gender": "female",
+            "birthday": "2004-09-30",
+            "phoneNumber": "1235567990",
+            "profilePicture": "base64encodingofpictureMaryJane",
+            "bio": "This is supposed to be stuff about Mary Jane"
+        },
+        { 
+            "firstName": "John",
+            "lastName": "Doe",
+            "email": "johndoe@github.com",
+            "gender": "non-binary",
+            "birthday": "2002-04-04",
+            "phoneNumber": "1235567999",
+            "profilePicture": "base64encodingofpictureJohnDoe",
+            "bio": "This is supposed to be stuff about John Doe"
+        },
+        { 
+            "firstName": "Kevin",
+            "lastName": "Zhang",
+            "email": "kevinzhang@github.com",
+            "gender": "male",
+            "birthday": "2005-08-25",
+            "phoneNumber": "1236667990",
+            "profilePicture": "base64encodingofpictureKevinZhang",
+            "bio": "This is supposed to be stuff about Kevin Zhang"
+        },
+        { 
+            "firstName": "Miles",
+            "lastName": "Morales",
+            "email": "miles@github.com",
+            "gender": "male",
+            "birthday": "1998-09-09",
+            "phoneNumber": "1235567999",
+            "profilePicture": "base64encodingofpictureMilesMorales",
+            "bio": "This is supposed to be stuff about Miles Morales"
+        },
+        { 
+            "firstName": "Paula",
+            "lastName": "Moolan",
+            "email": "paulmoolan@github.com",
+            "gender": "female",
+            "birthday": "2005-12-31",
+            "phoneNumber": "1235555990",
+            "profilePicture": "base64encodingofpicturePaulaMoolan",
+            "bio": "This is supposed to be stuff about Paula Moolan"
+        }
+    ]
+}

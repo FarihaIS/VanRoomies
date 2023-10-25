@@ -115,10 +115,11 @@ router.delete('/:userId', authenticateJWT, async (req, res, next) => {
     const session = await mongoose.startSession();
 
     try {
+        let deletedUser = null;
         session.startTransaction();
 
         const userId = req.params.userId;
-        const deletedUser = await User.findByIdAndDelete(req.params.userId);
+        deletedUser = await User.findByIdAndDelete(req.params.userId);
         await Listing.deleteMany({ userId: userId });
         await Preferences.deleteOne({ userId: userId });
         await session.commitTransaction();
