@@ -4,8 +4,8 @@
   "description": "Backend of VanRoomies project.",
   "main": "server.js",
   "scripts": {
-    "start": "node src/app.js",
-    "dev": "nodemon src/app.js",
+    "start": "NODE_ENV=production node src/app.js",
+    "dev": "NODE_ENV=development nodemon src/app.js",
     "lint": "concurrently -c 'auto' 'npm:eslint' 'npm:prettier'",
     "prettier": "prettier --write './src/**/*.js'",
     "eslint": "eslint --cache --ext .js ./src/"
