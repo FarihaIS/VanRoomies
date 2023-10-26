@@ -71,6 +71,20 @@ class MessageStore {
 			console.error(error);
 		}
 	}
+
+	async getMessagesFromUser(userId) {
+		try {
+			const conversations = await Conversation.find({ users: userId });
+			return conversations.map((conversation) => {
+				return {
+					conversationId: conversation._id,
+					messages: conversation.messages,
+				};
+			});
+		} catch (error) {
+			console.error(error);
+		}
+	}
 }
 
 let messageStore = Object.freeze(new MessageStore());

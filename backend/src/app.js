@@ -5,18 +5,16 @@ const https = require('https');
 const fs = require('fs');
 const path = require('path');
 const { Server } = require('socket.io');
-const crypto = require('crypto');
 const mongoSanitize = require('express-mongo-sanitize');
 const validator = require('validator');
-const randomId = () => crypto.randomBytes(8).toString('hex');
+ObjectId = require('mongodb').ObjectId;
 
 const app = express();
 const httpsServer = https.createServer(credentials, app);
 const io = new Server(httpsServer);
 
-const { InMemorySessionStore } = require('./chat/sessionStore');
-const sessionStore = new InMemorySessionStore();
 const messageStore = require('./chat/messageStore');
+const User = require('./models/userModel');
 
 const sanitize = (message) => {
 	return validator.escape(validator.trim(message));
@@ -62,9 +60,10 @@ app.use(bodyParser.raw());
 app.use(mongoSanitize());
 
 // routes
+app.use('/api/users', require('./routes/users'));
 app.use('/api/listings', require('./routes/listings'));
 app.use('/api/users', require('./routes/preferences'));
-app.use('/api/users', require('./routes/users'));
+app.use('/api/chat', require('./routes/chat'));
 
 app.get('/', (req, res) => {
     res.send('Hello World!');
@@ -74,89 +73,55 @@ app.use(logErrors);
 app.use(errorHandler);
 
 // websockets for chat
-io.use((socket, next) => {
-    const sessionID = socket.handshake.auth.sessionID;
-    console.log(socket.handshake.auth);
-    if (sessionID) {
-        const session = sessionStore.findSession(sessionID);
-        if (session) {
-            socket.sessionID = sessionID;
-            socket.userID = session.userID;
-            socket.username = session.username;
-            return next();
-        }
-    }
-    const username = socket.handshake.auth.username;
-    if (!username) {
-        return next(new Error('invalid username'));
-    }
-    socket.sessionID = randomId();
-    socket.userID = randomId();
-    socket.username = username;
-    next();
+io.use(async (socket, next) => {
+	try {
+		let userId = socket.handshake.auth.userId;
+		if (!userId) {
+			return next(new Error('No userId'));
+		}
+		if (!(userId instanceof mongoose.Types.ObjectId)) {
+			userId = new ObjectId(userId)
+		}
+
+		const user = await User.findById(userId);
+		if (!user) {
+			return next(new Error('Invalid userId'));
+		}
+		socket.emit('user connected', `Welcome ${user.firstName} ${user.lastName}!`);
+		socket.userId = socket.handshake.auth.userId;
+		next();
+	} catch (error) {
+		return next(error);
+	}
 });
 
-io.on('connection', (socket) => {
-    // persist session
-    sessionStore.saveSession(socket.sessionID, {
-        userID: socket.userID,
-        username: socket.username,
-        connected: true,
-    });
+io.on('connection', async (socket) => {
+	// socket.on('users', async (callback) => {
+	// 	const users = await User.find({});
+	// 	callback(users);
+	// });
 
-    // emit session details
-    socket.emit('session', {
-        sessionID: socket.sessionID,
-        userID: socket.userID,
-    });
-
-    // join the "userID" room
-    socket.join(socket.userID);
-
-    // fetch existing users
-    const users = [];
-    sessionStore.findAllSessions().forEach((session) => {
-        users.push({
-            userID: session.userID,
-            username: session.username,
-            connected: session.connected,
-        });
-    });
-    socket.emit('users', users);
-
-    // notify existing users
-    socket.broadcast.emit('user connected', {
-        userID: socket.userID,
-        username: socket.username,
-        connected: true,
-    });
-
-    // forward the private message to the right recipient (and to other tabs of the sender)
-    socket.on('private message', async ({ content, to }) => {
-        const sanitizedMessage = sanitize(content);
-		const conversationId = await messageStore.getConversationId(socket.userID, to);
-		await messageStore.saveMessage(socket.userID, sanitizedMessage, conversationId);
-        socket.to(to).to(socket.userID).emit('private message', {
-            sanitizedMessage,
-            from: socket.userID,
-            to,
-        });
-    });
-
-    // notify users upon disconnection
-    socket.on('disconnect', async () => {
-        const matchingSockets = await io.in(socket.userID).fetchSockets();
-        const isDisconnected = matchingSockets.size === 0;
-        if (isDisconnected) {
-            // notify other users
-            socket.broadcast.emit('user disconnected', socket.userID);
-            // update the connection status of the session
-            sessionStore.saveSession(socket.sessionID, {
-                userID: socket.userID,
-                username: socket.username,
-                connected: false,
-            });
-        }
+	socket.join(socket.userId);
+	
+    socket.on('private message', async ({ content, to }, callback) => {
+		try {
+			const user = await User.findById(to);
+			if (!user) {
+				next(new Error('Invalid userId'));
+			}
+			const sanitizedMessage = sanitize(content);
+			const conversationId = await messageStore.getConversationId(socket.userId, to);
+			await messageStore.saveMessage(socket.userId, sanitizedMessage, conversationId);
+			socket.timeout(5000).to(to).to(socket.userId).emit('private message', {
+				content: sanitizedMessage,
+				from: socket.userId,
+				to,
+			}, () => {
+				callback({ status: 'success' });
+			});
+		} catch (error) {
+			callback({ status: 'error', message: 'User not found' });
+		}
     });
 });
 const port = process.env.PORT || 3000;
@@ -164,3 +129,6 @@ const port = process.env.PORT || 3000;
 httpsServer.listen(port, () => {
     console.log(`Example app listening on port ${port}`);
 });
+
+// John: 6539fad1e7b746a2b1fefba6
+// Denis: 6539fb1ee7b746a2b1fefba9
