@@ -1,5 +1,4 @@
 const jwt = require('jsonwebtoken');
-const dotenv = require('dotenv');
 
 /**
  * The following functions were implementing following alongside the guide
@@ -14,7 +13,6 @@ const dotenv = require('dotenv');
  * crypto module as following from a node shell:
  * ```require('crypto').randomBytes(64).toString('hex')```
  */
-dotenv.config();
 
 /**
  * Generates an authentication token for a given user. This authentication

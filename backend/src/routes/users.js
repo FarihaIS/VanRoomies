@@ -23,8 +23,10 @@ router.get('/', async (req, res, next) => {
 });
 
 /**
- * Create a new User object and save it to the database. This demands that all fields are provided
- * in the body of the request as shown below.
+ * Login user through Google Sign In. This passes the user through a
+ * middleware to validate their ID token. The login serves a 2-fold purpose
+ * of signing up a new user and creating their record on the database
+ * or simply querying their profile otherwise.
  *
  * Route: POST /api/users/login
  * Content-Type: application/json
@@ -54,7 +56,7 @@ router.post('/login', validateGoogleIdToken, async (req, res, next) => {
             const savedUser = await user.save();
             const userToken = generateAuthenticationToken(savedUser);
             // Set status 201 if a new user was created
-            req.status(201).json({ userToken: userToken, user: savedUser });
+            res.status(201).json({ userToken: userToken, user: savedUser });
         }
     } catch (err) {
         res.status(400).json({ error: err.message });

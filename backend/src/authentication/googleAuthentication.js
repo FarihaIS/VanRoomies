@@ -1,12 +1,11 @@
 const { OAuth2Client } = require('google-auth-library');
-const dotenv = require('dotenv');
 
 /**
- * Client Id refers to the CLIENT_ID set on the Google Developer
- * Console for our front end. This is used to validate Google Id
- * Token sent by a user after their frontend login attempt.
+ * To verify the google ID token sent by the frontend, the guide
+ * on the link below was followed:
+ * https://developers.google.com/identity/gsi/web/guides/verify-google-id-token
+ * and adapted as per our usecase.
  */
-dotenv.config();
 
 /**
  * Middleware function used to check that the provided ID token is
@@ -14,7 +13,7 @@ dotenv.config();
  * Successful execution of this middleware shall then redirect to the
  * redirect URI set by the client ID
  *
- * @param {Object} req - Request, contains authentication token
+ * @param {Object} req - Request, contains authentication token: idToken
  * @param {Object} res - Response is used to send back status
  * @param {Function} next - Callback to pass control to next middleware
  */
@@ -24,9 +23,7 @@ const validateGoogleIdToken = async (req, res, next) => {
         idToken: req.body.idToken,
         audience: process.env.GCP_CLIENT_ID,
     });
-
     if (ticket == null) return res.sendStatus(401);
-
     next();
 };
 
