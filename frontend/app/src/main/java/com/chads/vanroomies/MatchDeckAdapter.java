@@ -1,6 +1,7 @@
 package com.chads.vanroomies;
 
 import android.content.Context;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -14,11 +15,10 @@ public class MatchDeckAdapter extends BaseAdapter {
     private ArrayList<MatchModal> matchData;
     private Context context;
 
-    public MatchDeckAdapter(ArrayList<MatchModal> matchData, Context context) {
-        this.matchData = matchData;
+    public MatchDeckAdapter(Context context) {
+        this.matchData = new ArrayList<>();
         this.context = context;
     }
-
     @Override
     public int getCount() {
         return matchData.size();
@@ -29,9 +29,17 @@ public class MatchDeckAdapter extends BaseAdapter {
         return matchData.get(position);
     }
 
+    public void addItem(MatchModal matchItem) {
+        matchData.add(matchItem);
+    }
+    public void removeItem(int position) {
+        if (getCount() > 0 && position < getCount()) {
+            matchData.remove(getItem(position));
+        }
+    }
+
     @Override
     public long getItemId(int position) {
-        // in get item id we are returning the position.
         return position;
     }
 
@@ -43,7 +51,7 @@ public class MatchDeckAdapter extends BaseAdapter {
         }
 
         ((TextView) v.findViewById(R.id.matches_name)).setText(matchData.get(position).getMatchName());
-        ((TextView) v.findViewById(R.id.matches_age)).setText(matchData.get(position).getMatchAge());
+        ((TextView) v.findViewById(R.id.matches_age)).setText(String.valueOf(matchData.get(position).getMatchAge()));
         ((TextView) v.findViewById(R.id.matches_preferences)).setText(matchData.get(position).getMatchPreferences());
         ((ImageView) v.findViewById(R.id.matches_image)).setImageResource(matchData.get(position).getMatchImageId());
 

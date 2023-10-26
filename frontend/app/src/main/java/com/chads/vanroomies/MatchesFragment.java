@@ -18,7 +18,7 @@ import com.daprlabs.cardstack.SwipeDeck;
 public class MatchesFragment extends Fragment {
     final static String TAG = "MatchesFragment";
     private SwipeDeck cardStack;
-    private ArrayList<MatchModal> matchModalArrayList;
+    private MatchDeckAdapter adapter;
 
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
@@ -64,38 +64,35 @@ public class MatchesFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
 
-        View v = inflater.inflate(R.layout.fragment_matches, container, true);
-        Log.d(TAG, "Line 69");
+        View v = inflater.inflate(R.layout.fragment_matches, container, false);
 
-        matchModalArrayList = new ArrayList<>();
         cardStack = (SwipeDeck) v.findViewById(R.id.matches_swipe_deck);
-        Log.d(TAG, "Line 73");
-
-        // Example matches for now
-        matchModalArrayList.add(new MatchModal("Denis", 45, "Late-night owl, messy, smokes regularly", R.drawable.ic_listings));
-        matchModalArrayList.add(new MatchModal("Fariha", 23, "Early riser, clean, 2-bedroom house", R.drawable.ic_profile));
-        matchModalArrayList.add(new MatchModal("Matt", 30, "Early-riser, drinks regularly", R.drawable.ic_match));
-        matchModalArrayList.add(new MatchModal("Max", 83, "Early-riser, clean, no smoking, no drinking", R.drawable.ic_chat));
-        Log.d(TAG, "Line 80");
-
-        final MatchDeckAdapter adapter = new MatchDeckAdapter(matchModalArrayList, v.getContext());
+        adapter = new MatchDeckAdapter(v.getContext());
         cardStack.setAdapter(adapter);
-        Log.d(TAG, "Line 84");
+
+        // TODO: do GET request to show updated list of matched users
+        adapter.addItem(new MatchModal("Denis", 45, "Late-night owl, messy, smokes regularly", R.drawable.ic_listings));
+        adapter.addItem(new MatchModal("Fariha", 23, "Early riser, clean, 2-bedroom house", R.drawable.ic_profile));
+        adapter.addItem(new MatchModal("Matt", 30, "Early-riser, drinks regularly", R.drawable.ic_match));
+        adapter.addItem(new MatchModal("Max", 83, "Early-riser, clean, no smoking, no drinking", R.drawable.ic_chat));
 
         cardStack.setEventCallback(new SwipeDeck.SwipeEventCallback() {
             @Override
             public void cardSwipedLeft(int position) {
-                Toast.makeText(v.getContext(), "Match Rejected", Toast.LENGTH_SHORT).show();
+                adapter.removeItem(position);
+                Log.d(TAG, "Match Rejected");
             }
 
             @Override
             public void cardSwipedRight(int position) {
-                Toast.makeText(v.getContext(), "Match Accepted", Toast.LENGTH_SHORT).show();
+                // TODO: Open chat with match and remove match from matchData
+                adapter.removeItem(position);
+                Log.d(TAG, "Match accepted");
             }
 
             @Override
             public void cardsDepleted() {
-                Toast.makeText(v.getContext(), "No more matches", Toast.LENGTH_SHORT).show();
+                Log.d(TAG, "No more matches");
             }
 
             @Override
@@ -109,7 +106,6 @@ public class MatchesFragment extends Fragment {
             }
         });
 
-        Log.d(TAG, "Line 113");
         return v;
     }
 }
