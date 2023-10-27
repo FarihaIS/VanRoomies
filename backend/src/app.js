@@ -1,13 +1,21 @@
-const dotenv = require('dotenv');
 const express = require('express');
 const mongoose = require('mongoose');
 const bodyParser = require('body-parser');
-
-const app = express();
-const port = 3000;
+const https = require('https');
+const fs = require('fs');
+const path = require('path');
 
 // Configure environment variable path
-dotenv.config({ path: '.env' });
+require('dotenv').config({ path: `./.env.${process.env.NODE_ENV}` })
+
+const app = express();
+const credentials = {
+	key: fs.readFileSync(path.resolve(process.env.KEY_PATH)),
+	cert: fs.readFileSync(path.resolve(process.env.CERT_PATH)),
+};
+
+const httpsServer = https.createServer(credentials, app);
+const port = 3000;
 
 function logErrors(err, req, res, next) {
     console.error(err.message);
@@ -51,6 +59,6 @@ app.get('/', (req, res) => {
 app.use(logErrors);
 app.use(errorHandler);
 
-app.listen(port, () => {
+httpsServer.listen(port, () => {
     console.log(`Example app listening on port ${port}`);
 });
