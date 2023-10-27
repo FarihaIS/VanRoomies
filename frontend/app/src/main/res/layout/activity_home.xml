@@ -4,26 +4,27 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".MainActivity">
+    tools:context=".HomeActivity">
 
-    <com.google.android.gms.common.SignInButton
-        android:id="@+id/login_button"
-        android:layout_width="160dp"
-        android:layout_height="62dp"
-        app:layout_constraintBottom_toBottomOf="parent"
+    <FrameLayout
+        android:id="@+id/frame_layout"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        app:layout_constraintBottom_toTopOf="@+id/bottomNavigationView"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toTopOf="parent">
+    </FrameLayout>
 
-    <ImageView
-        android:id="@+id/logo_image"
-        android:contentDescription="@string/home_screen_logo"
+    <com.google.android.material.bottomnavigation.BottomNavigationView
+        android:id="@+id/bottomNavigationView"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        app:layout_constraintBottom_toTopOf="@+id/login_button"
+        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="1.0"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        tools:srcCompat="@tools:sample/avatars" />
-
+        app:layout_constraintVertical_bias="1.0"
+        app:menu="@menu/bottom_nav_menu" />
 </androidx.constraintlayout.widget.ConstraintLayout>
