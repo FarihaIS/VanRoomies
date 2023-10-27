@@ -11,6 +11,5 @@ $ cd backend/
 ```
 Generate a certificate and key.
 ```bash
-$ openssl req -x509 -newkey rsa:4096 -keyout key.pem -out cert.pem -sha256 -days 365
+$ sh ../scripts/generate-cert.sh $IP_ADDRESS
 ```
-Use the passphrase `vanroomies`.

@@ -1,18 +1,17 @@
-const dotenv = require('dotenv');
 const express = require('express');
 const mongoose = require('mongoose');
 const bodyParser = require('body-parser');
 const https = require('https');
 const fs = require('fs');
+const path = require('path');
 
 // Configure environment variable path
 require('dotenv').config({ path: `./.env.${process.env.NODE_ENV}` })
 
 const app = express();
 const credentials = {
-	key: fs.readFileSync('key.pem'),
-	cert: fs.readFileSync('cert.pem'),
-	passphrase: process.env.PASSPHRASE
+	key: fs.readFileSync(path.resolve(process.env.KEY_PATH)),
+	cert: fs.readFileSync(path.resolve(process.env.CERT_PATH)),
 };
 
 const httpsServer = https.createServer(credentials, app);
