@@ -21,8 +21,9 @@ import java.util.ArrayList;
  */
 public class ListingsFragment extends Fragment {
     final static String TAG = "ListingsFragment";
+    final static int num_cols = 2;
     private RecyclerView recyclerView;
-    private ArrayList<RecyclerData> recyclerDataArrayList;
+    private ArrayList<ListingsRecyclerData> recyclerDataArrayList;
 
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
@@ -70,22 +71,21 @@ public class ListingsFragment extends Fragment {
         View view = inflater.inflate(R.layout.fragment_listings, container, false);
         recyclerView = view.findViewById(R.id.idCourseRV);
 
-        // created new array list..
-        recyclerDataArrayList=new ArrayList<>();
+        recyclerDataArrayList = new ArrayList<>();
 
-        // added data to array list
-        recyclerDataArrayList.add(new RecyclerData("House", R.drawable.ic_listings_image));
-        recyclerDataArrayList.add(new RecyclerData("Casa", R.drawable.ic_listings_image));
-        recyclerDataArrayList.add(new RecyclerData("Maison", R.drawable.ic_listings_image));
-        recyclerDataArrayList.add(new RecyclerData("Haus", R.drawable.ic_listings_image));
-        recyclerDataArrayList.add(new RecyclerData("家", R.drawable.ic_listings_image));
+        // To-Do: Populate with data from the backend (Issue #39). Currently using dummy data
+        recyclerDataArrayList.add(new ListingsRecyclerData("House", R.drawable.ic_listings_image));
+        recyclerDataArrayList.add(new ListingsRecyclerData("Casa", R.drawable.ic_listings_image));
+        recyclerDataArrayList.add(new ListingsRecyclerData("Maison", R.drawable.ic_listings_image));
+        recyclerDataArrayList.add(new ListingsRecyclerData("Haus", R.drawable.ic_listings_image));
+        recyclerDataArrayList.add(new ListingsRecyclerData("家", R.drawable.ic_listings_image));
 
         // added data from arraylist to adapter class.
-        RecyclerViewAdapter adapter=new RecyclerViewAdapter(recyclerDataArrayList,view.getContext());
+        ListingsRecyclerViewAdapter adapter = new ListingsRecyclerViewAdapter(recyclerDataArrayList,view.getContext());
 
         // setting grid layout manager to implement grid view.
         // in this method '2' represents number of columns to be displayed in grid view.
-        GridLayoutManager layoutManager=new GridLayoutManager(view.getContext(),2);
+        GridLayoutManager layoutManager = new GridLayoutManager(view.getContext(),num_cols);
 
         // at last set adapter to recycler view.
         recyclerView.setLayoutManager(layoutManager);

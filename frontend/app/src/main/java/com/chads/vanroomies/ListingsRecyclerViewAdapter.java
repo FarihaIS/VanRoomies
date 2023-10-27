@@ -10,13 +10,13 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 import java.util.ArrayList;
 
-public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapter.RecyclerViewHolder> {
+public class ListingsRecyclerViewAdapter extends RecyclerView.Adapter<ListingsRecyclerViewAdapter.RecyclerViewHolder> {
 
-    private ArrayList<RecyclerData> courseDataArrayList;
+    private ArrayList<ListingsRecyclerData> listingsDataArrayList;
     private Context mcontext;
 
-    public RecyclerViewAdapter(ArrayList<RecyclerData> recyclerDataArrayList, Context mcontext) {
-        this.courseDataArrayList = recyclerDataArrayList;
+    public ListingsRecyclerViewAdapter(ArrayList<ListingsRecyclerData> recyclerDataArrayList, Context mcontext) {
+        this.listingsDataArrayList = recyclerDataArrayList;
         this.mcontext = mcontext;
     }
 
@@ -31,27 +31,26 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
     @Override
     public void onBindViewHolder(@NonNull RecyclerViewHolder holder, int position) {
         // Set the data to textview and imageview.
-        RecyclerData recyclerData = courseDataArrayList.get(position);
-        holder.courseTV.setText(recyclerData.getTitle());
-        holder.courseIV.setImageResource(recyclerData.getImgid());
+        ListingsRecyclerData recyclerData = listingsDataArrayList.get(position);
+        holder.listingTV.setText(recyclerData.getTitle());
+        holder.listingIV.setImageResource(recyclerData.getImgId());
     }
 
     @Override
     public int getItemCount() {
-        // this method returns the size of recyclerview
-        return courseDataArrayList.size();
+        return listingsDataArrayList.size();
     }
 
     // View Holder Class to handle Recycler View.
     public class RecyclerViewHolder extends RecyclerView.ViewHolder {
 
-        private TextView courseTV;
-        private ImageView courseIV;
+        private TextView listingTV;
+        private ImageView listingIV;
 
         public RecyclerViewHolder(@NonNull View itemView) {
             super(itemView);
-            courseTV = itemView.findViewById(R.id.idTVCourse);
-            courseIV = itemView.findViewById(R.id.idIVcourseIV);
+            listingTV = itemView.findViewById(R.id.idTVListing);
+            listingIV = itemView.findViewById(R.id.idIVListing);
         }
     }
 }
