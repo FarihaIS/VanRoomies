@@ -7,7 +7,6 @@ const path = require('path');
 const { Server } = require('socket.io');
 const mongoSanitize = require('express-mongo-sanitize');
 const validator = require('validator');
-ObjectId = require('mongodb').ObjectId;
 
 const app = express();
 const httpsServer = https.createServer(credentials, app);
@@ -80,7 +79,7 @@ io.use(async (socket, next) => {
 			return next(new Error('No userId'));
 		}
 		if (!(userId instanceof mongoose.Types.ObjectId)) {
-			userId = new ObjectId(userId)
+			userId = new mongoose.mongo.ObjectId(userId);
 		}
 
 		const user = await User.findById(userId);
@@ -96,18 +95,13 @@ io.use(async (socket, next) => {
 });
 
 io.on('connection', async (socket) => {
-	// socket.on('users', async (callback) => {
-	// 	const users = await User.find({});
-	// 	callback(users);
-	// });
-
 	socket.join(socket.userId);
 	
     socket.on('private message', async ({ content, to }, callback) => {
 		try {
 			const user = await User.findById(to);
 			if (!user) {
-				next(new Error('Invalid userId'));
+				return callback({ status: 'error', message: 'User not supplied' });
 			}
 			const sanitizedMessage = sanitize(content);
 			const conversationId = await messageStore.getConversationId(socket.userId, to);
@@ -129,6 +123,3 @@ const port = process.env.PORT || 3000;
 httpsServer.listen(port, () => {
     console.log(`Example app listening on port ${port}`);
 });
-
-// John: 6539fad1e7b746a2b1fefba6
-// Denis: 6539fb1ee7b746a2b1fefba9
