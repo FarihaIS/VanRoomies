@@ -15,8 +15,8 @@ public class MatchDeckAdapter extends BaseAdapter {
     private ArrayList<MatchModal> matchData;
     private Context context;
 
-    public MatchDeckAdapter(Context context) {
-        this.matchData = new ArrayList<>();
+    public MatchDeckAdapter(ArrayList<MatchModal> data, Context context) {
+        this.matchData = data;
         this.context = context;
     }
     @Override
@@ -27,15 +27,6 @@ public class MatchDeckAdapter extends BaseAdapter {
     @Override
     public Object getItem(int position) {
         return matchData.get(position);
-    }
-
-    public void addItem(MatchModal matchItem) {
-        matchData.add(matchItem);
-    }
-    public void removeItem(int position) {
-        if (getCount() > 0 && position < getCount()) {
-            matchData.remove(getItem(position));
-        }
     }
 
     @Override

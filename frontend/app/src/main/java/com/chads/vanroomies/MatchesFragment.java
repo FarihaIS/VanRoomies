@@ -17,8 +17,9 @@ import com.daprlabs.cardstack.SwipeDeck;
  */
 public class MatchesFragment extends Fragment {
     final static String TAG = "MatchesFragment";
-    private SwipeDeck cardStack;
+    private ArrayList<MatchModal> matchModalArrayList;
     private MatchDeckAdapter adapter;
+    private SwipeDeck cardStack;
 
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
@@ -66,27 +67,27 @@ public class MatchesFragment extends Fragment {
 
         View v = inflater.inflate(R.layout.fragment_matches, container, false);
 
+        matchModalArrayList = new ArrayList<>();
         cardStack = (SwipeDeck) v.findViewById(R.id.matches_swipe_deck);
-        adapter = new MatchDeckAdapter(v.getContext());
-        cardStack.setAdapter(adapter);
 
         // TODO: do GET request to show updated list of matched users
-        adapter.addItem(new MatchModal("Denis", 45, "Late-night owl, messy, smokes regularly", R.drawable.ic_listings));
-        adapter.addItem(new MatchModal("Fariha", 23, "Early riser, clean, 2-bedroom house", R.drawable.ic_profile));
-        adapter.addItem(new MatchModal("Matt", 30, "Early-riser, drinks regularly", R.drawable.ic_match));
-        adapter.addItem(new MatchModal("Max", 83, "Early-riser, clean, no smoking, no drinking", R.drawable.ic_chat));
+        matchModalArrayList.add(new MatchModal("Denis", 45, "Late-night owl, messy, smokes regularly", R.drawable.ic_listings));
+        matchModalArrayList.add(new MatchModal("Fariha", 23, "Early riser, clean, 2-bedroom house", R.drawable.ic_profile));
+        matchModalArrayList.add(new MatchModal("Matt", 30, "Early-riser, drinks regularly", R.drawable.ic_match));
+        matchModalArrayList.add(new MatchModal("Max", 83, "Early-riser, clean, no smoking, no drinking", R.drawable.ic_chat));
+
+        adapter = new MatchDeckAdapter(matchModalArrayList, v.getContext());
+        cardStack.setAdapter(adapter);
 
         cardStack.setEventCallback(new SwipeDeck.SwipeEventCallback() {
             @Override
             public void cardSwipedLeft(int position) {
-                adapter.removeItem(position);
                 Log.d(TAG, "Match Rejected");
             }
 
             @Override
             public void cardSwipedRight(int position) {
-                // TODO: Open chat with match and remove match from matchData
-                adapter.removeItem(position);
+                // TODO: Opem chat session with accepted match
                 Log.d(TAG, "Match accepted");
             }
 

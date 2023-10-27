@@ -14,14 +14,11 @@
         android:layout_margin="3dp"
         android:orientation="vertical">
 
-        <!--image view for course image-->
         <ImageView
             android:id="@+id/matches_image"
             android:layout_width="match_parent"
-            android:layout_height="451dp"
+            android:layout_height="453dp"
             android:scaleType="centerCrop" />
-
-        <!--text view for our course name-->
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -29,7 +26,6 @@
             android:orientation="horizontal"
             android:weightSum="2">
 
-            <!--text view for our course tracks-->
             <TextView
                 android:id="@+id/matches_name"
                 android:layout_width="0dp"
@@ -39,7 +35,6 @@
                 android:text="@string/matches_name_string"
                 android:textColor="@color/black" />
 
-            <!--text view for our course duration-->
             <TextView
                 android:id="@+id/matches_age"
                 android:layout_width="0dp"
@@ -51,7 +46,6 @@
 
         </LinearLayout>
 
-        <!--text view for our course description-->
         <TextView
             android:id="@+id/matches_preferences"
             android:layout_width="match_parent"

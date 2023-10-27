@@ -1,8 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:swipedeck="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    tools:context=".MainActivity">
 
     <com.daprlabs.cardstack.SwipeFrameLayout
         android:layout_width="match_parent"
@@ -12,25 +16,11 @@
         <com.daprlabs.cardstack.SwipeDeck
             android:id="@+id/matches_swipe_deck"
             android:layout_width="match_parent"
-            android:layout_height="566dp"
+            android:layout_height="567dp"
             android:padding="20dp"
             swipedeck:card_spacing="10dp"
-            swipedeck:max_visible="10"
+            swipedeck:max_visible="3"
             swipedeck:render_above="true"
             swipedeck:rotation_degrees="15" />
-
-        <TextView
-            android:id="@+id/matches_instructions"
-            android:layout_width="wrap_content"
-            android:layout_height="41dp"
-            android:layout_gravity="center_horizontal"
-            android:layout_marginStart="21dp"
-            android:layout_marginTop="633dp"
-            android:layout_marginEnd="25dp"
-            android:layout_marginBottom="57dp"
-            android:gravity="center"
-            android:text="@string/matches_instruction_string"
-            android:textAppearance="@style/TextAppearance.AppCompat.Medium" />
     </com.daprlabs.cardstack.SwipeFrameLayout>
-
 </RelativeLayout>
