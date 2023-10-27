@@ -4,9 +4,12 @@ import android.os.Bundle;
 
 import androidx.fragment.app.Fragment;
 
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+
+import okhttp3.OkHttpClient;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -15,7 +18,9 @@ import android.view.ViewGroup;
  */
 public class ProfileFragment extends Fragment {
     final static String TAG = "ProfileFragment";
-
+    OkHttpClient client;
+    String baseServerURL = "127.0.0.1:3000";
+    private final String helloWorldEndpoint = "/";
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
     private static final String ARG_PARAM1 = "param1";
@@ -54,12 +59,20 @@ public class ProfileFragment extends Fragment {
             mParam1 = getArguments().getString(ARG_PARAM1);
             mParam2 = getArguments().getString(ARG_PARAM2);
         }
-
     }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
+        View view = inflater.inflate(R.layout.fragment_profile, container, false);
+        client = HTTPSClientFactory.createClient(view.getContext());
+
+        // For testing connectivity with backend
+        String result = GetHelloWorldTest.testGetHelloWorld( getActivity());
+        if (result != null){
+            Log.d(TAG, result);
+        }
+
         // Inflate the layout for this fragment
         return inflater.inflate(R.layout.fragment_profile, container, false);
     }
