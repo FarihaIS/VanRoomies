@@ -28,10 +28,10 @@ const Conversation = mongoose.model('Conversation', conversationSchema);
 
 class MessageStore {
     constructor() {
-		if (!MessageStore.instance) {
-			MessageStore.instance = this;
-		}
-		return MessageStore.instance;
+        if (!MessageStore.instance) {
+            MessageStore.instance = this;
+        }
+        return MessageStore.instance;
     }
 
     async getConversationId(user1, user2) {
@@ -48,7 +48,7 @@ class MessageStore {
 
             return result._id;
         } catch (error) {
-			console.error(error);
+            console.error(error);
         }
     }
 
@@ -59,32 +59,32 @@ class MessageStore {
             conversation.messages.push(message);
             await conversation.save();
         } catch (error) {
-			console.error(error);
+            console.error(error);
         }
     }
 
-	async getMessages(conversationId) {
-		try {
-			const conversation = await Conversation.findById(conversationId);
-			return conversation.messages;
-		} catch (error) {
-			console.error(error);
-		}
-	}
+    async getMessages(conversationId) {
+        try {
+            const conversation = await Conversation.findById(conversationId);
+            return conversation.messages;
+        } catch (error) {
+            console.error(error);
+        }
+    }
 
-	async getMessagesFromUser(userId) {
-		try {
-			const conversations = await Conversation.find({ users: userId });
-			return conversations.map((conversation) => {
-				return {
-					conversationId: conversation._id,
-					messages: conversation.messages,
-				};
-			});
-		} catch (error) {
-			console.error(error);
-		}
-	}
+    async getMessagesFromUser(userId) {
+        try {
+            const conversations = await Conversation.find({ users: userId });
+            return conversations.map((conversation) => {
+                return {
+                    conversationId: conversation._id,
+                    messages: conversation.messages,
+                };
+            });
+        } catch (error) {
+            console.error(error);
+        }
+    }
 }
 
 let messageStore = Object.freeze(new MessageStore());
