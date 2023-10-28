@@ -68,7 +68,7 @@ public class ProfileFragment extends Fragment {
         client = HTTPSClientFactory.createClient(view.getContext());
 
         // For testing connectivity with backend
-        String result = GetHelloWorldTest.testGetHelloWorld( getActivity());
+        String result = GetHelloWorldTest.testGetHelloWorld(client , getActivity());
         if (result != null){
             Log.d(TAG, result);
         }

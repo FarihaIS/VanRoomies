@@ -15,11 +15,10 @@ import okhttp3.Response;
 
 public class GetHelloWorldTest {
     final static String TAG = "GetHelloWorldTest";
-    static OkHttpClient client;
-    static String baseServerURL = "127.0.0.1:3000";
+    static String baseServerURL = "https://10.0.2.2:3000";
     private static final String helloWorldEndpoint = "/";
 
-    public static String testGetHelloWorld(Activity act){
+    public static String testGetHelloWorld(OkHttpClient client, Activity act){
         Request request = new Request.Builder().url(baseServerURL + helloWorldEndpoint).build();
         client.newCall(request).enqueue(new Callback() {
             @Override
