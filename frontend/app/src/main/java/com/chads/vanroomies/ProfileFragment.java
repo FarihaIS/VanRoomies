@@ -19,8 +19,6 @@ import okhttp3.OkHttpClient;
 public class ProfileFragment extends Fragment {
     final static String TAG = "ProfileFragment";
     OkHttpClient client;
-    static String baseServerURL = "https://10.0.2.2:3000";
-    private final String helloWorldEndpoint = "/";
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
     private static final String ARG_PARAM1 = "param1";
@@ -74,6 +72,6 @@ public class ProfileFragment extends Fragment {
         }
 
         // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_profile, container, false);
+        return view;
     }
 }

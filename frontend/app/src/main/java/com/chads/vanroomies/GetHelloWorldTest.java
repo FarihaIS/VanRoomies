@@ -15,11 +15,8 @@ import okhttp3.Response;
 
 public class GetHelloWorldTest {
     final static String TAG = "GetHelloWorldTest";
-    static String baseServerURL = "https://10.0.2.2:3000";
-    private static final String helloWorldEndpoint = "/";
-
     public static String testGetHelloWorld(OkHttpClient client, Activity act){
-        Request request = new Request.Builder().url(baseServerURL + helloWorldEndpoint).build();
+        Request request = new Request.Builder().url(Constants.localBaseServerURL + Constants.helloWorldEndpoint).build();
         client.newCall(request).enqueue(new Callback() {
             @Override
             public void onFailure(@NonNull Call call, @NonNull IOException e) {
