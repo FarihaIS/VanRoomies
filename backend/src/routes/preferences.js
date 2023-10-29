@@ -14,7 +14,7 @@ const { generateRecommendations } = require('../utils/utils');
  *
  * Route: GET /api/users/:userId/preferences where userId is the ID of user
  */
-router.get('/:userId/preferences', authenticateJWT, async (req, res, next) => {
+router.get('/:userId/preferences', async (req, res, next) => {
     try {
         const preferences = await Preferences.findOne({ userId: req.params.userId });
         if (preferences) {
@@ -36,7 +36,7 @@ router.get('/:userId/preferences', authenticateJWT, async (req, res, next) => {
  *
  * Body: {userId: ObjectId, minPrice: Number, maxPrice: Number ....}
  */
-router.post('/:userId/preferences', authenticateJWT, async (req, res, next) => {
+router.post('/:userId/preferences', async (req, res, next) => {
     const preferenceData = { userId: new mongoose.Types.ObjectId(req.params.userId.trim()), ...req.body };
     const preferences = new Preferences(preferenceData);
     try {
@@ -56,7 +56,7 @@ router.post('/:userId/preferences', authenticateJWT, async (req, res, next) => {
  *
  * Body: {title: String <new_title>, rentalPrice: Number<new_price> ....}
  */
-router.put('/:userId/preferences', authenticateJWT, async (req, res, next) => {
+router.put('/:userId/preferences', async (req, res, next) => {
     try {
         const userId = new mongoose.Types.ObjectId(req.params.userId);
         const updatedPreferences = await Preferences.findOneAndUpdate({ userId: userId }, req.body, { new: true });
@@ -79,7 +79,7 @@ router.put('/:userId/preferences', authenticateJWT, async (req, res, next) => {
  *
  * Body: {....filters???}
  */
-router.get('/:userId/recommendations/users', authenticateJWT, async (req, res, next) => {
+router.get('/:userId/recommendations/users', async (req, res, next) => {
     try {
         const userPreferences = await Preferences.findOne({ userId: req.params.userId }).lean();
         if (!userPreferences) {
@@ -147,7 +147,7 @@ router.put('/:userId/recommendations/users', async (req, res, next) => {
  *
  * Body: {....filters???}
  */
-router.get('/:userId/recommendations/listings', authenticateJWT, async (req, res, next) => {
+router.get('/:userId/recommendations/listings', async (req, res, next) => {
     try {
         const userPreferences = await Preferences.findOne({ userId: req.params.userId }).lean();
         if (!userPreferences) {

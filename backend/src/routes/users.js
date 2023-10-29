@@ -70,7 +70,7 @@ router.post('/login', validateGoogleIdToken, async (req, res, next) => {
  * Route: GET /api/users/:userId
  * Content-Type: application/json
  */
-router.get('/:userId', authenticateJWT, async (req, res, next) => {
+router.get('/:userId', async (req, res, next) => {
     try {
         const user = await User.findById(req.params.userId);
         if (user) {
@@ -95,7 +95,7 @@ router.get('/:userId', authenticateJWT, async (req, res, next) => {
  *     "email": "testing@github.com"
  * 		...
  */
-router.put('/:userId', authenticateJWT, async (req, res, next) => {
+router.put('/:userId', async (req, res, next) => {
     try {
         const updatedUser = await User.findByIdAndUpdate(req.params.userId, req.body, { new: true });
         if (updatedUser) {
@@ -113,7 +113,7 @@ router.put('/:userId', authenticateJWT, async (req, res, next) => {
  * Content-Type: application/json
  * Route: DELETE /api/users/:userId
  */
-router.delete('/:userId', authenticateJWT, async (req, res, next) => {
+router.delete('/:userId', async (req, res, next) => {
     const session = await mongoose.startSession();
 
     try {

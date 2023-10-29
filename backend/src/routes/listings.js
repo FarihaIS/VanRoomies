@@ -8,7 +8,7 @@ const router = express.Router();
  *
  * Route: GET /api/listings/:listingId where listingId is the ID of the listing in the database
  */
-router.get('/:listingId', authenticateJWT, async (req, res, next) => {
+router.get('/:listingId', async (req, res, next) => {
     try {
         const listing = await Listing.findById(req.params.listingId);
         if (listing) {
@@ -27,7 +27,7 @@ router.get('/:listingId', authenticateJWT, async (req, res, next) => {
  *
  * Route: GET /api/listings/user/:userId where userId is the ID of the user
  */
-router.get('/user/:userId', authenticateJWT, async (req, res, next) => {
+router.get('/user/:userId', async (req, res, next) => {
     try {
         let listings = await Listing.find({ userId: req.params.userId });
         if (listings) {
@@ -49,7 +49,7 @@ router.get('/user/:userId', authenticateJWT, async (req, res, next) => {
  *
  * Body: {listerID: String, title: String .... images: [String]}
  */
-router.post('/', authenticateJWT, async (req, res, next) => {
+router.post('/', async (req, res, next) => {
     const listing = new Listing(req.body);
     try {
         await listing.save();
@@ -69,7 +69,7 @@ router.post('/', authenticateJWT, async (req, res, next) => {
  *
  * Body: {title: String <new_title>, rentalPrice: Number<new_price> ....}
  */
-router.put('/:listingId', authenticateJWT, async (req, res, next) => {
+router.put('/:listingId', async (req, res, next) => {
     try {
         const updatedListing = await Listing.findByIdAndUpdate(req.params.listingId, req.body, { new: true });
         if (updatedListing) {
@@ -88,7 +88,7 @@ router.put('/:listingId', authenticateJWT, async (req, res, next) => {
  *
  * Route: DELETE /api/listings/:listingId where listingId is the ID of the listing in the database
  */
-router.delete('/:listingId', authenticateJWT, async (req, res, next) => {
+router.delete('/:listingId', async (req, res, next) => {
     try {
         const deletedListing = await Listing.findByIdAndDelete(req.params.listingId);
         if (deletedListing) {
