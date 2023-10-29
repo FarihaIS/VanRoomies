@@ -6,12 +6,12 @@ const fs = require('fs');
 const path = require('path');
 
 // Configure environment variable path
-require('dotenv').config({ path: `./.env.${process.env.NODE_ENV}` })
+require('dotenv').config({ path: `./.env.${process.env.NODE_ENV}` });
 
 const app = express();
 const credentials = {
-	key: fs.readFileSync(path.resolve(process.env.KEY_PATH)),
-	cert: fs.readFileSync(path.resolve(process.env.CERT_PATH)),
+    key: fs.readFileSync(path.resolve(process.env.KEY_PATH)),
+    cert: fs.readFileSync(path.resolve(process.env.CERT_PATH)),
 };
 
 const httpsServer = https.createServer(credentials, app);
