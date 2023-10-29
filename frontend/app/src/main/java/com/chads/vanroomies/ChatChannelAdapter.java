@@ -4,6 +4,7 @@ import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ScrollView;
 import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
@@ -68,6 +69,7 @@ public class ChatChannelAdapter extends RecyclerView.Adapter {
 
         MessageHolder(View itemView, boolean isSent) {
             super(itemView);
+
             if (isSent) {
                 messageText = (TextView) itemView.findViewById(R.id.chat_me_text);
                 dateText = (TextView) itemView.findViewById(R.id.chat_me_date);

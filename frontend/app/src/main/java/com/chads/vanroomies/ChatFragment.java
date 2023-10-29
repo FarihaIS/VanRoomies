@@ -71,10 +71,10 @@ public class ChatFragment extends Fragment {
 
         // TODO: Get chatList from backend
         chatList = new ArrayList<>();
-        chatList.add(new UserProfile("hbdf239487", "Mr.Shrek", 1));
-        chatList.add(new UserProfile("adjh24738", "Mr.Donkey", 2));
-        chatList.add(new UserProfile("poeiruhfdj7475427", "Ms.Fiona", 3));
-        chatList.add(new UserProfile("jjkfgdfjk8767839", "Lord Farquaad", 4));
+        chatList.add(new UserProfile("hbdf239487", "Mr.Shrek", R.drawable.ic_listings));
+        chatList.add(new UserProfile("adjh24738", "Mr.Donkey", R.drawable.ic_profile));
+        chatList.add(new UserProfile("poeiruhfdj7475427", "Ms.Fiona", R.drawable.ic_match));
+        chatList.add(new UserProfile("jjkfgdfjk8767839", "Lord Farquaad", R.drawable.ic_chat));
         Log.d(TAG, "Adding chat lists");
 
         chatListRecycler = (RecyclerView) v.findViewById(R.id.chatlistrecycle);

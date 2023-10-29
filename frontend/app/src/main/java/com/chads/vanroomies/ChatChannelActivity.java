@@ -7,7 +7,6 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.text.TextUtils;
 import android.util.Log;
-import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -17,9 +16,9 @@ import java.util.Calendar;
 
 public class ChatChannelActivity extends AppCompatActivity {
     final static String TAG = "ChatChannelActivity";
-    private RecyclerView chatChannelRecycler;
     private ChatChannelAdapter chatChannelAdapter;
     private ArrayList<ChatMessage> chatMessages;
+    private RecyclerView chatChannelRecycler;
     private ImageView chatChannelImage;
     private TextView chatChannelName;
     private TextView chatChannelText;
@@ -43,10 +42,15 @@ public class ChatChannelActivity extends AppCompatActivity {
         calendar.set(Calendar.MINUTE, 5);
         calendar.set(Calendar.SECOND, 0);
 
+        chatChannelRecycler = (RecyclerView) findViewById(R.id.recycler_chat);
+        chatChannelRecycler.setLayoutManager(new LinearLayoutManager(this));
+
         chatChannelImage = findViewById(R.id.chat_image);
         chatChannelImage.setImageResource(otherUser.getUserProfileImageId());
+
         chatChannelName = findViewById(R.id.chat_name);
         chatChannelName.setText(otherUser.getUserProfileName());
+
         chatChannelText = findViewById(R.id.edit_chat_message);
         chatChannelButton = findViewById(R.id.chat_send_button);
 
@@ -66,25 +70,23 @@ public class ChatChannelActivity extends AppCompatActivity {
         calendar.set(Calendar.MINUTE, 16);
         chatMessages.add(new ChatMessage(myUserId, "Yuhh pull up bro", calendar.getTimeInMillis()));
 
-        chatChannelButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                String message = chatChannelText.getText().toString().trim();
-                if (TextUtils.isEmpty(message)) {//if empty
-                    Toast.makeText(ChatChannelActivity.this, "Please Write Something Here", Toast.LENGTH_LONG).show();
-                } else {
-                    // TODO: PUT request to send message
-                    Log.d(TAG, "Adding new message");
-                    chatMessages.add(new ChatMessage(myUserId, message, System.currentTimeMillis()));
-                    chatChannelAdapter = new ChatChannelAdapter(ChatChannelActivity.this, chatMessages, myUserId);
-                }
-                chatChannelText.setText("");
+        chatChannelButton.setOnClickListener(v -> {
+            String message = chatChannelText.getText().toString().trim();
+            if (TextUtils.isEmpty(message)) {//if empty
+                Toast.makeText(ChatChannelActivity.this, "Please Write Something Here", Toast.LENGTH_LONG).show();
+            } else {
+                // TODO: PUT request to send message
+                Log.d(TAG, "Adding new message");
+                chatMessages.add(new ChatMessage(myUserId, message, System.currentTimeMillis()));
+                chatChannelAdapter = new ChatChannelAdapter(ChatChannelActivity.this, chatMessages, myUserId);
+                chatChannelRecycler.setAdapter(chatChannelAdapter);
+                chatChannelRecycler.scrollToPosition(chatMessages.size() - 1);
             }
+            chatChannelText.setText("");
         });
 
-        chatChannelRecycler = (RecyclerView) findViewById(R.id.recycler_chat);
         chatChannelAdapter = new ChatChannelAdapter(this, chatMessages, myUserId);
-        chatChannelRecycler.setLayoutManager(new LinearLayoutManager(this));
         chatChannelRecycler.setAdapter(chatChannelAdapter);
+        chatChannelRecycler.scrollToPosition(chatMessages.size() - 1);
     }
 }
