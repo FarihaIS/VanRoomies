@@ -88,31 +88,20 @@ public class ListingsFragment extends Fragment {
 
         client = HTTPSClientFactory.createClient(getActivity().getApplication());
         // TODO: Maintain user_id within the app and use it as an input here
+        getRecommendedListings(client, view, getActivity(), "653db98f48a54c10b096a61f");
 
-        getRecommendedListings(client, getActivity(), "653db98f48a54c10b096a61f");
-        recyclerDataArrayList = new ArrayList<>();
+//        // To-Do: Populate with data from the backend (Issue #39). Currently using dummy data
+//        recyclerDataArrayList.add(new ListingsRecyclerData("House", R.drawable.ic_listings_image));
+//        recyclerDataArrayList.add(new ListingsRecyclerData("Casa", R.drawable.ic_listings_image));
+//        recyclerDataArrayList.add(new ListingsRecyclerData("Maison", R.drawable.ic_listings_image));
+//        recyclerDataArrayList.add(new ListingsRecyclerData("Haus", R.drawable.ic_listings_image));
+//        recyclerDataArrayList.add(new ListingsRecyclerData("家", R.drawable.ic_listings_image));
 
-        // To-Do: Populate with data from the backend (Issue #39). Currently using dummy data
-        recyclerDataArrayList.add(new ListingsRecyclerData("House", R.drawable.ic_listings_image));
-        recyclerDataArrayList.add(new ListingsRecyclerData("Casa", R.drawable.ic_listings_image));
-        recyclerDataArrayList.add(new ListingsRecyclerData("Maison", R.drawable.ic_listings_image));
-        recyclerDataArrayList.add(new ListingsRecyclerData("Haus", R.drawable.ic_listings_image));
-        recyclerDataArrayList.add(new ListingsRecyclerData("家", R.drawable.ic_listings_image));
 
-        // added data from arraylist to adapter class.
-        ListingsRecyclerViewAdapter adapter = new ListingsRecyclerViewAdapter(recyclerDataArrayList,view.getContext());
-
-        // setting grid layout manager to implement grid view.
-        // in this method '2' represents number of columns to be displayed in grid view.
-        GridLayoutManager layoutManager = new GridLayoutManager(view.getContext(),num_cols);
-
-        // at last set adapter to recycler view.
-        recyclerView.setLayoutManager(layoutManager);
-        recyclerView.setAdapter(adapter);
         return view;
     }
 
-    public static void getRecommendedListings(OkHttpClient client, Activity act, String user_id){
+    public void getRecommendedListings(OkHttpClient client, View view, Activity act, String user_id){
         Request request = new Request.Builder().url(Constants.BaseServerURL + Constants.listingByUserIdEndpoint + user_id).build();
         client.newCall(request).enqueue(new Callback() {
             @Override
@@ -124,14 +113,26 @@ public class ListingsFragment extends Fragment {
             public void onResponse(@NonNull Call call, @NonNull Response response) {
                 act.runOnUiThread(() -> {
                     try {
+                        recyclerDataArrayList = new ArrayList<>();
                         String responseData = response.body().string();
-
                         List<Map<String, Object>> result = g.fromJson(responseData, List.class);
 
                         for (int index = 0; index < result.size(); index++){
                             Map<String, Object> listing = result.get(index);
                             Log.d(TAG, listing.get("title").toString());
+                            recyclerDataArrayList.add(new ListingsRecyclerData(listing.get("title").toString(), R.drawable.ic_listings_image));
                         }
+
+                        // added data from arraylist to adapter class.
+                        ListingsRecyclerViewAdapter adapter = new ListingsRecyclerViewAdapter(recyclerDataArrayList, view.getContext());
+
+                        // setting grid layout manager to implement grid view.
+                        // in this method '2' represents number of columns to be displayed in grid view.
+                        GridLayoutManager layoutManager = new GridLayoutManager(view.getContext(),num_cols);
+
+                        // at last set adapter to recycler view.
+                        recyclerView.setLayoutManager(layoutManager);
+                        recyclerView.setAdapter(adapter);
                     } catch (IOException e){
                         e.printStackTrace();
                     }
