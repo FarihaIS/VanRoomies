@@ -126,6 +126,7 @@ public class ListingsFragment extends Fragment implements ListingsItemSelectList
                             // Information taken to individual listing
                             String listing_id = listing_obj.getString("_id");
                             HashMap<String, String> additionalInfo = new HashMap<>();
+                            additionalInfo.put("owner_id", listing_obj.getString("userId"));
                             additionalInfo.put("description", listing_obj.getString("description"));
                             additionalInfo.put("housingType", listing_obj.getString("housingType"));
                             additionalInfo.put("listingDate", listing_obj.getString("listingDate"));
@@ -159,6 +160,7 @@ public class ListingsFragment extends Fragment implements ListingsItemSelectList
     public void onItemClicked(ListingsRecyclerData recyclerData) {
         Intent intent = new Intent(getActivity(), ViewListingActivity.class);
         Bundle b = new Bundle();
+        b.putString("listing_id", recyclerData.getListingId());
         b.putString("title", recyclerData.getTitle());
         b.putString("photo_string", recyclerData.getImageString());
         b.putSerializable("info", recyclerData.getAdditionalInfo());
