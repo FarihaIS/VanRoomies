@@ -33,7 +33,7 @@ public class ListingsRecyclerViewAdapter extends RecyclerView.Adapter<ListingsRe
         // Set the data to textview and imageview.
         ListingsRecyclerData recyclerData = listingsDataArrayList.get(position);
         holder.listingTV.setText(recyclerData.getTitle());
-        holder.listingIV.setImageResource(recyclerData.getImgId());
+//        holder.listingIV.setImageResource(recyclerData.getImageString());
     }
 
     @Override

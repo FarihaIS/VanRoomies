@@ -1,11 +1,14 @@
 package com.chads.vanroomies;
 
 import android.app.Activity;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 
+import android.util.Base64;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -15,6 +18,10 @@ import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.google.gson.Gson;
+
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -118,9 +125,11 @@ public class ListingsFragment extends Fragment {
                         List<Map<String, Object>> result = g.fromJson(responseData, List.class);
 
                         for (int index = 0; index < result.size(); index++){
-                            Map<String, Object> listing = result.get(index);
-                            Log.d(TAG, listing.get("title").toString());
-                            recyclerDataArrayList.add(new ListingsRecyclerData(listing.get("title").toString(), R.drawable.ic_listings_image));
+                            Map<String, Object> listing_json = result.get(index);
+                            JSONObject listing_obj = new JSONObject(listing_json);
+                            String listing_title = listing_obj.getString("title");
+                            String listing_photo = listing_obj.getJSONArray("images").get(0).toString();
+                            recyclerDataArrayList.add(new ListingsRecyclerData(listing_title, listing_photo));
                         }
 
                         // added data from arraylist to adapter class.
@@ -135,6 +144,8 @@ public class ListingsFragment extends Fragment {
                         recyclerView.setAdapter(adapter);
                     } catch (IOException e){
                         e.printStackTrace();
+                    } catch (JSONException e) {
+                        throw new RuntimeException(e);
                     }
                 });
             }

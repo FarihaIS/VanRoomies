@@ -2,7 +2,7 @@ package com.chads.vanroomies;
 // Reference: https://www.geeksforgeeks.org/recyclerview-using-gridlayoutmanager-in-android-with-example/
 public class ListingsRecyclerData {
     private String title;
-    private int imgId;
+    private String imageString;
 
     public String getTitle() {
         return title;
@@ -12,17 +12,17 @@ public class ListingsRecyclerData {
         this.title = title;
     }
 
-    public int getImgId() {
-        return imgId;
+    public String getImageString() {
+        return imageString;
     }
 
-    public void setImgId(int imgId) {
-        this.imgId = imgId;
+    public void setImageString(int imgId) {
+        this.imageString = imageString;
     }
 
-    public ListingsRecyclerData(String title, int imgId) {
+    public ListingsRecyclerData(String title, String imageString) {
         this.title = title;
-        this.imgId = imgId;
+        this.imageString = imageString;
     }
 
 }
