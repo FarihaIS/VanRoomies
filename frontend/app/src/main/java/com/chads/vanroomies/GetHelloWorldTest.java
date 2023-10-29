@@ -16,7 +16,7 @@ import okhttp3.Response;
 public class GetHelloWorldTest {
     final static String TAG = "GetHelloWorldTest";
     public static String testGetHelloWorld(OkHttpClient client, Activity act){
-        Request request = new Request.Builder().url(Constants.localBaseServerURL + Constants.helloWorldEndpoint).build();
+        Request request = new Request.Builder().url(Constants.BaseServerURL + Constants.helloWorldEndpoint).build();
         client.newCall(request).enqueue(new Callback() {
             @Override
             public void onFailure(@NonNull Call call, @NonNull IOException e) {

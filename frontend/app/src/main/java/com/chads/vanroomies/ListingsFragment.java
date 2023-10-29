@@ -1,18 +1,31 @@
 package com.chads.vanroomies;
 
+import android.app.Activity;
 import android.os.Bundle;
 
+import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-import android.os.Bundle;
-import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+
+import com.google.gson.Gson;
+
+import java.io.IOException;
 import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+
+import okhttp3.Call;
+import okhttp3.Callback;
+import okhttp3.OkHttpClient;
+import okhttp3.Request;
+import okhttp3.Response;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -21,6 +34,8 @@ import java.util.ArrayList;
  */
 public class ListingsFragment extends Fragment {
     final static String TAG = "ListingsFragment";
+    OkHttpClient client;
+    final static Gson g = new Gson();
     final static int num_cols = 2;
     private RecyclerView recyclerView;
     private ArrayList<ListingsRecyclerData> recyclerDataArrayList;
@@ -69,8 +84,12 @@ public class ListingsFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_listings, container, false);
-        recyclerView = view.findViewById(R.id.idCourseRV);
+        recyclerView = view.findViewById(R.id.idListingsRV);
 
+        client = HTTPSClientFactory.createClient(getActivity().getApplication());
+        // TODO: Maintain user_id within the app and use it as an input here
+
+        getRecommendedListings(client, getActivity(), "653db98f48a54c10b096a61f");
         recyclerDataArrayList = new ArrayList<>();
 
         // To-Do: Populate with data from the backend (Issue #39). Currently using dummy data
@@ -91,5 +110,33 @@ public class ListingsFragment extends Fragment {
         recyclerView.setLayoutManager(layoutManager);
         recyclerView.setAdapter(adapter);
         return view;
+    }
+
+    public static void getRecommendedListings(OkHttpClient client, Activity act, String user_id){
+        Request request = new Request.Builder().url(Constants.BaseServerURL + Constants.listingByUserIdEndpoint + user_id).build();
+        client.newCall(request).enqueue(new Callback() {
+            @Override
+            public void onFailure(@NonNull Call call, @NonNull IOException e) {
+                Log.d(TAG, e.getMessage());
+            }
+
+            @Override
+            public void onResponse(@NonNull Call call, @NonNull Response response) {
+                act.runOnUiThread(() -> {
+                    try {
+                        String responseData = response.body().string();
+
+                        List<Map<String, Object>> result = g.fromJson(responseData, List.class);
+
+                        for (int index = 0; index < result.size(); index++){
+                            Map<String, Object> listing = result.get(index);
+                            Log.d(TAG, listing.get("title").toString());
+                        }
+                    } catch (IOException e){
+                        e.printStackTrace();
+                    }
+                });
+            }
+        });
     }
 }
