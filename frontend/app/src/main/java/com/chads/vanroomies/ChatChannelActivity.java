@@ -1,5 +1,6 @@
 package com.chads.vanroomies;
 
+// Reference: https://sendbird.com/developer/tutorials/android-chat-tutorial-building-a-messaging-ui
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;

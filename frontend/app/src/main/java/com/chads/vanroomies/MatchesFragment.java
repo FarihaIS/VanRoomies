@@ -1,5 +1,6 @@
 package com.chads.vanroomies;
 
+// Reference: https://www.geeksforgeeks.org/tinder-swipe-view-with-example-in-android/
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;

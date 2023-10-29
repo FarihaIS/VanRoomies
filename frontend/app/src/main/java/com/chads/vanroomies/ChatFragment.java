@@ -1,5 +1,6 @@
 package com.chads.vanroomies;
 
+// Reference: https://www.geeksforgeeks.org/how-to-implement-chat-functionality-in-social-media-android-app/
 import android.os.Bundle;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.RecyclerView;
