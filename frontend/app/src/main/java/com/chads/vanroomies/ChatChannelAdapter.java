@@ -10,28 +10,29 @@ import androidx.recyclerview.widget.RecyclerView;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.Locale;
 
 public class ChatChannelAdapter extends RecyclerView.Adapter {
     private static final int VIEW_TYPE_MESSAGE_SENT = 1;
     private static final int VIEW_TYPE_MESSAGE_RECEIVED = 0;
     private Context chatChannelContext;
-    final private ArrayList<ChatMessage> chatChannelList;
+    final private ArrayList<ChatMessage> chatChannelMessages;
     final private String chatChannelUserId;
 
     public ChatChannelAdapter(Context context, ArrayList<ChatMessage> messageList, String userId) {
         chatChannelContext = context;
-        chatChannelList = messageList;
+        chatChannelMessages = messageList;
         chatChannelUserId = userId;
     }
 
     @Override
     public int getItemCount() {
-        return chatChannelList.size();
+        return chatChannelMessages.size();
     }
 
     @Override
     public int getItemViewType(int position) {
-        ChatMessage message = (ChatMessage) chatChannelList.get(position);
+        ChatMessage message = (ChatMessage) chatChannelMessages.get(position);
         if (message.getChatUser().equals(chatChannelUserId)) {
             return VIEW_TYPE_MESSAGE_SENT;
         }
@@ -58,7 +59,7 @@ public class ChatChannelAdapter extends RecyclerView.Adapter {
 
     @Override
     public void onBindViewHolder(@NonNull RecyclerView.ViewHolder holder, int position) {
-        ChatMessage message = (ChatMessage) chatChannelList.get(position);
+        ChatMessage message = (ChatMessage) chatChannelMessages.get(position);
         ((MessageHolder) holder).bind(message);
     }
 
@@ -80,8 +81,8 @@ public class ChatChannelAdapter extends RecyclerView.Adapter {
         }
 
         void bind(ChatMessage message) {
-            SimpleDateFormat dateFormatter = new SimpleDateFormat("MMMM d");
-            SimpleDateFormat timeFormatter = new SimpleDateFormat("HH:mm");
+            SimpleDateFormat dateFormatter = new SimpleDateFormat("MMMM d", Locale.getDefault());
+            SimpleDateFormat timeFormatter = new SimpleDateFormat("HH:mm", Locale.getDefault());
             Date timestamp = new Date(message.getChatTimestamp());
             messageText.setText(message.getChatText());
             dateText.setText(dateFormatter.format(timestamp));

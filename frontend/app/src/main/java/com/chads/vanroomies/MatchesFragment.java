@@ -5,7 +5,6 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-
 import androidx.fragment.app.Fragment;
 import java.util.ArrayList;
 import com.daprlabs.cardstack.SwipeDeck;
@@ -17,8 +16,8 @@ import com.daprlabs.cardstack.SwipeDeck;
  */
 public class MatchesFragment extends Fragment {
     final static String TAG = "MatchesFragment";
-    private ArrayList<UserProfile> matchModalArrayList;
-    private MatchDeckAdapter adapter;
+    private ArrayList<UserProfile> userMatches;
+    private MatchDeckAdapter matchDeckAdapter;
     private SwipeDeck cardStack;
 
     // TODO: Rename parameter arguments, choose names that match
@@ -67,17 +66,17 @@ public class MatchesFragment extends Fragment {
 
         View v = inflater.inflate(R.layout.fragment_matches, container, false);
 
-        matchModalArrayList = new ArrayList<>();
+        userMatches = new ArrayList<>();
         cardStack = (SwipeDeck) v.findViewById(R.id.matches_swipe_deck);
 
         // TODO: do GET request to show updated list of matched users
-        matchModalArrayList.add(new UserProfile("abc00", "Denis", 45, "Late-night owl, messy, smokes regularly", R.drawable.ic_listings));
-        matchModalArrayList.add(new UserProfile("def11", "Fariha", 23, "Early riser, clean, 2-bedroom house", R.drawable.ic_profile));
-        matchModalArrayList.add(new UserProfile("ghi22", "Matt", 30, "Early-riser, drinks regularly", R.drawable.ic_match));
-        matchModalArrayList.add(new UserProfile("jkl33", "Max", 83, "Early-riser, clean, no smoking, no drinking", R.drawable.ic_chat));
+        userMatches.add(new UserProfile("abc00", "Denis", 45, "Late-night owl, messy, smokes regularly", R.drawable.ic_listings));
+        userMatches.add(new UserProfile("def11", "Fariha", 23, "Early riser, clean, 2-bedroom house", R.drawable.ic_profile));
+        userMatches.add(new UserProfile("ghi22", "Matt", 30, "Early-riser, drinks regularly", R.drawable.ic_match));
+        userMatches.add(new UserProfile("jkl33", "Max", 83, "Early-riser, clean, no smoking, no drinking", R.drawable.ic_chat));
 
-        adapter = new MatchDeckAdapter(matchModalArrayList, v.getContext());
-        cardStack.setAdapter(adapter);
+        matchDeckAdapter = new MatchDeckAdapter(userMatches, v.getContext());
+        cardStack.setAdapter(matchDeckAdapter);
 
         cardStack.setEventCallback(new SwipeDeck.SwipeEventCallback() {
             @Override

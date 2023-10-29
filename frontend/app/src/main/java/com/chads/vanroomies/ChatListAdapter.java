@@ -36,21 +36,18 @@ public class ChatListAdapter extends RecyclerView.Adapter {
 
     @Override
     public void onBindViewHolder(@NonNull RecyclerView.ViewHolder holder, final int position) {
-        String otherUserId = chatListUsers.get(position).getUserProfileId();
-        String otherUserName = chatListUsers.get(position).getUserProfileName();
-        int otherUserImage = chatListUsers.get(position).getUserProfileImageId();
+        UserProfile otherUser = chatListUsers.get(position);
+        String otherUserName = otherUser.getUserProfileName();
+        int otherUserImage = otherUser.getUserProfileImageId();
 
         ((ChatListHolder) holder).name.setText(otherUserName);
         ((ChatListHolder) holder).image.setImageResource(otherUserImage);
 
-        holder.itemView.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent chatChannelIntent = new Intent(chatListContext, ChatChannelActivity.class);
-                chatChannelIntent.putExtra("myUserId", chatListUserId);
-                chatChannelIntent.putExtra("otherUserId", otherUserId);
-                chatListContext.startActivity(chatChannelIntent);
-            }
+        holder.itemView.setOnClickListener(v -> {
+            Intent chatChannelIntent = new Intent(chatListContext, ChatChannelActivity.class);
+            chatChannelIntent.putExtra("myUserId", chatListUserId);
+            chatChannelIntent.putExtra("otherUser", otherUser);
+            chatListContext.startActivity(chatChannelIntent);
         });
     }
 

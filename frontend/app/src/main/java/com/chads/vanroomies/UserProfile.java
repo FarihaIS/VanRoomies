@@ -1,6 +1,8 @@
 package com.chads.vanroomies;
 
-public class UserProfile {
+import java.io.Serializable;
+
+public class UserProfile implements Serializable {
     private String userProfileId;
     private String userProfileName;
     private int userProfileAge;

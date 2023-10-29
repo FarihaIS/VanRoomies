@@ -3,10 +3,10 @@ package com.chads.vanroomies;
 import android.os.Bundle;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-
 import java.util.ArrayList;
 
 /**
@@ -75,6 +75,7 @@ public class ChatFragment extends Fragment {
         chatList.add(new UserProfile("adjh24738", "Mr.Donkey", 2));
         chatList.add(new UserProfile("poeiruhfdj7475427", "Ms.Fiona", 3));
         chatList.add(new UserProfile("jjkfgdfjk8767839", "Lord Farquaad", 4));
+        Log.d(TAG, "Adding chat lists");
 
         chatListRecycler = (RecyclerView) v.findViewById(R.id.chatlistrecycle);
         chatListAdapter = new ChatListAdapter(v.getContext(), chatList, userId);
