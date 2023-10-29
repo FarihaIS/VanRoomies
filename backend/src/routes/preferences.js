@@ -81,19 +81,14 @@ router.get('/:userId/recommendations/users', async (req, res, next) => {
         const tentativeMatchPreferences = await Preferences.find({ userId: { $ne: req.params.userId } }).lean();
 
         let scores = generateUserScores(userPreferences, tentativeMatchPreferences);
-        console.log(scores);
-        let recommendations = generateRecommendations(scores);
-        console.log(recommendations);
 
-        // Not sure this is working well to sort users....
-        const matches = await User.find({ _id: { $in: recommendations } }).lean();
-        const sortedMatches = matches.sort((a, b) => {
-            return recommendations.indexOf(b._id) - recommendations.indexOf(a._id);
-        });
-
-        console.log(sortedMatches);
-
-        res.send('I will give you recommendations for best roommates');
+        // TODO: This needs serious optimization for further milestones - too transactionally-heavy
+        let rankedUsers = [];
+        for (const id of generateRecommendations(scores)) {
+            const currUser = await User.findById(id).lean();
+            rankedUsers.push(currUser);
+        }
+        res.status(200).json(rankedUsers);
     } catch (error) {
         res.status(400).json({ error: error.message });
         next(error);
@@ -110,7 +105,12 @@ router.get('/:userId/recommendations/users', async (req, res, next) => {
  */
 router.get('/:userId/recommendations/listings', async (req, res, next) => {
     // TODO: Implement recommendation algorithm here
-    res.send('I will give you recommendations for best fit housing options');
+    try {
+        res.send('I will give you recommendations for best fit housing options');
+    } catch (error) {
+        res.status(400).json({ error: error.message });
+        next(error);
+    }
 });
 
 module.exports = router;
