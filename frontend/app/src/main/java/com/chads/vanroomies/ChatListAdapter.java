@@ -1,88 +1,68 @@
 package com.chads.vanroomies;
 
 import android.content.Context;
+import android.content.Intent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.TextView;
+import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Date;
 
 public class ChatListAdapter extends RecyclerView.Adapter {
-    private static final int VIEW_TYPE_MESSAGE_SENT = 1;
-    private static final int VIEW_TYPE_MESSAGE_RECEIVED = 0;
-    private Context mContext;
-    final private ArrayList<ChatMessage> mMessageList;
-    final private String mUserId;
-    public ChatListAdapter(Context context, ArrayList<ChatMessage> messageList, String userId) {
-        mContext = context;
-        mMessageList = messageList;
-        mUserId = userId;
+
+    private Context chatListContext;
+    private ArrayList<UserProfile> chatListUsers;
+    private String chatListUserId;
+
+    public ChatListAdapter(Context context, ArrayList<UserProfile> users, String userId) {
+        this.chatListContext = context;
+        this.chatListUsers = users;
+        this.chatListUserId = userId;
     }
 
     @Override
     public int getItemCount() {
-        return mMessageList.size();
+        return chatListUsers.size();
     }
 
     @Override
-    public int getItemViewType(int position) {
-        ChatMessage message = (ChatMessage) mMessageList.get(position);
-        if (message.getChatUser().equals(mUserId)) {
-            return VIEW_TYPE_MESSAGE_SENT;
-        }
-        else {
-            return VIEW_TYPE_MESSAGE_RECEIVED;
-        }
+    public ChatListHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+        View view = LayoutInflater.from(chatListContext).inflate(R.layout.row_chat, parent, false);
+        return new ChatListHolder(view);
     }
-    // Inflates the appropriate layout according to the ViewType.
+
     @Override
-    public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        View view;
+    public void onBindViewHolder(@NonNull RecyclerView.ViewHolder holder, final int position) {
+        String otherUserId = chatListUsers.get(position).getUserProfileId();
+        String otherUserName = chatListUsers.get(position).getUserProfileName();
+        int otherUserImage = chatListUsers.get(position).getUserProfileImageId();
 
-        if (viewType == VIEW_TYPE_MESSAGE_SENT) {
-            view = LayoutInflater.from(parent.getContext())
-                    .inflate(R.layout.item_chat_me, parent, false);
-            return new MessageHolder(view, true);
-        }
-        else {
-            view = LayoutInflater.from(parent.getContext())
-                    .inflate(R.layout.item_chat_other, parent, false);
-            return new MessageHolder(view, false);
-        }
+        ((ChatListHolder) holder).name.setText(otherUserName);
+        ((ChatListHolder) holder).image.setImageResource(otherUserImage);
+
+        holder.itemView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent chatChannelIntent = new Intent(chatListContext, ChatChannelActivity.class);
+                chatChannelIntent.putExtra("myUserId", chatListUserId);
+                chatChannelIntent.putExtra("otherUserId", otherUserId);
+                chatListContext.startActivity(chatChannelIntent);
+            }
+        });
     }
 
-    // Passes the message object to a ViewHolder so that the contents can be bound to UI.
-    @Override
-    public void onBindViewHolder(RecyclerView.ViewHolder holder, int position) {
-        ChatMessage message = (ChatMessage) mMessageList.get(position);
-        ((MessageHolder) holder).bind(message);
-    }
+    public static class ChatListHolder extends RecyclerView.ViewHolder {
+        ImageView image;
+        TextView name;
 
-    private static class MessageHolder extends RecyclerView.ViewHolder {
-        TextView messageText, dateText, timeText;
-        MessageHolder(View itemView, boolean isSent) {
+        ChatListHolder(@NonNull View itemView) {
             super(itemView);
-            if (isSent) {
-                messageText = (TextView) itemView.findViewById(R.id.chat_me_text);
-                dateText = (TextView) itemView.findViewById(R.id.chat_me_date);
-                timeText = (TextView) itemView.findViewById(R.id.chat_me_timestamp);
-            }
-            else {
-                messageText = (TextView) itemView.findViewById(R.id.chat_other_text);
-                dateText = (TextView) itemView.findViewById(R.id.chat_other_date);
-                timeText = (TextView) itemView.findViewById(R.id.chat_other_timestamp);
-            }
-        }
-        void bind(ChatMessage message) {
-            SimpleDateFormat dateFormatter = new SimpleDateFormat("MMMM d");
-            SimpleDateFormat timeFormatter = new SimpleDateFormat("HH:mm");
-            Date timestamp = new Date(message.getChatTimestamp());
-            messageText.setText(message.getChatText());
-            dateText.setText(dateFormatter.format(timestamp));
-            timeText.setText(timeFormatter.format(timestamp));
+            image = itemView.findViewById(R.id.chat_row_image);
+            name = itemView.findViewById(R.id.chat_row_name);
         }
     }
 }
+

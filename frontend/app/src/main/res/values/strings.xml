@@ -23,6 +23,10 @@
     <string name="chat_text">This is a message</string>
     <string name="chat_timestamp">10:00</string>
 
+    <!-- Chat Row -->
+    <string name="chat_row_name_text">Their Name</string>
+    <string name="chat_row_block_text">Block User</string>
+
     <string name="placeholder_listings">Listings Fragment</string>
     <string name="placeholder_profile">Profile Fragment</string>
     <string name="placeholder_matches">Matches Fragment</string>

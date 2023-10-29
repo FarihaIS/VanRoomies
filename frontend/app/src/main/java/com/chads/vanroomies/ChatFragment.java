@@ -1,15 +1,11 @@
 package com.chads.vanroomies;
 
-import android.content.Intent;
 import android.os.Bundle;
 import androidx.fragment.app.Fragment;
-<<<<<<< HEAD
-=======
-import android.util.Log;
->>>>>>> 6d5744e (Basic chat channel working; need to configure ability to edit and send messages; working on list of all chats in ChatFragment)
+import androidx.recyclerview.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
-import android.view.ViewGroup;
+import java.util.ArrayList;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -18,6 +14,9 @@ import android.view.ViewGroup;
  */
 public class ChatFragment extends Fragment {
     final static String TAG = "ChatFragment";
+    private RecyclerView chatListRecycler;
+    private ChatListAdapter chatListAdapter;
+    private ArrayList<UserProfile> chatList;
     private String userId;
 
     // TODO: Rename parameter arguments, choose names that match
@@ -63,17 +62,22 @@ public class ChatFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        // Inflate the layout for this fragment
         View v = inflater.inflate(R.layout.fragment_chat, container, false);
-        Log.d(TAG, "Line 65");
 
         // TODO: Get userId from backend
         userId = "bvshdjgf839w479q";
 
-        Intent chatIntent = new Intent(getActivity(), ChatChannelActivity.class);
-        chatIntent.putExtra("userId", userId);
-        Log.d(TAG, "Line 71");
-        startActivity(chatIntent);
+        // TODO: Get chatList from backend
+        chatList = new ArrayList<>();
+        chatList.add(new UserProfile("hbdf239487", "Mr.Shrek", 1));
+        chatList.add(new UserProfile("adjh24738", "Mr.Donkey", 2));
+        chatList.add(new UserProfile("poeiruhfdj7475427", "Ms.Fiona", 3));
+        chatList.add(new UserProfile("jjkfgdfjk8767839", "Lord Farquaad", 4));
+
+        chatListRecycler = (RecyclerView) v.findViewById(R.id.chatlistrecycle);
+        chatListAdapter = new ChatListAdapter(v.getContext(), chatList, userId);
+        chatListRecycler.setAdapter((chatListAdapter));
+
         return v;
     }
 }

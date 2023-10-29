@@ -54,4 +54,5 @@ dependencies {
     implementation("com.google.code.gson:gson:2.8.9")
     implementation ("com.google.android.material:material:1.9.0")
     implementation ("com.daprlabs.aaron:cardstack:0.3.1-beta0")
+    implementation ("de.hdodenhof:circleimageview:2.2.0")
 }
