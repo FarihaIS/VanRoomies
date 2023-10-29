@@ -1,9 +1,12 @@
+const { NONSHAREABLE, TWOBEDROOM, POSINF, NEGINF } = require('./constants');
+
 /**
  * Rank a set of users based on their corresponding aggregate score.
  *
  * @param {Array<Array<Object>>} userScores - [userId, score] pair
+ * @returns {Array<ObjectID>} - user IDs ranked based on their score
  */
-const generateRecommendations = (userScores) => {
+const generateUserRecommendations = (userScores) => {
     const userRanking = userScores.sort((user1, user2) => user2[1] - user1[1]);
     return userRanking.map((user) => user[0]);
 };
@@ -13,6 +16,7 @@ const generateRecommendations = (userScores) => {
  *
  * @param {User Object} currentUserPreferences - preferences of current user seeking roommates
  * @param {User Object} potentialMatchesPreferences - preferences of potential roommates
+ * @returns {Array<Object>} - list of user id and score pairs
  */
 const generateUserScores = (currentUserPreferences, potentialMatchesPreferences) => {
     let userScores = [];
@@ -71,7 +75,7 @@ const petFriendlinessScore = (currentUser, possibleMatch) => {
 };
 
 /**
- * This helper will aggregrate whether the users based on the housing type they seek:
+ * This helper will aggregrate scores based on the type of housing the user prefers:
  * ['studio', '1-bedroom', '2-bedroom', 'other']
  *
  * @param {User Object} currentUser - preferences of current user seeking roommates
@@ -79,10 +83,9 @@ const petFriendlinessScore = (currentUser, possibleMatch) => {
  * @returns {Number} - matching score
  */
 const housingTypeScore = (currentUser, possibleMatch) => {
-    const nonShareable = ['studio', '1-bedroom'];
-    if (currentUser.housingType in nonShareable || possibleMatch.housingType in nonShareable) {
+    if (currentUser.housingType in NONSHAREABLE || possibleMatch.housingType in NONSHAREABLE) {
         return 0;
-    } else if (currentUser.housingType === '2-bedroom' && possibleMatch.housingType === '2-bedroom') {
+    } else if (currentUser.housingType === TWOBEDROOM && possibleMatch.housingType === TWOBEDROOM) {
         return 1;
     } else {
         return 0.5;
@@ -90,7 +93,7 @@ const housingTypeScore = (currentUser, possibleMatch) => {
 };
 
 /**
- * This helper scores users based on how much overlap there is in their desired roommate count
+ * This helper scores users based on how close the desired roommate count is
  *
  * @param {User Object} currentUser - preferences of current user seeking roommates
  * @param {User Object} possibleMatch - preferences of potential roommates
@@ -108,7 +111,7 @@ const roommateCountScore = (currentUser, possibleMatch, minMaxRanges) => {
 };
 
 /**
- * This helper scores users based on how much overlap there is in their desired lease lengths
+ * This helper scores users based on how similar the desired lease lengths are
  *
  * @param {User Object} currentUser - preferences of current user seeking roommates
  * @param {User Object} possibleMatch - preferences of potential roommates
@@ -126,7 +129,9 @@ const leaseLengthScore = (currentUser, possibleMatch, minMaxRanges) => {
 };
 
 /**
- * This helper scores users based on how much overlap there is in their price ranges
+ * This helper scores users based on how much overlap there is in their price ranges.
+ * It aims to rewards better for higher overlaps as it means users are more likely
+ * to reach on a roommate agreement based on this.
  *
  * @param {User Object} currentUser - preferences of current user seeking roommates
  * @param {User Object} possibleMatch - preferences of potential roommates
@@ -158,12 +163,12 @@ const priceRangeScore = (currentUser, possibleMatch, minMaxRanges) => {
  * @param {User Object} potentialMatchesPreferences - preferences of potential roommates
  */
 const calculateMinMaxRanges = (currentUser, potentialMatches) => {
-    let minRoomMateCountRange = Number.POSITIVE_INFINITY,
-        maxRoomMateCountRange = Number.NEGATIVE_INFINITY;
-    let minLeaseLengthRange = Number.POSITIVE_INFINITY,
-        maxLeaseLengthRange = Number.NEGATIVE_INFINITY;
-    let minPriceOverlapRange = Number.POSITIVE_INFINITY,
-        maxPriceOverlapRange = Number.NEGATIVE_INFINITY;
+    let minRoomMateCountRange = POSINF,
+        maxRoomMateCountRange = NEGINF;
+    let minLeaseLengthRange = POSINF,
+        maxLeaseLengthRange = NEGINF;
+    let minPriceOverlapRange = POSINF,
+        maxPriceOverlapRange = NEGINF;
 
     potentialMatches.forEach((potentialMatch) => {
         // Roommate Count Range
@@ -206,4 +211,4 @@ const calculateMinMaxRanges = (currentUser, potentialMatches) => {
     };
 };
 
-module.exports = { generateUserScores, generateRecommendations };
+module.exports = { generateUserRecommendations, generateUserScores };

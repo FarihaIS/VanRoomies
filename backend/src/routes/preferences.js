@@ -2,8 +2,10 @@ const express = require('express');
 var mongoose = require('mongoose');
 const Preferences = require('../models/preferencesModel');
 const User = require('../models/userModel');
+const Listing = require('../models/listingModel');
 const router = express.Router();
-const { generateUserScores, generateRecommendations } = require('../utils/userRecommendations');
+const { generateUserRecommendations, generateUserScores } = require('../utils/userRecommendations');
+const { generateListingRecommendations, generateListingScores } = require('../utils/listingRecommendations');
 
 /**
  * Get Preferences Object from Preferences Collection by Id of respective user
@@ -78,17 +80,24 @@ router.put('/:userId/preferences', async (req, res, next) => {
 router.get('/:userId/recommendations/users', async (req, res, next) => {
     try {
         const userPreferences = await Preferences.findOne({ userId: req.params.userId }).lean();
-        const tentativeMatchPreferences = await Preferences.find({ userId: { $ne: req.params.userId } }).lean();
-
-        let scores = generateUserScores(userPreferences, tentativeMatchPreferences);
-
-        // TODO: This needs serious optimization for further milestones - too transactionally-heavy
-        let rankedUsers = [];
-        for (const id of generateRecommendations(scores)) {
-            const currUser = await User.findById(id).lean();
-            rankedUsers.push(currUser);
+        if (!userPreferences) {
+            res.status(404).json({ error: 'No preferences found for given user!' });
         }
-        res.status(200).json(rankedUsers);
+
+        const tentativeMatchPreferences = await Preferences.find({ userId: { $ne: req.params.userId } }).lean();
+        if (tentativeMatchPreferences) {
+            let scores = generateUserScores(userPreferences, tentativeMatchPreferences);
+
+            // TODO: This REQUIRES optimization for further milestones - too transactionally-heavy
+            let rankedUsers = [];
+            for (const id of generateUserRecommendations(scores)) {
+                const currUser = await User.findById(id).lean();
+                rankedUsers.push(currUser);
+            }
+            res.status(200).json(rankedUsers);
+        } else {
+            res.status(404).json({ error: 'No matching users available!' });
+        }
     } catch (error) {
         res.status(400).json({ error: error.message });
         next(error);
@@ -104,9 +113,26 @@ router.get('/:userId/recommendations/users', async (req, res, next) => {
  * Body: {....filters???}
  */
 router.get('/:userId/recommendations/listings', async (req, res, next) => {
-    // TODO: Implement recommendation algorithm here
     try {
-        res.send('I will give you recommendations for best fit housing options');
+        const userPreferences = await Preferences.findOne({ userId: req.params.userId }).lean();
+        if (!userPreferences) {
+            res.status(404).json({ error: 'No preferences found for given user!' });
+        }
+
+        const tentativeMatchListings = await Listing.find({ userId: { $ne: req.params.userId } }).lean();
+        if (tentativeMatchListings) {
+            let scores = generateListingScores(userPreferences, tentativeMatchListings);
+
+            // TODO: This REQUIRES optimization for further milestones - too transactionally-heavy
+            let rankedListings = [];
+            for (const id of generateListingRecommendations(scores)) {
+                const currListing = await Listing.findById(id).lean();
+                rankedListings.push(currListing);
+            }
+            res.status(200).json(rankedListings);
+        } else {
+            res.status(404).json({ error: 'No matching listings available!' });
+        }
     } catch (error) {
         res.status(400).json({ error: error.message });
         next(error);
