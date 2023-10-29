@@ -1,7 +1,12 @@
 package com.chads.vanroomies;
 
+import android.content.Intent;
 import android.os.Bundle;
 import androidx.fragment.app.Fragment;
+<<<<<<< HEAD
+=======
+import android.util.Log;
+>>>>>>> 6d5744e (Basic chat channel working; need to configure ability to edit and send messages; working on list of all chats in ChatFragment)
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -13,6 +18,7 @@ import android.view.ViewGroup;
  */
 public class ChatFragment extends Fragment {
     final static String TAG = "ChatFragment";
+    private String userId;
 
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
@@ -58,6 +64,16 @@ public class ChatFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_chat, container, false);
+        View v = inflater.inflate(R.layout.fragment_chat, container, false);
+        Log.d(TAG, "Line 65");
+
+        // TODO: Get userId from backend
+        userId = "bvshdjgf839w479q";
+
+        Intent chatIntent = new Intent(getActivity(), ChatChannelActivity.class);
+        chatIntent.putExtra("userId", userId);
+        Log.d(TAG, "Line 71");
+        startActivity(chatIntent);
+        return v;
     }
 }

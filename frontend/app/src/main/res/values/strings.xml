@@ -14,6 +14,15 @@
     <string name="matches_preferences_string">Preferences</string>
     <string name="matches_instruction_string">Swipe right to match, and left to reject</string>
 
+    <!-- Chat Channel Activity -->
+    <string name="chat_send_button_text">Send</string>
+    <string name="edit_chat_message_text">Enter Message</string>
+
+    <!-- Chat Item -->
+    <string name="chat_date">June 10</string>
+    <string name="chat_text">This is a message</string>
+    <string name="chat_timestamp">10:00</string>
+
     <string name="placeholder_listings">Listings Fragment</string>
     <string name="placeholder_profile">Profile Fragment</string>
     <string name="placeholder_matches">Matches Fragment</string>

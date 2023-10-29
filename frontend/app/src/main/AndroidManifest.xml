@@ -22,6 +22,9 @@
             android:name=".ViewListingActivity"
             android:exported="false" />
         <activity
+            android:name=".ChatChannelActivity"
+            android:exported="false" />
+        <activity
             android:name=".HomeActivity"
             android:exported="false" />
         <activity

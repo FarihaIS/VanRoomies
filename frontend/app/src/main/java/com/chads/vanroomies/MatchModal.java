@@ -1,13 +1,11 @@
 package com.chads.vanroomies;
 
 public class MatchModal {
-    // Variables
     private String matchName;
     private int matchAge;
     private String matchPreferences;
     private int matchImageId;
 
-    // Constructor
     public MatchModal(String name, int age, String preferences, int imageId) {
         this.matchName = name;
         this.matchAge = age;
@@ -15,7 +13,6 @@ public class MatchModal {
         this.matchImageId = imageId;
     }
 
-    // Getters
     public String getMatchName() {
         return matchName;
     }
@@ -32,7 +29,6 @@ public class MatchModal {
         return matchImageId;
     }
 
-    // Setters
     public void setMatchName(String name) {
         this.matchName = name;
     }
