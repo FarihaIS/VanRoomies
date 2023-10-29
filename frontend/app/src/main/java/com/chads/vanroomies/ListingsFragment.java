@@ -95,15 +95,7 @@ public class ListingsFragment extends Fragment {
 
         client = HTTPSClientFactory.createClient(getActivity().getApplication());
         // TODO: Maintain user_id within the app and use it as an input here
-        getRecommendedListings(client, view, getActivity(), "653db98f48a54c10b096a61f");
-
-//        // To-Do: Populate with data from the backend (Issue #39). Currently using dummy data
-//        recyclerDataArrayList.add(new ListingsRecyclerData("House", R.drawable.ic_listings_image));
-//        recyclerDataArrayList.add(new ListingsRecyclerData("Casa", R.drawable.ic_listings_image));
-//        recyclerDataArrayList.add(new ListingsRecyclerData("Maison", R.drawable.ic_listings_image));
-//        recyclerDataArrayList.add(new ListingsRecyclerData("Haus", R.drawable.ic_listings_image));
-//        recyclerDataArrayList.add(new ListingsRecyclerData("家", R.drawable.ic_listings_image));
-
+        getRecommendedListings(client, view, getActivity(), "653dde0848a54c10b096a65e");
 
         return view;
     }
