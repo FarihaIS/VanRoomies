@@ -1,14 +1,11 @@
 package com.chads.vanroomies;
 
 import android.app.Activity;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 
-import android.util.Base64;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -19,7 +16,6 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.google.gson.Gson;
 
-import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -41,9 +37,9 @@ import okhttp3.Response;
  */
 public class ListingsFragment extends Fragment {
     final static String TAG = "ListingsFragment";
-    OkHttpClient client;
+    private OkHttpClient httpClient;
     final static Gson g = new Gson();
-    final static int num_cols = 2;
+    final static int view_cols = 2;
     private RecyclerView recyclerView;
     private ArrayList<ListingsRecyclerData> recyclerDataArrayList;
 
@@ -93,15 +89,15 @@ public class ListingsFragment extends Fragment {
         View view = inflater.inflate(R.layout.fragment_listings, container, false);
         recyclerView = view.findViewById(R.id.idListingsRV);
 
-        client = HTTPSClientFactory.createClient(getActivity().getApplication());
+        httpClient = HTTPSClientFactory.createClient(getActivity().getApplication());
         // TODO: Maintain user_id within the app and use it as an input here
-        getRecommendedListings(client, view, getActivity(), "653dde0848a54c10b096a65e");
+        getRecommendedListings(httpClient, view, getActivity(), "65402f35e10ec75253936947");
 
         return view;
     }
 
     public void getRecommendedListings(OkHttpClient client, View view, Activity act, String user_id){
-        Request request = new Request.Builder().url(Constants.BaseServerURL + Constants.listingByUserIdEndpoint + user_id).build();
+        Request request = new Request.Builder().url(Constants.baseServerURL + Constants.listingByUserIdEndpoint + user_id).build();
         client.newCall(request).enqueue(new Callback() {
             @Override
             public void onFailure(@NonNull Call call, @NonNull IOException e) {
@@ -114,11 +110,11 @@ public class ListingsFragment extends Fragment {
                     try {
                         recyclerDataArrayList = new ArrayList<>();
                         String responseData = response.body().string();
-                        List<Map<String, Object>> result = g.fromJson(responseData, List.class);
+                        List<Map<String, Object>> responseDataList = g.fromJson(responseData, List.class);
 
-                        for (int index = 0; index < result.size(); index++){
-                            Map<String, Object> listing_json = result.get(index);
-                            JSONObject listing_obj = new JSONObject(listing_json);
+                        for (int index = 0; index < responseDataList.size(); index++){
+                            Map<String, Object> listingJson = responseDataList.get(index);
+                            JSONObject listing_obj = new JSONObject(listingJson);
                             String listing_title = listing_obj.getString("title");
                             String listing_photo = listing_obj.getJSONArray("images").get(0).toString();
                             recyclerDataArrayList.add(new ListingsRecyclerData(listing_title, listing_photo));
@@ -129,7 +125,7 @@ public class ListingsFragment extends Fragment {
 
                         // setting grid layout manager to implement grid view.
                         // in this method '2' represents number of columns to be displayed in grid view.
-                        GridLayoutManager layoutManager = new GridLayoutManager(view.getContext(),num_cols);
+                        GridLayoutManager layoutManager = new GridLayoutManager(view.getContext(),view_cols);
 
                         // at last set adapter to recycler view.
                         recyclerView.setLayoutManager(layoutManager);

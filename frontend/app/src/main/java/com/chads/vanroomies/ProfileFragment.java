@@ -18,7 +18,7 @@ import okhttp3.OkHttpClient;
  */
 public class ProfileFragment extends Fragment {
     final static String TAG = "ProfileFragment";
-    OkHttpClient client;
+    private OkHttpClient httpClient;
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
     private static final String ARG_PARAM1 = "param1";
@@ -63,10 +63,10 @@ public class ProfileFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_profile, container, false);
-        client = HTTPSClientFactory.createClient(getActivity().getApplication());
+        httpClient = HTTPSClientFactory.createClient(getActivity().getApplication());
 
         // For testing connectivity with backend
-        String result = GetHelloWorldTest.testGetHelloWorld(client , getActivity());
+        String result = GetHelloWorldTest.testGetHelloWorld(httpClient , getActivity());
         if (result != null){
             Log.d(TAG, result);
         }
