@@ -1,18 +1,34 @@
 package com.chads.vanroomies;
 
+import android.app.Activity;
 import android.os.Bundle;
 
+import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-import android.os.Bundle;
-import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+
+import com.google.gson.Gson;
+
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.io.IOException;
 import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+
+import okhttp3.Call;
+import okhttp3.Callback;
+import okhttp3.OkHttpClient;
+import okhttp3.Request;
+import okhttp3.Response;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -21,7 +37,9 @@ import java.util.ArrayList;
  */
 public class ListingsFragment extends Fragment {
     final static String TAG = "ListingsFragment";
-    final static int num_cols = 2;
+    private OkHttpClient httpClient;
+    final static Gson g = new Gson();
+    final static int view_cols = 2;
     private RecyclerView recyclerView;
     private ArrayList<ListingsRecyclerData> recyclerDataArrayList;
 
@@ -69,27 +87,56 @@ public class ListingsFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_listings, container, false);
-        recyclerView = view.findViewById(R.id.idCourseRV);
+        recyclerView = view.findViewById(R.id.idListingsRV);
 
-        recyclerDataArrayList = new ArrayList<>();
+        httpClient = HTTPSClientFactory.createClient(getActivity().getApplication());
+        // TODO: Maintain user_id within the app and use it as an input here
+        getRecommendedListings(httpClient, view, getActivity(), "65402f35e10ec75253936947");
 
-        // To-Do: Populate with data from the backend (Issue #39). Currently using dummy data
-        recyclerDataArrayList.add(new ListingsRecyclerData("House", R.drawable.ic_listings_image));
-        recyclerDataArrayList.add(new ListingsRecyclerData("Casa", R.drawable.ic_listings_image));
-        recyclerDataArrayList.add(new ListingsRecyclerData("Maison", R.drawable.ic_listings_image));
-        recyclerDataArrayList.add(new ListingsRecyclerData("Haus", R.drawable.ic_listings_image));
-        recyclerDataArrayList.add(new ListingsRecyclerData("家", R.drawable.ic_listings_image));
-
-        // added data from arraylist to adapter class.
-        ListingsRecyclerViewAdapter adapter = new ListingsRecyclerViewAdapter(recyclerDataArrayList,view.getContext());
-
-        // setting grid layout manager to implement grid view.
-        // in this method '2' represents number of columns to be displayed in grid view.
-        GridLayoutManager layoutManager = new GridLayoutManager(view.getContext(),num_cols);
-
-        // at last set adapter to recycler view.
-        recyclerView.setLayoutManager(layoutManager);
-        recyclerView.setAdapter(adapter);
         return view;
+    }
+
+    public void getRecommendedListings(OkHttpClient client, View view, Activity act, String user_id){
+        Request request = new Request.Builder().url(Constants.baseServerURL + Constants.listingByUserIdEndpoint + user_id).build();
+        client.newCall(request).enqueue(new Callback() {
+            @Override
+            public void onFailure(@NonNull Call call, @NonNull IOException e) {
+                Log.d(TAG, e.getMessage());
+            }
+
+            @Override
+            public void onResponse(@NonNull Call call, @NonNull Response response) {
+                act.runOnUiThread(() -> {
+                    try {
+                        recyclerDataArrayList = new ArrayList<>();
+                        String responseData = response.body().string();
+                        List<Map<String, Object>> responseDataList = g.fromJson(responseData, List.class);
+
+                        for (int index = 0; index < responseDataList.size(); index++){
+                            Map<String, Object> listingJson = responseDataList.get(index);
+                            JSONObject listing_obj = new JSONObject(listingJson);
+                            String listing_title = listing_obj.getString("title");
+                            String listing_photo = listing_obj.getJSONArray("images").get(0).toString();
+                            recyclerDataArrayList.add(new ListingsRecyclerData(listing_title, listing_photo));
+                        }
+
+                        // added data from arraylist to adapter class.
+                        ListingsRecyclerViewAdapter adapter = new ListingsRecyclerViewAdapter(recyclerDataArrayList, view.getContext());
+
+                        // setting grid layout manager to implement grid view.
+                        // in this method '2' represents number of columns to be displayed in grid view.
+                        GridLayoutManager layoutManager = new GridLayoutManager(view.getContext(),view_cols);
+
+                        // at last set adapter to recycler view.
+                        recyclerView.setLayoutManager(layoutManager);
+                        recyclerView.setAdapter(adapter);
+                    } catch (IOException e){
+                        e.printStackTrace();
+                    } catch (JSONException e) {
+                        throw new RuntimeException(e);
+                    }
+                });
+            }
+        });
     }
 }

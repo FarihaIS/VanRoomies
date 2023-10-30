@@ -1,6 +1,9 @@
 package com.chads.vanroomies;
 
 import android.content.Context;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.util.Base64;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -33,7 +36,10 @@ public class ListingsRecyclerViewAdapter extends RecyclerView.Adapter<ListingsRe
         // Set the data to textview and imageview.
         ListingsRecyclerData recyclerData = listingsDataArrayList.get(position);
         holder.listingTV.setText(recyclerData.getTitle());
-        holder.listingIV.setImageResource(recyclerData.getImgId());
+
+        byte[] decodedString = Base64.decode(recyclerData.getImageString(), Base64.DEFAULT);
+        Bitmap decodedByte = BitmapFactory.decodeByteArray(decodedString, 0, decodedString.length);
+        holder.listingIV.setImageBitmap(decodedByte);
     }
 
     @Override

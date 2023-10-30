@@ -2,7 +2,6 @@ package com.chads.vanroomies;
 
 import android.app.Activity;
 import android.util.Log;
-
 import androidx.annotation.NonNull;
 
 import java.io.IOException;
@@ -15,9 +14,9 @@ import okhttp3.Response;
 
 public class GetHelloWorldTest {
     final static String TAG = "GetHelloWorldTest";
-    public static String testGetHelloWorld(OkHttpClient client, Activity act){
-        Request request = new Request.Builder().url(Constants.localBaseServerURL + Constants.helloWorldEndpoint).build();
-        client.newCall(request).enqueue(new Callback() {
+    public static String testGetHelloWorld(OkHttpClient httpClient, Activity act){
+        Request request = new Request.Builder().url(Constants.baseServerURL + Constants.helloWorldEndpoint).build();
+        httpClient.newCall(request).enqueue(new Callback() {
             @Override
             public void onFailure(@NonNull Call call, @NonNull IOException e) {
                 Log.d(TAG, e.getMessage());
