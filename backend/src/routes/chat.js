@@ -5,7 +5,7 @@ const messageStore = require('../chat/messageStore');
 
 router.get('/conversations/:conversationId', async (req, res, next) => {
     try {
-        const messages = await messageStore.getMessages(req.params.conversationId);
+        const messages = await messageStore.getConversation(req.params.conversationId);
         res.json(messages);
         next();
     } catch (error) {
@@ -17,7 +17,7 @@ router.get('/conversations/:conversationId', async (req, res, next) => {
 
 router.get('/conversations/user/:userId', async (req, res, next) => {
     try {
-        const conversations = await messageStore.getMessagesFromUser(req.params.userId);
+        const conversations = await messageStore.getConversationsByUser(req.params.userId);
         res.json(conversations);
         next();
     } catch (error) {

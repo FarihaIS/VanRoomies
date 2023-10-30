@@ -63,24 +63,18 @@ class MessageStore {
         }
     }
 
-    async getMessages(conversationId) {
+    async getConversation(conversationId) {
         try {
-            const conversation = await Conversation.findById(conversationId);
-            return conversation.messages;
+            return await Conversation.findById(conversationId);
         } catch (error) {
             console.error(error);
         }
     }
 
-    async getMessagesFromUser(userId) {
+    async getConversationsByUser(userId) {
         try {
             const conversations = await Conversation.find({ users: userId });
-            return conversations.map((conversation) => {
-                return {
-                    conversationId: conversation._id,
-                    messages: conversation.messages,
-                };
-            });
+            return conversations;
         } catch (error) {
             console.error(error);
         }
