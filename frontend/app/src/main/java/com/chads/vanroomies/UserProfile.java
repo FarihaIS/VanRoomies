@@ -9,6 +9,9 @@ public class UserProfile implements Serializable {
     private String userProfilePreferences;
     private int userProfileImageId;
 
+    public UserProfile(String id) {
+        this.userProfileId = id;
+    }
     public UserProfile(String id, String name, int age, String preferences, int imageId) {
         this.userProfileId = id;
         this.userProfileName = name;

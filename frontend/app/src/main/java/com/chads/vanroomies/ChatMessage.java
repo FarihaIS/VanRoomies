@@ -1,6 +1,8 @@
 package com.chads.vanroomies;
 
-public class ChatMessage {
+import java.io.Serializable;
+
+public class ChatMessage implements Serializable {
     private String sender;
     private String message;
     private long timestamp;

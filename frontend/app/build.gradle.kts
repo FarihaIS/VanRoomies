@@ -55,4 +55,5 @@ dependencies {
     implementation ("com.google.android.material:material:1.9.0")
     implementation ("com.daprlabs.aaron:cardstack:0.3.1-beta0")
     implementation ("de.hdodenhof:circleimageview:2.2.0")
+    implementation("io.socket:socket.io-client:2.1.0")
 }

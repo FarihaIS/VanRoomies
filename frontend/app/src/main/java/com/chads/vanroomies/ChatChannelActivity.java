@@ -12,9 +12,11 @@ import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
+import java.net.URISyntaxException;
 import java.util.ArrayList;
 import java.util.Calendar;
-import java.util.Map;
+import io.socket.client.IO;
+import io.socket.client.Socket;
 
 public class ChatChannelActivity extends AppCompatActivity {
     final static String TAG = "ChatChannelActivity";
@@ -27,6 +29,7 @@ public class ChatChannelActivity extends AppCompatActivity {
     private TextView chatChannelName;
     private TextView chatChannelText;
     private Button chatChannelButton;
+    private Socket chatSocket;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -37,6 +40,13 @@ public class ChatChannelActivity extends AppCompatActivity {
         thisUserId = chatIntent.getStringExtra("thisUserId");
         chatUser = (UserProfile) chatIntent.getSerializableExtra("otherUserProfile");
         chatMessages = (ArrayList<ChatMessage>) chatIntent.getSerializableExtra("otherUserMessages");
+
+        try {
+            chatSocket = IO.socket(Constants.localBaseServerURL);
+            chatSocket.connect();
+        } catch (URISyntaxException e) {
+            Log.d(TAG, Log.getStackTraceString(e));
+        }
 
         Calendar calendar = Calendar.getInstance();
         calendar.set(Calendar.YEAR, 2023);
@@ -58,21 +68,6 @@ public class ChatChannelActivity extends AppCompatActivity {
         chatChannelText = findViewById(R.id.edit_chat_message);
         chatChannelButton = findViewById(R.id.chat_send_button);
 
-//        chatMessages.add(new ChatMessage(thisUserId, "Hey! What's up?", calendar.getTimeInMillis()));
-//        calendar.set(Calendar.MINUTE, 5);
-//        chatMessages.add(new ChatMessage(chatUser.getUserProfileId(), "Nothing much, wby?", calendar.getTimeInMillis()));
-//        calendar.set(Calendar.MINUTE, 7);
-//        chatMessages.add(new ChatMessage(thisUserId, "Eatin cheetos, yk how it is", calendar.getTimeInMillis()));
-//        calendar.set(Calendar.MINUTE, 8);
-//        chatMessages.add(new ChatMessage(thisUserId, "Wanna come over????", calendar.getTimeInMillis()));
-//        calendar.set(Calendar.MINUTE, 10);
-//        chatMessages.add(new ChatMessage(chatUser.getUserProfileId(), "Yoo let's do it", calendar.getTimeInMillis()));
-//        calendar.set(Calendar.MINUTE, 15);
-//        chatMessages.add(new ChatMessage(chatUser.getUserProfileId(), "What time should I come over btw?", calendar.getTimeInMillis()));
-//        chatMessages.add(new ChatMessage(chatUser.getUserProfileId(), "You free now?", calendar.getTimeInMillis()));
-//        calendar.set(Calendar.MINUTE, 16);
-//        chatMessages.add(new ChatMessage(thisUserId, "Yuhh pull up bro", calendar.getTimeInMillis()));
-
         chatChannelButton.setOnClickListener(v -> {
             String message = chatChannelText.getText().toString().trim();
             if (TextUtils.isEmpty(message)) {//if empty
@@ -80,7 +75,9 @@ public class ChatChannelActivity extends AppCompatActivity {
             } else {
                 // TODO: PUT request to send message
                 Log.d(TAG, "Adding new message");
-                chatMessages.add(new ChatMessage(thisUserId, message, System.currentTimeMillis()));
+                ChatMessage newMessage = new ChatMessage(thisUserId, message, System.currentTimeMillis());
+                chatSocket.emit("private message", newMessage);
+                chatMessages.add(newMessage);
                 chatChannelAdapter = new ChatChannelAdapter(ChatChannelActivity.this, chatMessages, thisUserId);
                 chatChannelRecycler.setAdapter(chatChannelAdapter);
                 chatChannelRecycler.scrollToPosition(chatMessages.size() - 1);

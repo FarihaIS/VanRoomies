@@ -12,12 +12,13 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
 import java.io.IOException;
+import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-
 import okhttp3.Call;
 import okhttp3.Callback;
 import okhttp3.OkHttpClient;
@@ -85,22 +86,19 @@ public class ChatFragment extends Fragment {
         httpClient = HTTPSClientFactory.createClient(getActivity().getApplication());
         gson = new Gson();
         allChatMesssages = new HashMap<>();
+        chatListRecycler = v.findViewById(R.id.chatlistrecycle);
 
         // TODO: Get userId from backend
         thisUserId = "6540111d3a6c1d73e153310c";
 
         // TODO: Get chatList from backend
-        setAllChatMesssages(httpClient, getActivity());
-        setUserProfileNameAndImage(httpClient, getActivity());
-
-        chatListRecycler = v.findViewById(R.id.chatlistrecycle);
-        chatListAdapter = new ChatListAdapter(v.getContext(), allChatMesssages, thisUserId);
-        chatListRecycler.setAdapter((chatListAdapter));
+        setAllChatMesssages(httpClient, getActivity(), v);
+//        setUserProfileNameAndImage(httpClient, getActivity());
 
         return v;
     }
 
-    private void setAllChatMesssages(OkHttpClient client, Activity activity) {
+    private void setAllChatMesssages(OkHttpClient client, Activity activity, View v) {
         Request request = new Request.Builder().url(Constants.localBaseServerURL + Constants.userChatListEndpoint + thisUserId).build();
         client.newCall(request).enqueue(new Callback() {
             @Override
@@ -113,42 +111,35 @@ public class ChatFragment extends Fragment {
                 activity.runOnUiThread(() -> {
                     try {
                         String responseData = response.body().string();
+                        Type listType = new TypeToken<List<Conversation>>(){}.getType();
                         Log.d(TAG, "responseData for Conversations is " + responseData);
-                        List<Map<String, List<Object>>> allConversations = gson.fromJson(responseData, List.class);
+                        List<Conversation> allConversations = gson.fromJson(responseData, listType);
 
                         // Iterate through all user conversations
-                        for (int i = 0; i < allConversations.size(); i++) {
-                            Map<String, List<Object>> eachConversation = allConversations.get(i);
-                            UserProfile user = null;
+                        for (Conversation conversation : allConversations) {
+                            UserProfile user;
                             ArrayList<ChatMessage> eachMessageList = new ArrayList<>();
 
-                            // Iterate through each user's list of messages inside a conversation
-                            for (Map.Entry<String, List<Object>> entry : eachConversation.entrySet()) {
-                                // First find the id of the other user
-                                if (entry.getKey().equals("users")) {
-                                    List<String> userPair = (List) entry.getValue();
-                                    if (userPair.get(0).equals(thisUserId)) {
-                                        user.setUserProfileId(userPair.get(1));
-                                    }
-                                }
-                                else if (entry.getKey().equals("messages")) {
-                                    for (int j = 0; j < entry.getValue().size(); j++) {
-                                        ChatMessage eachMessage = gson.fromJson(entry.getValue().get(j).toString(), ChatMessage.class);
-                                        eachMessageList.add(eachMessage);
-                                    }
-                                }
-                                else {
-                                    Log.d(TAG, "Unknown object while retrieving conversations: " + entry.getKey());
-                                }
+                            List<String> userPair = conversation.users;
+                            if (userPair.get(0).equals(thisUserId)) {
+                                user = new UserProfile(userPair.get(1));
+                            }
+                            else {
+                                user = new UserProfile(userPair.get(0));
+                            }
 
-                                // Check for null userId in case app crashes
-                                if (user == null) {
-                                    Log.d(TAG, "Null userId while retrieving conversations");
-                                }
-                                else {
-                                    allChatMesssages.put(user, eachMessageList);
-                                    Log.d(TAG, "Adding user: " + user.getUserProfileId());
-                                }
+                            eachMessageList = conversation.messages;
+
+                            // Check for null userId in case app crashes
+                            if (user == null) {
+                                Log.d(TAG, "Null userId while retrieving conversations");
+                            }
+                            else {
+                                allChatMesssages.put(user, eachMessageList);
+                                chatListAdapter = new ChatListAdapter(v.getContext(), allChatMesssages, thisUserId);
+                                Log.d(TAG, "Created adapter");
+                                chatListRecycler.setAdapter((chatListAdapter));
+                                Log.d(TAG, "Adding user: " + user.getUserProfileId());
                             }
                         }
                     } catch (IOException e){
@@ -182,5 +173,14 @@ public class ChatFragment extends Fragment {
                 });
             }
         });
+    }
+
+    static class Conversation {
+        String _id;
+        List<String> users;
+        ArrayList<ChatMessage> messages;
+        String __v;
+        public Conversation() {
+        }
     }
 }
