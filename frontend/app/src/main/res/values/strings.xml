@@ -22,6 +22,9 @@
     <string name="listings_image_desc">The image for a given listing</string>
     <string name="listings_image">placeholder</string>
     <string name="listings_title">placeholder</string>
+    <string name="listings_toggle">TOGGLE</string>
+    <string name="listings_header_recommended">Recommended Listings</string>
+    <string name="listings_header_owned">Owned Listings</string>
 
     <!-- View Listings Activity -->
     <string name="listings_desc">Listing Desc</string>
