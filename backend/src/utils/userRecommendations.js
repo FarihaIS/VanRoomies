@@ -1,4 +1,4 @@
-const { NONSHAREABLE, TWOBEDROOM, POSINF, NEGINF } = require('./constants');
+const { NONSHAREABLE, TWOBEDROOM, HABITS, NEUTRAL, POSINF, NEGINF } = require('./constants');
 
 /**
  * Rank a set of users based on their corresponding aggregate score.
@@ -51,11 +51,10 @@ const generateUserScores = (currentUserPreferences, potentialMatchesPreferences)
 const aggregateCategorialPreferenceScores = (currentUser, possibleMatch) => {
     let score = 0;
 
-    const categories = ['smoking', 'partying', 'drinking', 'noise'];
-    categories.forEach((preference) => {
+    HABITS.forEach((preference) => {
         if (currentUser[preference] === possibleMatch[preference]) {
             score += 1;
-        } else if (currentUser[preference] === 'neutral' || possibleMatch[preference] === 'neutral') {
+        } else if (currentUser[preference] === NEUTRAL || possibleMatch[preference] === NEUTRAL) {
             score += 0.5;
         }
     });
