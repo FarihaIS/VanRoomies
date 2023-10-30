@@ -1,8 +1,5 @@
 const dotenv = require('dotenv');
 const mongoose = require('mongoose');
-const users = require('./sample_users.json');
-const preferences = require('./sample_preferences.json');
-const listings = require('./sample_listings.json');
 
 dotenv.config({ path: '../.env' });
 
@@ -17,7 +14,3 @@ db.on('error', console.error.bind(console, 'Connection error! Make sure MongoDB 
 db.once('open', function () {
     console.log('Connection successful! ');
 });
-
-console.log(users);
-console.log(preferences);
-console.log(listings);
