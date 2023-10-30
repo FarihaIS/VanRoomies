@@ -96,7 +96,9 @@ public class ChatFragment extends Fragment {
 //        setUserProfileNameAndImage(httpClient, getActivity());
 
         for (Map.Entry<UserProfile, ArrayList<ChatMessage>> entry : allChatMesssages.entrySet()) {
-            entry.getKey().setUserProfileImageId(R.drawable.ic_profile);
+            if (entry.getKey().getUserProfileImageId() == -1) {
+                entry.getKey().setUserProfileImageId(R.drawable.ic_profile);
+            }
         }
 
         return v;
