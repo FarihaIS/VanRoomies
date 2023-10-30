@@ -95,6 +95,10 @@ public class ChatFragment extends Fragment {
         setAllChatMesssages(httpClient, getActivity(), v);
 //        setUserProfileNameAndImage(httpClient, getActivity());
 
+        for (Map.Entry<UserProfile, ArrayList<ChatMessage>> entry : allChatMesssages.entrySet()) {
+            entry.getKey().setUserProfileImageId(R.drawable.ic_profile);
+        }
+
         return v;
     }
 
