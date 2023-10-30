@@ -17,12 +17,6 @@ public class UserProfile implements Serializable {
         this.userProfileImageId = imageId;
     }
 
-    public UserProfile(String id, String name, int imageId) {
-        this.userProfileId = id;
-        this.userProfileName = name;
-        this.userProfileImageId = imageId;
-    }
-
     public String getUserProfileId() { return userProfileId; }
     public String getUserProfileName() {
         return userProfileName;

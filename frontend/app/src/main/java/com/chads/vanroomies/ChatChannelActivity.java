@@ -14,10 +14,12 @@ import android.widget.TextView;
 import android.widget.Toast;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Map;
 
 public class ChatChannelActivity extends AppCompatActivity {
     final static String TAG = "ChatChannelActivity";
     private ChatChannelAdapter chatChannelAdapter;
+    private UserProfile chatUser;
     private ArrayList<ChatMessage> chatMessages;
     private RecyclerView chatChannelRecycler;
     private ImageView chatChannelImage;
@@ -31,9 +33,10 @@ public class ChatChannelActivity extends AppCompatActivity {
         setContentView(R.layout.activity_chat_channel);
 
         Intent chatIntent = getIntent();
-        String myUserId = chatIntent.getStringExtra("myUserId");
-        UserProfile otherUser = (UserProfile) chatIntent.getSerializableExtra("otherUser");
-        chatMessages = new ArrayList<>();
+        String thisUserId = chatIntent.getStringExtra("thisUserId");
+        Map.Entry<UserProfile, ArrayList<ChatMessage>> chatUserMessages = (Map.Entry) chatIntent.getSerializableExtra("otherUserMessages");
+        chatUser = chatUserMessages.getKey();
+        chatMessages = chatUserMessages.getValue();
 
         Calendar calendar = Calendar.getInstance();
         calendar.set(Calendar.YEAR, 2023);
@@ -43,33 +46,32 @@ public class ChatChannelActivity extends AppCompatActivity {
         calendar.set(Calendar.MINUTE, 5);
         calendar.set(Calendar.SECOND, 0);
 
-        chatChannelRecycler = (RecyclerView) findViewById(R.id.recycler_chat);
+        chatChannelRecycler = findViewById(R.id.recycler_chat);
         chatChannelRecycler.setLayoutManager(new LinearLayoutManager(this));
 
         chatChannelImage = findViewById(R.id.chat_image);
-        chatChannelImage.setImageResource(otherUser.getUserProfileImageId());
+        chatChannelImage.setImageResource(chatUser.getUserProfileImageId());
 
         chatChannelName = findViewById(R.id.chat_name);
-        chatChannelName.setText(otherUser.getUserProfileName());
+        chatChannelName.setText(chatUser.getUserProfileName());
 
         chatChannelText = findViewById(R.id.edit_chat_message);
         chatChannelButton = findViewById(R.id.chat_send_button);
 
-        // TODO: Get chatMessages from backend using myUserId and otherUserId
-        chatMessages.add(new ChatMessage(myUserId, "Hey! What's up?", calendar.getTimeInMillis()));
+        chatMessages.add(new ChatMessage(thisUserId, "Hey! What's up?", calendar.getTimeInMillis()));
         calendar.set(Calendar.MINUTE, 5);
-        chatMessages.add(new ChatMessage(otherUser.getUserProfileId(), "Nothing much, wby?", calendar.getTimeInMillis()));
+        chatMessages.add(new ChatMessage(chatUser.getUserProfileId(), "Nothing much, wby?", calendar.getTimeInMillis()));
         calendar.set(Calendar.MINUTE, 7);
-        chatMessages.add(new ChatMessage(myUserId, "Eatin cheetos, yk how it is", calendar.getTimeInMillis()));
+        chatMessages.add(new ChatMessage(thisUserId, "Eatin cheetos, yk how it is", calendar.getTimeInMillis()));
         calendar.set(Calendar.MINUTE, 8);
-        chatMessages.add(new ChatMessage(myUserId, "Wanna come over????", calendar.getTimeInMillis()));
+        chatMessages.add(new ChatMessage(thisUserId, "Wanna come over????", calendar.getTimeInMillis()));
         calendar.set(Calendar.MINUTE, 10);
-        chatMessages.add(new ChatMessage(otherUser.getUserProfileId(), "Yoo let's do it", calendar.getTimeInMillis()));
+        chatMessages.add(new ChatMessage(chatUser.getUserProfileId(), "Yoo let's do it", calendar.getTimeInMillis()));
         calendar.set(Calendar.MINUTE, 15);
-        chatMessages.add(new ChatMessage(otherUser.getUserProfileId(), "What time should I come over btw?", calendar.getTimeInMillis()));
-        chatMessages.add(new ChatMessage(otherUser.getUserProfileId(), "You free now?", calendar.getTimeInMillis()));
+        chatMessages.add(new ChatMessage(chatUser.getUserProfileId(), "What time should I come over btw?", calendar.getTimeInMillis()));
+        chatMessages.add(new ChatMessage(chatUser.getUserProfileId(), "You free now?", calendar.getTimeInMillis()));
         calendar.set(Calendar.MINUTE, 16);
-        chatMessages.add(new ChatMessage(myUserId, "Yuhh pull up bro", calendar.getTimeInMillis()));
+        chatMessages.add(new ChatMessage(thisUserId, "Yuhh pull up bro", calendar.getTimeInMillis()));
 
         chatChannelButton.setOnClickListener(v -> {
             String message = chatChannelText.getText().toString().trim();
@@ -78,15 +80,15 @@ public class ChatChannelActivity extends AppCompatActivity {
             } else {
                 // TODO: PUT request to send message
                 Log.d(TAG, "Adding new message");
-                chatMessages.add(new ChatMessage(myUserId, message, System.currentTimeMillis()));
-                chatChannelAdapter = new ChatChannelAdapter(ChatChannelActivity.this, chatMessages, myUserId);
+                chatMessages.add(new ChatMessage(thisUserId, message, System.currentTimeMillis()));
+                chatChannelAdapter = new ChatChannelAdapter(ChatChannelActivity.this, chatMessages, thisUserId);
                 chatChannelRecycler.setAdapter(chatChannelAdapter);
                 chatChannelRecycler.scrollToPosition(chatMessages.size() - 1);
             }
             chatChannelText.setText("");
         });
 
-        chatChannelAdapter = new ChatChannelAdapter(this, chatMessages, myUserId);
+        chatChannelAdapter = new ChatChannelAdapter(this, chatMessages, thisUserId);
         chatChannelRecycler.setAdapter(chatChannelAdapter);
         chatChannelRecycler.scrollToPosition(chatMessages.size() - 1);
     }

@@ -34,7 +34,7 @@ public class ChatChannelAdapter extends RecyclerView.Adapter {
     @Override
     public int getItemViewType(int position) {
         ChatMessage message = (ChatMessage) chatChannelMessages.get(position);
-        if (message.getChatUser().equals(chatChannelUserId)) {
+        if (message.getChatSender().equals(chatChannelUserId)) {
             return VIEW_TYPE_MESSAGE_SENT;
         }
         else {
@@ -71,14 +71,14 @@ public class ChatChannelAdapter extends RecyclerView.Adapter {
             super(itemView);
 
             if (isSent) {
-                messageText = (TextView) itemView.findViewById(R.id.chat_me_text);
-                dateText = (TextView) itemView.findViewById(R.id.chat_me_date);
-                timeText = (TextView) itemView.findViewById(R.id.chat_me_timestamp);
+                messageText = itemView.findViewById(R.id.chat_me_text);
+                dateText = itemView.findViewById(R.id.chat_me_date);
+                timeText = itemView.findViewById(R.id.chat_me_timestamp);
             }
             else {
-                messageText = (TextView) itemView.findViewById(R.id.chat_other_text);
-                dateText = (TextView) itemView.findViewById(R.id.chat_other_date);
-                timeText = (TextView) itemView.findViewById(R.id.chat_other_timestamp);
+                messageText = itemView.findViewById(R.id.chat_other_text);
+                dateText = itemView.findViewById(R.id.chat_other_date);
+                timeText = itemView.findViewById(R.id.chat_other_timestamp);
             }
         }
 
@@ -86,7 +86,7 @@ public class ChatChannelAdapter extends RecyclerView.Adapter {
             SimpleDateFormat dateFormatter = new SimpleDateFormat("MMMM d", Locale.getDefault());
             SimpleDateFormat timeFormatter = new SimpleDateFormat("HH:mm", Locale.getDefault());
             Date timestamp = new Date(message.getChatTimestamp());
-            messageText.setText(message.getChatText());
+            messageText.setText(message.getChatMessage());
             dateText.setText(dateFormatter.format(timestamp));
             timeText.setText(timeFormatter.format(timestamp));
         }

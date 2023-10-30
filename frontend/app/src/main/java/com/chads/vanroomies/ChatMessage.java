@@ -1,25 +1,25 @@
 package com.chads.vanroomies;
 
 public class ChatMessage {
-    private String chatMessageUser;
-    private String chatMessageText;
-    private long chatMessageTimestamp;
+    private String sender;
+    private String message;
+    private long timestamp;
 
-    public ChatMessage(String user, String text, long timestamp) {
-        this.chatMessageUser = user;
-        this.chatMessageText = text;
-        this.chatMessageTimestamp = timestamp;
+    public ChatMessage(String sender, String message, long timestamp) {
+        this.sender = sender;
+        this.message = message;
+        this.timestamp = timestamp;
     }
 
-    public String getChatUser() { return chatMessageUser; }
+    public String getChatSender() { return sender; }
 
-    public String getChatText() { return chatMessageText; }
+    public String getChatMessage() { return message; }
 
-    public long getChatTimestamp() { return chatMessageTimestamp; }
+    public long getChatTimestamp() { return timestamp; }
 
-    public void setChatUser(String user) { this.chatMessageUser = user; }
+    public void setChatSender(String sender) { this.sender = sender; }
 
-    public void setChatText(String text) { this.chatMessageText = text; }
+    public void setChatMessage(String message) { this.message = message; }
 
-    public void setChatTimestamp(long timestamp) { this.chatMessageTimestamp = timestamp; }
+    public void setChatTimestamp(long timestamp) { this.timestamp = timestamp; }
 }

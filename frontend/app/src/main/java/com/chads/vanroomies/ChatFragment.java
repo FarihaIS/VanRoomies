@@ -1,14 +1,28 @@
 package com.chads.vanroomies;
 
 // Reference: https://www.geeksforgeeks.org/how-to-implement-chat-functionality-in-social-media-android-app/
+import android.app.Activity;
 import android.os.Bundle;
+import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentActivity;
 import androidx.recyclerview.widget.RecyclerView;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import com.google.gson.Gson;
+import java.io.IOException;
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+import okhttp3.Call;
+import okhttp3.Callback;
+import okhttp3.OkHttpClient;
+import okhttp3.Request;
+import okhttp3.Response;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -19,8 +33,10 @@ public class ChatFragment extends Fragment {
     final static String TAG = "ChatFragment";
     private RecyclerView chatListRecycler;
     private ChatListAdapter chatListAdapter;
-    private ArrayList<UserProfile> chatList;
-    private String userId;
+    private String thisUserId;
+    private OkHttpClient httpClient;
+    private Gson gson;
+    private Map<UserProfile, ArrayList<ChatMessage>> allChatMesssages;
 
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
@@ -66,22 +82,105 @@ public class ChatFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         View v = inflater.inflate(R.layout.fragment_chat, container, false);
+        httpClient = HTTPSClientFactory.createClient(getActivity().getApplication());
+        gson = new Gson();
+        allChatMesssages = new HashMap<>();
 
         // TODO: Get userId from backend
-        userId = "bvshdjgf839w479q";
+        thisUserId = "653ee410f0a6207206034b3a";
 
         // TODO: Get chatList from backend
-        chatList = new ArrayList<>();
-        chatList.add(new UserProfile("hbdf239487", "Mr.Shrek", R.drawable.ic_listings));
-        chatList.add(new UserProfile("adjh24738", "Mr.Donkey", R.drawable.ic_profile));
-        chatList.add(new UserProfile("poeiruhfdj7475427", "Ms.Fiona", R.drawable.ic_match));
-        chatList.add(new UserProfile("jjkfgdfjk8767839", "Lord Farquad", R.drawable.ic_chat));
-        Log.d(TAG, "Adding chat lists");
+        setAllChatMesssages(httpClient, getActivity());
+        setUserProfileNameAndImage(httpClient, getActivity());
 
         chatListRecycler = v.findViewById(R.id.chatlistrecycle);
-        chatListAdapter = new ChatListAdapter(v.getContext(), chatList, userId);
+        chatListAdapter = new ChatListAdapter(v.getContext(), allChatMesssages, thisUserId);
         chatListRecycler.setAdapter((chatListAdapter));
 
         return v;
+    }
+
+    private void setAllChatMesssages(OkHttpClient client, Activity activity) {
+        Request request = new Request.Builder().url(Constants.localBaseServerURL + Constants.userChatListEndpoint + thisUserId).build();
+        client.newCall(request).enqueue(new Callback() {
+            @Override
+            public void onFailure(@NonNull Call call, @NonNull IOException e) {
+                Log.d(TAG, e.getMessage());
+            }
+
+            @Override
+            public void onResponse(@NonNull Call call, @NonNull Response response) {
+                activity.runOnUiThread(() -> {
+                    try {
+                        String responseData = response.body().string();
+                        Log.d(TAG, "responseData for Conversations is " + responseData);
+                        List<Map<String, List<Object>>> allConversations = gson.fromJson(responseData, List.class);
+
+                        // Iterate through all user conversations
+                        for (int i = 0; i < allConversations.size(); i++) {
+                            Map<String, List<Object>> eachConversation = allConversations.get(i);
+                            UserProfile user = null;
+                            ArrayList<ChatMessage> eachMessageList = new ArrayList<>();
+
+                            // Iterate through each user's list of messages inside a conversation
+                            for (Map.Entry<String, List<Object>> entry : eachConversation.entrySet()) {
+                                // First find the id of the other user
+                                if (entry.getKey().equals("users")) {
+                                    List<String> userPair = (List) entry.getValue();
+                                    if (userPair.get(0).equals(thisUserId)) {
+                                        user.setUserProfileId(userPair.get(1));
+                                    }
+                                }
+                                else if (entry.getKey().equals("messages")) {
+                                    for (int j = 0; j < entry.getValue().size(); j++) {
+                                        ChatMessage eachMessage = gson.fromJson(entry.getValue().get(j).toString(), ChatMessage.class);
+                                        eachMessageList.add(eachMessage);
+                                    }
+                                }
+                                else {
+                                    Log.d(TAG, "Unknown object while retrieving conversations: " + entry.getKey());
+                                }
+
+                                // Check for null userId in case app crashes
+                                if (user == null) {
+                                    Log.d(TAG, "Null userId while retrieving conversations");
+                                }
+                                else {
+                                    allChatMesssages.put(user, eachMessageList);
+                                    Log.d(TAG, "Adding user: " + user.getUserProfileId());
+                                }
+                            }
+                        }
+                    } catch (IOException e){
+                        e.printStackTrace();
+                    }
+                });
+            }
+        });
+    }
+
+    private void setUserProfileNameAndImage(OkHttpClient httpClient, FragmentActivity activity) {
+        // TODO: Get the right endpoint
+        Request request = new Request.Builder().url(Constants.localBaseServerURL + Constants.userChatListEndpoint + thisUserId).build();
+        httpClient.newCall(request).enqueue(new Callback() {
+            @Override
+            public void onFailure(@NonNull Call call, @NonNull IOException e) {
+                Log.d(TAG, e.getMessage());
+            }
+
+            @Override
+            public void onResponse(@NonNull Call call, @NonNull Response response) {
+                activity.runOnUiThread(() -> {
+                    try {
+                        String responseData = response.body().string();
+                        Log.d(TAG, "responseData for Users is " + responseData);
+                        // TODO: Fix according to the right response data structure
+                        List<Map<String, List<Object>>> allConversations = gson.fromJson(responseData, List.class);
+                    } catch (IOException e){
+                        e.printStackTrace();
+                    }
+                });
+            }
+        });
     }
 }

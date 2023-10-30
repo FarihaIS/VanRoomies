@@ -9,24 +9,24 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
+
+import java.lang.reflect.Array;
 import java.util.ArrayList;
+import java.util.Map;
 
 public class ChatListAdapter extends RecyclerView.Adapter {
-
     private Context chatListContext;
-    private ArrayList<UserProfile> chatListUsers;
+    private ArrayList<Map.Entry<UserProfile, ArrayList<ChatMessage>>> chatListMessages;
     private String chatListUserId;
 
-    public ChatListAdapter(Context context, ArrayList<UserProfile> users, String userId) {
+    public ChatListAdapter(Context context, Map<UserProfile, ArrayList<ChatMessage>> messages, String userId) {
         this.chatListContext = context;
-        this.chatListUsers = users;
+        this.chatListMessages = new ArrayList<>(messages.entrySet());
         this.chatListUserId = userId;
     }
 
     @Override
-    public int getItemCount() {
-        return chatListUsers.size();
-    }
+    public int getItemCount() { return chatListMessages.size(); }
 
     @Override
     public ChatListHolder onCreateViewHolder(ViewGroup parent, int viewType) {
@@ -36,17 +36,21 @@ public class ChatListAdapter extends RecyclerView.Adapter {
 
     @Override
     public void onBindViewHolder(@NonNull RecyclerView.ViewHolder holder, final int position) {
-        UserProfile otherUser = chatListUsers.get(position);
-        String otherUserName = otherUser.getUserProfileName();
-        int otherUserImage = otherUser.getUserProfileImageId();
+        Map.Entry<UserProfile, ArrayList<ChatMessage>> entry = chatListMessages.get(position);
+        UserProfile otherUserProfile = entry.getKey();
+        ArrayList<ChatMessage> otherUserMessages = entry.getValue();
+
+        String otherUserName = otherUserProfile.getUserProfileName();
+        int otherUserImage = otherUserProfile.getUserProfileImageId();
 
         ((ChatListHolder) holder).name.setText(otherUserName);
         ((ChatListHolder) holder).image.setImageResource(otherUserImage);
 
         holder.itemView.setOnClickListener(v -> {
             Intent chatChannelIntent = new Intent(chatListContext, ChatChannelActivity.class);
-            chatChannelIntent.putExtra("myUserId", chatListUserId);
-            chatChannelIntent.putExtra("otherUser", otherUser);
+            chatChannelIntent.putExtra("thisUserId", chatListUserId);
+            chatChannelIntent.putExtra("otherUserProfile", otherUserProfile);
+            chatChannelIntent.putExtra("otherUserMessages", otherUserMessages);
             chatListContext.startActivity(chatChannelIntent);
         });
     }
