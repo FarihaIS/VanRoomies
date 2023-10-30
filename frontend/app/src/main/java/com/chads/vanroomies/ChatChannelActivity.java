@@ -19,6 +19,7 @@ import java.util.Map;
 public class ChatChannelActivity extends AppCompatActivity {
     final static String TAG = "ChatChannelActivity";
     private ChatChannelAdapter chatChannelAdapter;
+    private String thisUserId;
     private UserProfile chatUser;
     private ArrayList<ChatMessage> chatMessages;
     private RecyclerView chatChannelRecycler;
@@ -33,10 +34,9 @@ public class ChatChannelActivity extends AppCompatActivity {
         setContentView(R.layout.activity_chat_channel);
 
         Intent chatIntent = getIntent();
-        String thisUserId = chatIntent.getStringExtra("thisUserId");
-        Map.Entry<UserProfile, ArrayList<ChatMessage>> chatUserMessages = (Map.Entry) chatIntent.getSerializableExtra("otherUserMessages");
-        chatUser = chatUserMessages.getKey();
-        chatMessages = chatUserMessages.getValue();
+        thisUserId = chatIntent.getStringExtra("thisUserId");
+        chatUser = (UserProfile) chatIntent.getSerializableExtra("otherUserProfile");
+        chatMessages = (ArrayList<ChatMessage>) chatIntent.getSerializableExtra("otherUserMessages");
 
         Calendar calendar = Calendar.getInstance();
         calendar.set(Calendar.YEAR, 2023);
@@ -58,20 +58,20 @@ public class ChatChannelActivity extends AppCompatActivity {
         chatChannelText = findViewById(R.id.edit_chat_message);
         chatChannelButton = findViewById(R.id.chat_send_button);
 
-        chatMessages.add(new ChatMessage(thisUserId, "Hey! What's up?", calendar.getTimeInMillis()));
-        calendar.set(Calendar.MINUTE, 5);
-        chatMessages.add(new ChatMessage(chatUser.getUserProfileId(), "Nothing much, wby?", calendar.getTimeInMillis()));
-        calendar.set(Calendar.MINUTE, 7);
-        chatMessages.add(new ChatMessage(thisUserId, "Eatin cheetos, yk how it is", calendar.getTimeInMillis()));
-        calendar.set(Calendar.MINUTE, 8);
-        chatMessages.add(new ChatMessage(thisUserId, "Wanna come over????", calendar.getTimeInMillis()));
-        calendar.set(Calendar.MINUTE, 10);
-        chatMessages.add(new ChatMessage(chatUser.getUserProfileId(), "Yoo let's do it", calendar.getTimeInMillis()));
-        calendar.set(Calendar.MINUTE, 15);
-        chatMessages.add(new ChatMessage(chatUser.getUserProfileId(), "What time should I come over btw?", calendar.getTimeInMillis()));
-        chatMessages.add(new ChatMessage(chatUser.getUserProfileId(), "You free now?", calendar.getTimeInMillis()));
-        calendar.set(Calendar.MINUTE, 16);
-        chatMessages.add(new ChatMessage(thisUserId, "Yuhh pull up bro", calendar.getTimeInMillis()));
+//        chatMessages.add(new ChatMessage(thisUserId, "Hey! What's up?", calendar.getTimeInMillis()));
+//        calendar.set(Calendar.MINUTE, 5);
+//        chatMessages.add(new ChatMessage(chatUser.getUserProfileId(), "Nothing much, wby?", calendar.getTimeInMillis()));
+//        calendar.set(Calendar.MINUTE, 7);
+//        chatMessages.add(new ChatMessage(thisUserId, "Eatin cheetos, yk how it is", calendar.getTimeInMillis()));
+//        calendar.set(Calendar.MINUTE, 8);
+//        chatMessages.add(new ChatMessage(thisUserId, "Wanna come over????", calendar.getTimeInMillis()));
+//        calendar.set(Calendar.MINUTE, 10);
+//        chatMessages.add(new ChatMessage(chatUser.getUserProfileId(), "Yoo let's do it", calendar.getTimeInMillis()));
+//        calendar.set(Calendar.MINUTE, 15);
+//        chatMessages.add(new ChatMessage(chatUser.getUserProfileId(), "What time should I come over btw?", calendar.getTimeInMillis()));
+//        chatMessages.add(new ChatMessage(chatUser.getUserProfileId(), "You free now?", calendar.getTimeInMillis()));
+//        calendar.set(Calendar.MINUTE, 16);
+//        chatMessages.add(new ChatMessage(thisUserId, "Yuhh pull up bro", calendar.getTimeInMillis()));
 
         chatChannelButton.setOnClickListener(v -> {
             String message = chatChannelText.getText().toString().trim();

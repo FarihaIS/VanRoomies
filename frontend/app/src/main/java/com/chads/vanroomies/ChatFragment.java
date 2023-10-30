@@ -87,7 +87,7 @@ public class ChatFragment extends Fragment {
         allChatMesssages = new HashMap<>();
 
         // TODO: Get userId from backend
-        thisUserId = "653ee410f0a6207206034b3a";
+        thisUserId = "6540111d3a6c1d73e153310c";
 
         // TODO: Get chatList from backend
         setAllChatMesssages(httpClient, getActivity());
