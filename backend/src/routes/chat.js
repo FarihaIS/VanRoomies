@@ -27,7 +27,7 @@ router.get('/conversations/user/:userId', async (req, res, next) => {
 
 router.post('/conversations/user/:userId', async (req, res, next) => {
     try {
-        const receivingUserId = req.query.to;
+        const receivingUserId = req.body.to;
         const sendingUserId = req.params.userId;
         const conversation = await messageStore.sendMessage(req.body.content, sendingUserId, receivingUserId);
         res.status(201).json(conversation);
