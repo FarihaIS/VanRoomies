@@ -8,6 +8,7 @@ public class ChatConversation {
     private List<String> users;
     private ArrayList<ChatMessage> messages;
     private String __v;
+
     public ChatConversation(String _id, List<String> users, ArrayList<ChatMessage> messages, String __v) {
         this._id = _id;
         this.users = users;
@@ -30,5 +31,4 @@ public class ChatConversation {
     public void setMessages(ArrayList<ChatMessage> messages) { this.messages = messages; }
 
     public void set__v(String __v) { this.__v = __v; }
-
 }
