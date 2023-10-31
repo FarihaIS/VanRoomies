@@ -17,6 +17,7 @@ public class MatchDeckAdapter extends BaseAdapter {
         this.matchDeckUsers = data;
         this.matchDeckContext = context;
     }
+
     @Override
     public int getCount() {
         return matchDeckUsers.size();
