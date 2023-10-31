@@ -139,18 +139,28 @@ public class ListingsFragment extends Fragment implements ListingsItemSelectList
                     try {
                         recyclerDataArrayList = new ArrayList<>();
                         String responseData = response.body().string();
-                        List<Map<String, Object>> result = g.fromJson(responseData, List.class);
+                        List<Map<String, Object>> responseDataList = g.fromJson(responseData, List.class);
 
-                        for (int index = 0; index < result.size(); index++){
-                            Map<String, Object> listing_json = result.get(index);
+                        for (int index = 0; index < responseDataList.size(); index++){
+                            Map<String, Object> listing_json = responseDataList.get(index);
                             JSONObject listing_obj = new JSONObject(listing_json);
                             String listing_title = listing_obj.getString("title");
                             String listing_photo = listing_obj.getJSONArray("images").get(0).toString();
-                            recyclerDataArrayList.add(new ListingsRecyclerData(listing_title, listing_photo));
+                            // Information taken to individual listing
+                            String listing_id = listing_obj.getString("_id");
+                            HashMap<String, String> additionalInfo = new HashMap<>();
+                            additionalInfo.put("owner_id", listing_obj.getString("userId"));
+                            additionalInfo.put("description", listing_obj.getString("description"));
+                            additionalInfo.put("housingType", listing_obj.getString("housingType"));
+                            additionalInfo.put("listingDate", listing_obj.getString("listingDate"));
+                            additionalInfo.put("moveInDate", listing_obj.getString("moveInDate"));
+                            additionalInfo.put("petFriendly", listing_obj.getString("petFriendly"));
+
+                            recyclerDataArrayList.add(new ListingsRecyclerData(listing_title, listing_photo, listing_id, additionalInfo));
                         }
 
                         // added data from arraylist to adapter class.
-                        ListingsRecyclerViewAdapter adapter = new ListingsRecyclerViewAdapter(recyclerDataArrayList, view.getContext());
+                        ListingsRecyclerViewAdapter adapter = new ListingsRecyclerViewAdapter(recyclerDataArrayList, ListingsFragment.this, view.getContext());
 
                         // setting grid layout manager to implement grid view.
                         // in this method '2' represents number of columns to be displayed in grid view.
