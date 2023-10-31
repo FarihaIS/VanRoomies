@@ -58,6 +58,24 @@
                 android:textSize="16sp" />
         </androidx.cardview.widget.CardView>
 
+        <Button
+            android:id="@+id/edit_desc_button"
+            android:layout_width="64dp"
+            android:layout_height="48dp"
+            android:layout_alignParentTop="true"
+            android:layout_alignParentEnd="true"
+            android:layout_alignParentBottom="true"
+            android:layout_marginStart="14dp"
+            android:layout_marginTop="282dp"
+            android:layout_marginEnd="-2dp"
+            android:layout_marginBottom="20dp"
+            android:backgroundTint="#D2E2E0"
+            android:scaleX="1.75"
+            android:scaleY="1.75"
+            android:textColor="#D2E2E0"
+            app:icon="@drawable/ic_edit"
+            app:iconTint="#F44336" />
+
     </RelativeLayout>
 
 </androidx.constraintlayout.widget.ConstraintLayout>
