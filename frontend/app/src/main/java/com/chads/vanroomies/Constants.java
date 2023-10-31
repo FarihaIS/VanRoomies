@@ -17,4 +17,11 @@ public class Constants {
 
     // Default chat message
     final static String defaultFirstMessage = "Hello!";
+    final static String loginEndpoint = "/api/users/login"; // POST
+
+    // Authentication
+    final static String clientId = "49876246970-nvcs6gekl0ng450q1ujb4dfmhcufu3tp.apps.googleusercontent.com";
+    final static String userData = "userData";
+    final static String userIdKey = "userId";
+    final static String userTokenKey = "userToken";
 }
