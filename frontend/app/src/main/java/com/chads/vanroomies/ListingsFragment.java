@@ -12,10 +12,13 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.CompoundButton;
+import android.widget.TextView;
 
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.google.android.material.switchmaterial.SwitchMaterial;
 import com.google.gson.Gson;
 
 import org.json.JSONException;
@@ -41,6 +44,10 @@ import okhttp3.Response;
 public class ListingsFragment extends Fragment implements ListingsItemSelectListener{
     final static String TAG = "ListingsFragment";
     private OkHttpClient httpClient;
+    // TODO: Maintain user_id within the app and use it as an input here
+    String userId = "65402f35e10ec75253936947";
+    public SwitchMaterial toggleButton;
+    public TextView titleText;
     final static Gson g = new Gson();
     final static int view_cols = 2;
     private RecyclerView recyclerView;
@@ -96,11 +103,84 @@ public class ListingsFragment extends Fragment implements ListingsItemSelectList
         // TODO: Maintain user_id within the app and use it as an input here
         getRecommendedListings(httpClient, view, getActivity(), "65402f35e10ec75253936947");
 
+        // Setting up Toggle Button
+        toggleButton = view.findViewById(R.id.listings_toggle);
+        toggleButton.setText("");
+        titleText = (TextView) view.findViewById(R.id.listings_header);
+        titleText.setText(getString(R.string.listings_header_recommended));
+        toggleButton.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView,boolean isChecked) {
+                if(isChecked){
+                    titleText.setText(getString(R.string.listings_header_owned));
+                    getOwnedListings(httpClient, view, getActivity(), userId);
+                } else {
+                    titleText.setText(getString(R.string.listings_header_recommended));
+                    getRecommendedListings(httpClient, view, getActivity(), userId);
+                }
+            }
+        });
         return view;
     }
-
     public void getRecommendedListings(OkHttpClient client, View view, Activity act, String user_id){
         Request request = new Request.Builder().url(Constants.baseServerURL + Constants.listingByUserIdEndpoint + user_id).build();
+        // recommended
+        // Request request = new Request.Builder().url(Constants.BaseServerURL + Constants.listingByRecommendationsEndpoint(user_id)).build();
+        Log.d(String.format("%s: RECOMMENDED", TAG), Constants.baseServerURL + Constants.listingByRecommendationsEndpoint(user_id));
+        client.newCall(request).enqueue(new Callback() {
+            @Override
+            public void onFailure(@NonNull Call call, @NonNull IOException e) {
+                Log.d(TAG, e.getMessage());
+            }
+
+            @Override
+            public void onResponse(@NonNull Call call, @NonNull Response response) {
+                act.runOnUiThread(() -> {
+                    try {
+                        recyclerDataArrayList = new ArrayList<>();
+                        String responseData = response.body().string();
+                        List<Map<String, Object>> responseDataList = g.fromJson(responseData, List.class);
+
+                        for (int index = 0; index < responseDataList.size(); index++){
+                            Map<String, Object> listing_json = responseDataList.get(index);
+                            JSONObject listing_obj = new JSONObject(listing_json);
+                            String listing_title = listing_obj.getString("title");
+                            String listing_photo = listing_obj.getJSONArray("images").get(0).toString();
+                            // Information taken to individual listing
+                            String listing_id = listing_obj.getString("_id");
+                            HashMap<String, String> additionalInfo = new HashMap<>();
+                            additionalInfo.put("owner_id", listing_obj.getString("userId"));
+                            additionalInfo.put("description", listing_obj.getString("description"));
+                            additionalInfo.put("housingType", listing_obj.getString("housingType"));
+                            additionalInfo.put("listingDate", listing_obj.getString("listingDate"));
+                            additionalInfo.put("moveInDate", listing_obj.getString("moveInDate"));
+                            additionalInfo.put("petFriendly", listing_obj.getString("petFriendly"));
+
+                            recyclerDataArrayList.add(new ListingsRecyclerData(listing_title, listing_photo, listing_id, additionalInfo));
+                        }
+
+                        // added data from arraylist to adapter class.
+                        ListingsRecyclerViewAdapter adapter = new ListingsRecyclerViewAdapter(recyclerDataArrayList, ListingsFragment.this, view.getContext());
+
+                        // setting grid layout manager to implement grid view.
+                        // in this method '2' represents number of columns to be displayed in grid view.
+                        GridLayoutManager layoutManager = new GridLayoutManager(view.getContext(), view_cols);
+
+                        // at last set adapter to recycler view.
+                        recyclerView.setLayoutManager(layoutManager);
+                        recyclerView.setAdapter(adapter);
+                    } catch (IOException e){
+                        e.printStackTrace();
+                    } catch (JSONException e) {
+                        throw new RuntimeException(e);
+                    }
+                });
+            }
+        });
+    }
+    public void getOwnedListings(OkHttpClient client, View view, Activity act, String user_id){
+        Request request = new Request.Builder().url(Constants.baseServerURL + Constants.listingByUserIdEndpoint + user_id).build();
+        Log.d(String.format("%s: OWNED", TAG), Constants.baseServerURL + Constants.listingByUserIdEndpoint + user_id);
         client.newCall(request).enqueue(new Callback() {
             @Override
             public void onFailure(@NonNull Call call, @NonNull IOException e) {

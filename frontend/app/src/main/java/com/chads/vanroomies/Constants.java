@@ -8,4 +8,6 @@ public class Constants {
     final static String listingByUserIdEndpoint = "/api/listings/user/"; // GET, needs user_id appended
     final static String listingByListingIdEndpoint = "/api/listings/"; // GET/PUT, needs listing_id appended
     final static String userEndpoint = "/api/users/"; // GET/PUT/DELETE needs user_id appended. POST does not.
+    public static String listingByRecommendationsEndpoint(String user_id){return String.format("/api/users/%s/recommendations/listings", user_id);} //GET, needs userId
+
 }
