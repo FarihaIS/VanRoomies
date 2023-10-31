@@ -13,64 +13,66 @@ import java.util.ArrayList;
 import java.util.Map;
 
 public class ChatListAdapter extends RecyclerView.Adapter {
-    private Context chatListContext;
-    private ArrayList<Map.Entry<UserProfile, ArrayList<ChatMessage>>> chatListMessages;
-    private String chatListUserId;
+    private Context context;
+    private ArrayList<Map.Entry<UserProfile, ArrayList<ChatMessage>>> chats;
+    // TODO: If defined somewhere else, can get rid of userId
+    private String userId;
 
-    public ChatListAdapter(Context context, Map<UserProfile, ArrayList<ChatMessage>> messages, String userId) {
-        this.chatListContext = context;
-        this.chatListMessages = new ArrayList<>(messages.entrySet());
-        this.chatListUserId = userId;
+    public ChatListAdapter(Context context, Map<UserProfile, ArrayList<ChatMessage>> chats, String userId) {
+        this.context = context;
+        this.chats = new ArrayList<>(chats.entrySet());
+        this.userId = userId;
     }
 
     @Override
-    public int getItemCount() { return chatListMessages.size(); }
+    public int getItemCount() { return chats.size(); }
 
     @Override
     public ChatListHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        View view = LayoutInflater.from(chatListContext).inflate(R.layout.row_chat, parent, false);
+        View view = LayoutInflater.from(context).inflate(R.layout.row_chat, parent, false);
         return new ChatListHolder(view);
     }
 
     @Override
     public void onBindViewHolder(@NonNull RecyclerView.ViewHolder holder, final int position) {
-        Map.Entry<UserProfile, ArrayList<ChatMessage>> entry = chatListMessages.get(position);
+        Map.Entry<UserProfile, ArrayList<ChatMessage>> entry = chats.get(position);
         UserProfile otherUserProfile = entry.getKey();
         ArrayList<ChatMessage> otherUserMessages = entry.getValue();
 
-        String otherUserName = otherUserProfile.getUserProfileName();
+        String otherUserName = otherUserProfile.getName();
         if (otherUserName.isEmpty()) {
-            ((ChatListHolder) holder).name.setText("First Last");
+            ((ChatListHolder) holder).nameView.setText("First Last");
         }
         else {
-            ((ChatListHolder) holder).name.setText(otherUserName);
+            ((ChatListHolder) holder).nameView.setText(otherUserName);
         }
 
-        int otherUserImage = otherUserProfile.getUserProfileImageId();
-        if (otherUserImage == -1) {
-            ((ChatListHolder) holder).image.setImageResource(R.drawable.ic_profile);
+        String otherUserImage = otherUserProfile.getImageString();
+        if (otherUserImage.isEmpty()) {
+            ((ChatListHolder) holder).imageView.setImageResource(R.drawable.ic_profile);
         }
         else {
-            ((ChatListHolder) holder).image.setImageResource(otherUserImage);
+            // TODO: Figure out how to encode from base64 string to image
+            ((ChatListHolder) holder).imageView.setImageResource(otherUserImage);
         }
 
         holder.itemView.setOnClickListener(v -> {
-            Intent chatChannelIntent = new Intent(chatListContext, ChatChannelActivity.class);
-            chatChannelIntent.putExtra("thisUserId", chatListUserId);
+            Intent chatChannelIntent = new Intent(context, ChatChannelActivity.class);
+            chatChannelIntent.putExtra("thisUserId", userId);
             chatChannelIntent.putExtra("otherUserProfile", otherUserProfile);
             chatChannelIntent.putExtra("otherUserMessages", otherUserMessages);
-            chatListContext.startActivity(chatChannelIntent);
+            context.startActivity(chatChannelIntent);
         });
     }
 
     public static class ChatListHolder extends RecyclerView.ViewHolder {
-        ImageView image;
-        TextView name;
+        ImageView imageView;
+        TextView nameView;
 
         ChatListHolder(@NonNull View itemView) {
             super(itemView);
-            image = itemView.findViewById(R.id.chat_row_image);
-            name = itemView.findViewById(R.id.chat_row_name);
+            imageView = itemView.findViewById(R.id.chat_row_image);
+            nameView = itemView.findViewById(R.id.chat_row_name);
         }
     }
 }

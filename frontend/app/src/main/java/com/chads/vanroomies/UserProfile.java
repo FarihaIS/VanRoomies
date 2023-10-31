@@ -3,61 +3,61 @@ package com.chads.vanroomies;
 import java.io.Serializable;
 
 public class UserProfile implements Serializable {
-    private String userProfileId;
-    private String userProfileName;
-    private int userProfileAge;
-    private String userProfilePreferences;
-    private int userProfileImageId;
+    private String id;
+    private String name;
+    private int age;
+    private String preferences;
+    private String imageString;
 
     public UserProfile(String id) {
 
-        this.userProfileId = id;
-        this.userProfileName = "";
-        this.userProfileAge = -1;
-        this.userProfilePreferences = "";
-        this.userProfileImageId = -1;
+        this.id = id;
+        this.name = "";
+        this.age = -1;
+        this.preferences = "";
+        this.imageString = "";
     }
 
-    public UserProfile(String id, String name, int age, String preferences, int imageId) {
-        this.userProfileId = id;
-        this.userProfileName = name;
-        this.userProfileAge = age;
-        this.userProfilePreferences = preferences;
-        this.userProfileImageId = imageId;
+    public UserProfile(String id, String name, int age, String preferences, String imageString) {
+        this.id = id;
+        this.name = name;
+        this.age = age;
+        this.preferences = preferences;
+        this.imageString = imageString;
     }
 
-    public String getUserProfileId() { return userProfileId; }
-    public String getUserProfileName() {
-        return userProfileName;
+    public String getId() { return id; }
+    public String getName() {
+        return name;
     }
 
-    public int getUserProfileAge() {
-        return userProfileAge;
+    public int getAge() {
+        return age;
     }
 
-    public String getUserProfilePreferences() {
-        return userProfilePreferences;
+    public String getPreferences() {
+        return preferences;
     }
 
-    public int getUserProfileImageId() {
-        return userProfileImageId;
+    public String getImageString() {
+        return imageString;
     }
 
-    public void setUserProfileId(String id) { this.userProfileId = id; }
+    public void setId(String id) { this.id = id; }
 
-    public void setUserProfileName(String name) {
-        this.userProfileName = name;
+    public void setName(String name) {
+        this.name = name;
     }
 
-    public void setUserProfileAge(int age) {
-        this.userProfileAge = age;
+    public void setAge(int age) {
+        this.age = age;
     }
 
-    public void setUserProfilePreferences(String preferences) {
-        this.userProfilePreferences = preferences;
+    public void setPreferences(String preferences) {
+        this.preferences = preferences;
     }
 
-    public void setUserProfileImageId(int imageId) {
-        this.userProfileImageId = imageId;
+    public void setImageString(String imageString) {
+        this.imageString = imageString;
     }
 }

@@ -10,22 +10,22 @@ import android.widget.TextView;
 import java.util.ArrayList;
 
 public class MatchDeckAdapter extends BaseAdapter {
-    private ArrayList<UserProfile> matchDeckUsers;
-    private Context matchDeckContext;
+    private ArrayList<UserProfile> users;
+    private Context context;
 
     public MatchDeckAdapter(ArrayList<UserProfile> data, Context context) {
-        this.matchDeckUsers = data;
-        this.matchDeckContext = context;
+        this.users = data;
+        this.context = context;
     }
 
     @Override
     public int getCount() {
-        return matchDeckUsers.size();
+        return users.size();
     }
 
     @Override
     public Object getItem(int position) {
-        return matchDeckUsers.get(position);
+        return users.get(position);
     }
 
     @Override
@@ -38,13 +38,14 @@ public class MatchDeckAdapter extends BaseAdapter {
         View v = convertView;
 
         if (v == null) {
-            v = LayoutInflater.from(matchDeckContext).inflate(R.layout.matches_layout, parent, false);
+            v = LayoutInflater.from(context).inflate(R.layout.matches_layout, parent, false);
         }
 
-        ((TextView) v.findViewById(R.id.matches_name)).setText(matchDeckUsers.get(position).getUserProfileName());
-        ((TextView) v.findViewById(R.id.matches_age)).setText(String.valueOf(matchDeckUsers.get(position).getUserProfileAge()));
-        ((TextView) v.findViewById(R.id.matches_preferences)).setText(matchDeckUsers.get(position).getUserProfilePreferences());
-        ((ImageView) v.findViewById(R.id.matches_image)).setImageResource(matchDeckUsers.get(position).getUserProfileImageId());
+        ((TextView) v.findViewById(R.id.matches_name)).setText(users.get(position).getName());
+        ((TextView) v.findViewById(R.id.matches_age)).setText(String.valueOf(users.get(position).getAge()));
+        ((TextView) v.findViewById(R.id.matches_preferences)).setText(users.get(position).getPreferences());
+        // TODO: Figure out how to convert base64 string to image
+        ((ImageView) v.findViewById(R.id.matches_image)).setImageResource(users.get(position).getImageString());
 
         return v;
     }

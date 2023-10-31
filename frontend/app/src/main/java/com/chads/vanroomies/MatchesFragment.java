@@ -70,10 +70,10 @@ public class MatchesFragment extends Fragment {
         cardStack = v.findViewById(R.id.matches_swipe_deck);
 
         // TODO: do GET request to show updated list of matched users
-        userMatches.add(new UserProfile("abc00", "Denis", 45, "Late-night owl, messy, smokes regularly", R.drawable.ic_listings));
-        userMatches.add(new UserProfile("def11", "Fariha", 23, "Early riser, clean, 2-bedroom house", R.drawable.ic_profile));
-        userMatches.add(new UserProfile("ghi22", "Matt", 30, "Early-riser, drinks regularly", R.drawable.ic_match));
-        userMatches.add(new UserProfile("jkl33", "Max", 83, "Early-riser, clean, no smoking, no drinking", R.drawable.ic_chat));
+        userMatches.add(new UserProfile("abc00", "Denis", 45, "Late-night owl, messy, smokes regularly", ""));
+        userMatches.add(new UserProfile("def11", "Fariha", 23, "Early riser, clean, 2-bedroom house", ""));
+        userMatches.add(new UserProfile("ghi22", "Matt", 30, "Early-riser, drinks regularly", ""));
+        userMatches.add(new UserProfile("jkl33", "Max", 83, "Early-riser, clean, no smoking, no drinking", ""));
 
         updateMatchesFragmentLayout(v);
 

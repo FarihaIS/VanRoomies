@@ -15,25 +15,25 @@ import java.util.Locale;
 public class ChatChannelAdapter extends RecyclerView.Adapter {
     private static final int VIEW_TYPE_MESSAGE_SENT = 1;
     private static final int VIEW_TYPE_MESSAGE_RECEIVED = 0;
-    private Context chatChannelContext;
-    final private ArrayList<ChatMessage> chatChannelMessages;
-    final private String chatChannelUserId;
+    private Context context;
+    final private ArrayList<ChatMessage> messages;
+    final private String userId;
 
-    public ChatChannelAdapter(Context context, ArrayList<ChatMessage> messageList, String userId) {
-        chatChannelContext = context;
-        chatChannelMessages = messageList;
-        chatChannelUserId = userId;
+    public ChatChannelAdapter(Context context, ArrayList<ChatMessage> messages, String userId) {
+        this.context = context;
+        this.messages = messages;
+        this.userId = userId;
     }
 
     @Override
     public int getItemCount() {
-        return chatChannelMessages.size();
+        return messages.size();
     }
 
     @Override
     public int getItemViewType(int position) {
-        ChatMessage message = (ChatMessage) chatChannelMessages.get(position);
-        if (message.getChatSender().equals(chatChannelUserId)) {
+        ChatMessage message = messages.get(position);
+        if (message.getChatSender().equals(userId)) {
             return VIEW_TYPE_MESSAGE_SENT;
         }
         else {
@@ -46,12 +46,12 @@ public class ChatChannelAdapter extends RecyclerView.Adapter {
         View view;
 
         if (viewType == VIEW_TYPE_MESSAGE_SENT) {
-            view = LayoutInflater.from(chatChannelContext)
+            view = LayoutInflater.from(context)
                     .inflate(R.layout.item_chat_me, parent, false);
             return new MessageHolder(view, true);
         }
         else {
-            view = LayoutInflater.from(chatChannelContext)
+            view = LayoutInflater.from(context)
                     .inflate(R.layout.item_chat_other, parent, false);
             return new MessageHolder(view, false);
         }
@@ -59,7 +59,7 @@ public class ChatChannelAdapter extends RecyclerView.Adapter {
 
     @Override
     public void onBindViewHolder(@NonNull RecyclerView.ViewHolder holder, int position) {
-        ChatMessage message = chatChannelMessages.get(position);
+        ChatMessage message = messages.get(position);
         ((MessageHolder) holder).bind(message);
     }
 

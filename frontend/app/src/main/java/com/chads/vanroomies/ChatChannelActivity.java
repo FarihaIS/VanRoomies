@@ -61,7 +61,7 @@ public class ChatChannelActivity extends AppCompatActivity {
         JSONObject messageObj = new JSONObject();
         try {
             messageObj.put("content", message);
-            messageObj.put("to", chatUser.getUserProfileId());
+            messageObj.put("to", chatUser.getId());
         } catch (JSONException e) {
             throw new RuntimeException(e);
         }
@@ -103,19 +103,20 @@ public class ChatChannelActivity extends AppCompatActivity {
         chatChannelRecycler.setLayoutManager(new LinearLayoutManager(this));
 
         chatChannelImage = findViewById(R.id.chat_image);
-        if (chatUser.getUserProfileImageId() == -1) {
+        if (chatUser.getImageString().isEmpty()) {
             chatChannelImage.setImageResource(R.drawable.ic_profile);
         }
         else {
-            chatChannelImage.setImageResource(chatUser.getUserProfileImageId());
+            // TODO: Figure out how to encode base64 string to image
+            chatChannelImage.setImageResource(chatUser.getImageString());
         }
 
         chatChannelName = findViewById(R.id.chat_name);
-        if (chatUser.getUserProfileName().isEmpty()) {
+        if (chatUser.getName().isEmpty()) {
             chatChannelName.setText("First Last");
         }
         else {
-            chatChannelName.setText(chatUser.getUserProfileName());
+            chatChannelName.setText(chatUser.getName());
         }
 
         chatChannelText = findViewById(R.id.edit_chat_message);
