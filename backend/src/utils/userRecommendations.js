@@ -1,15 +1,5 @@
 const { NONSHAREABLE, TWOBEDROOM, HABITS, NEUTRAL, POSINF, NEGINF } = require('./constants');
-
-/**
- * Rank a set of users based on their corresponding aggregate score.
- *
- * @param {Array<Array<Object>>} userScores - [userId, score] pair
- * @returns {Array<ObjectID>} - user IDs ranked based on their score
- */
-const generateUserRecommendations = (userScores) => {
-    const userRanking = userScores.sort((user1, user2) => user2[1] - user1[1]);
-    return userRanking.map((user) => user[0]);
-};
+const { calculatePetFriendlinessScore } = require('./utils');
 
 /**
  * Calculate compatibility score for each possible match with the current user
@@ -24,7 +14,11 @@ const generateUserScores = (currentUserPreferences, potentialMatchesPreferences)
     potentialMatchesPreferences.forEach((matchPreferences) => {
         let currentMatchScore = 0;
 
-        const categoricalMetrics = [aggregateCategorialPreferenceScores, petFriendlinessScore, housingTypeScore];
+        const categoricalMetrics = [
+            aggregateCategorialPreferenceScores,
+            calculatePetFriendlinessScore,
+            housingTypeScore,
+        ];
         const numericalMetrics = [roommateCountScore, leaseLengthScore, priceRangeScore];
 
         categoricalMetrics.forEach((metric) => {
@@ -60,17 +54,6 @@ const aggregateCategorialPreferenceScores = (currentUser, possibleMatch) => {
     });
 
     return score;
-};
-
-/**
- * This helper will aggregrate whether the users have the same pet preferences or not
- *
- * @param {User Object} currentUser - preferences of current user seeking roommates
- * @param {User Object} possibleMatch - preferences of potential roommates
- * @returns {Number} - matching score
- */
-const petFriendlinessScore = (currentUser, possibleMatch) => {
-    return currentUser.petFriendly === possibleMatch.petFriendly;
 };
 
 /**
@@ -210,4 +193,4 @@ const calculateMinMaxRanges = (currentUser, potentialMatches) => {
     };
 };
 
-module.exports = { generateUserRecommendations, generateUserScores };
+module.exports = { generateUserScores };

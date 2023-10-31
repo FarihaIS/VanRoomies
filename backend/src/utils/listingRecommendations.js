@@ -1,15 +1,5 @@
 const { NONSHAREABLE, POSINF, NEGINF } = require('./constants');
-
-/**
- * Rank a set of listings based on their corresponding aggregate score.
- *
- * @param {Array<Array<Object>>} userScores - (userId, score) pair
- * @returns {Array<ObjectID>} - listing IDs ranked based on their score
- */
-const generateListingRecommendations = (listingScores) => {
-    const listingRanking = listingScores.sort((listing1, listing2) => listing2[1] - listing1[1]);
-    return listingRanking.map((listing) => listing[0]);
-};
+const { calculatePetFriendlinessScore } = require('./utils');
 
 /**
  * Calculate compatibility score for each possible listing with the current user
@@ -27,7 +17,7 @@ const generateListingScores = (userPreferences, listings) => {
         let listingScore = 0;
 
         // Need to perform score calculation based on: [housingType, rentalPrice, petFriendly, moveInDate]
-        const metrics = [calculateHousingTypeScore, calculatePetFriendliness, calculatePriceScore];
+        const metrics = [calculateHousingTypeScore, calculatePetFriendlinessScore, calculatePriceScore];
 
         metrics.forEach((metric) => {
             listingScore += metric(userPreferences, listing);
@@ -55,17 +45,6 @@ const calculateHousingTypeScore = (userPreferences, listing) => {
         return 0.5;
     }
     return 0;
-};
-
-/**
- * Compute match score for type of pet friendliness between user preferences and given listing
- *
- * @param {Object} userPreferences - preferences of current user seeking roommates
- * @param {Object} listing - potential listing match
- * @returns {Number} - matching score normalized between 0 and 1
- */
-const calculatePetFriendliness = (userPreferences, listing) => {
-    return userPreferences.petFriendly === listing.petFriendly;
 };
 
 /**
@@ -108,4 +87,4 @@ const getClosestFarthestMoveDates = (userPreferences, listings) => {
     return [closestListing, farthestListing];
 };
 
-module.exports = { generateListingRecommendations, generateListingScores };
+module.exports = { generateListingScores };
