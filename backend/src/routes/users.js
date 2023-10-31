@@ -46,7 +46,7 @@ router.post('/login', validateGoogleIdToken, async (req, res, next) => {
         const currentUser = await User.findOne({ email: req.body.email });
         if (currentUser) {
             // Set status 200 if user user already exists
-            res.status(200).json(currentUser);
+            res.status(200).json({ userId: currentUser._id });
         } else {
             const user = new User({
                 firstName: req.body.firstName,
@@ -56,7 +56,7 @@ router.post('/login', validateGoogleIdToken, async (req, res, next) => {
             const savedUser = await user.save();
             const userToken = generateAuthenticationToken(savedUser);
             // Set status 201 if a new user was created
-            res.status(201).json({ userToken: userToken, user: savedUser });
+            res.status(201).json({ userId: savedUser._id, userToken: userToken });
         }
     } catch (err) {
         res.status(400).json({ error: err.message });
