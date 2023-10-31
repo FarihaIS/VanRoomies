@@ -23,11 +23,28 @@
     <string name="listings_image">placeholder</string>
     <string name="listings_title">placeholder</string>
 
+    <!-- View Listings Activity -->
+    <string name="listings_desc">Listing Desc</string>
+    <string name="listings_desc_text">This is the listing description.</string>
+    <string name="listingDate">Listed Date</string>
+    <string name="move_in_date">Move-in Date</string>
+    <string name="listing_id">ID</string>
+    <string name="pet_friendly">Pet Friendly</string>
+    <string name="posted">Posted:</string>
+    <string name="move">Move-In:</string>
+    <string name="pets">Pets:</string>
+    <string name="allowed">Allowed</string>
+    <string name="not_allowed">Not Allowed</string>
+    <string name="datetime_regex">T</string>
 
     <!-- Content Descriptions -->
     <string name="home_screen_logo">App Logo</string>
     <string name="profile_name">Test Person</string>
     <string name="profile_name_desc">Profile Name</string>
     <string name="profile_image_desc">Profile Picture</string>
+    <string name="listing_name">Test Listing</string>
+    <string name="listing_name_desc">Listing Title</string>
+    <string name="listing_image_desc">Listing Picture</string>
+    <string name="housing_type">Housing Type</string>
 
 </resources>

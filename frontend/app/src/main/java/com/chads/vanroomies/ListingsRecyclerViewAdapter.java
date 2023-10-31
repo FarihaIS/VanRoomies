@@ -10,16 +10,20 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 import androidx.annotation.NonNull;
+import androidx.cardview.widget.CardView;
 import androidx.recyclerview.widget.RecyclerView;
 import java.util.ArrayList;
 
 public class ListingsRecyclerViewAdapter extends RecyclerView.Adapter<ListingsRecyclerViewAdapter.RecyclerViewHolder> {
 
     private ArrayList<ListingsRecyclerData> listingsDataArrayList;
+    private ListingsItemSelectListener listener;
+
     private Context mcontext;
 
-    public ListingsRecyclerViewAdapter(ArrayList<ListingsRecyclerData> recyclerDataArrayList, Context mcontext) {
+    public ListingsRecyclerViewAdapter(ArrayList<ListingsRecyclerData> recyclerDataArrayList, ListingsItemSelectListener listener, Context mcontext) {
         this.listingsDataArrayList = recyclerDataArrayList;
+        this.listener = listener;
         this.mcontext = mcontext;
     }
 
@@ -40,6 +44,13 @@ public class ListingsRecyclerViewAdapter extends RecyclerView.Adapter<ListingsRe
         byte[] decodedString = Base64.decode(recyclerData.getImageString(), Base64.DEFAULT);
         Bitmap decodedByte = BitmapFactory.decodeByteArray(decodedString, 0, decodedString.length);
         holder.listingIV.setImageBitmap(decodedByte);
+
+        holder.listingCard.setOnClickListener(new View.OnClickListener(){
+            @Override
+            public void onClick(View view){
+                listener.onItemClicked(recyclerData);
+            }
+        });
     }
 
     @Override
@@ -52,11 +63,14 @@ public class ListingsRecyclerViewAdapter extends RecyclerView.Adapter<ListingsRe
 
         private TextView listingTV;
         private ImageView listingIV;
+        private CardView listingCard;
 
         public RecyclerViewHolder(@NonNull View itemView) {
             super(itemView);
             listingTV = itemView.findViewById(R.id.idTVListing);
             listingIV = itemView.findViewById(R.id.idIVListing);
+            listingCard = itemView.findViewById(R.id.listingCard);
         }
+
     }
 }

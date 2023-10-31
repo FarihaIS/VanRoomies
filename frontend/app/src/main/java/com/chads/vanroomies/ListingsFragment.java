@@ -1,6 +1,8 @@
 package com.chads.vanroomies;
 
 import android.app.Activity;
+
+import android.content.Intent;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
@@ -21,6 +23,7 @@ import org.json.JSONObject;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -35,7 +38,7 @@ import okhttp3.Response;
  * Use the {@link ListingsFragment#newInstance} factory method to
  * create an instance of this fragment.
  */
-public class ListingsFragment extends Fragment {
+public class ListingsFragment extends Fragment implements ListingsItemSelectListener{
     final static String TAG = "ListingsFragment";
     private OkHttpClient httpClient;
     final static Gson g = new Gson();
@@ -115,13 +118,26 @@ public class ListingsFragment extends Fragment {
                         for (int index = 0; index < responseDataList.size(); index++){
                             Map<String, Object> listingJson = responseDataList.get(index);
                             JSONObject listing_obj = new JSONObject(listingJson);
+
+                            // Information shown in list
                             String listing_title = listing_obj.getString("title");
                             String listing_photo = listing_obj.getJSONArray("images").get(0).toString();
-                            recyclerDataArrayList.add(new ListingsRecyclerData(listing_title, listing_photo));
+
+                            // Information taken to individual listing
+                            String listing_id = listing_obj.getString("_id");
+                            HashMap<String, String> additionalInfo = new HashMap<>();
+                            additionalInfo.put("owner_id", listing_obj.getString("userId"));
+                            additionalInfo.put("description", listing_obj.getString("description"));
+                            additionalInfo.put("housingType", listing_obj.getString("housingType"));
+                            additionalInfo.put("listingDate", listing_obj.getString("listingDate"));
+                            additionalInfo.put("moveInDate", listing_obj.getString("moveInDate"));
+                            additionalInfo.put("petFriendly", listing_obj.getString("petFriendly"));
+
+                            recyclerDataArrayList.add(new ListingsRecyclerData(listing_title, listing_photo, listing_id, additionalInfo));
                         }
 
                         // added data from arraylist to adapter class.
-                        ListingsRecyclerViewAdapter adapter = new ListingsRecyclerViewAdapter(recyclerDataArrayList, view.getContext());
+                        ListingsRecyclerViewAdapter adapter = new ListingsRecyclerViewAdapter(recyclerDataArrayList, ListingsFragment.this, view.getContext());
 
                         // setting grid layout manager to implement grid view.
                         // in this method '2' represents number of columns to be displayed in grid view.
@@ -138,5 +154,18 @@ public class ListingsFragment extends Fragment {
                 });
             }
         });
+    }
+
+    @Override
+    public void onItemClicked(ListingsRecyclerData recyclerData) {
+        Intent intent = new Intent(getActivity(), ViewListingActivity.class);
+        Bundle b = new Bundle();
+        b.putString("listing_id", recyclerData.getListingId());
+        b.putString("title", recyclerData.getTitle());
+        b.putString("photo_string", recyclerData.getImageString());
+        b.putSerializable("info", recyclerData.getAdditionalInfo());
+        intent.putExtras(b);
+
+        startActivity(intent);
     }
 }
