@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.Bundle;
@@ -65,8 +66,6 @@ public class ProfileFragment extends Fragment {
 
     private ImageView profilePicture;
     private Button editDescButton;
-    // TODO: Keep track of userId and replace the one below
-    private String userId = "65432c8d6ae83d9fc72e0900";
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
     private static final String ARG_PARAM1 = "param1";
     private static final String ARG_PARAM2 = "param2";
@@ -111,6 +110,9 @@ public class ProfileFragment extends Fragment {
                              Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_profile, container, false);
         httpClient = HTTPSClientFactory.createClient(getActivity().getApplication());
+        SharedPreferences sharedPref = getActivity().getSharedPreferences(Constants.userData, Context.MODE_PRIVATE);
+        String userId = sharedPref.getString(Constants.userIdKey, Constants.userDefault);
+        Log.d(TAG, sharedPref.getString(Constants.userIdKey, Constants.userDefault));
 
         // For testing connectivity with backend
         String result = GetHelloWorldTest.testGetHelloWorld(httpClient , getActivity());
@@ -312,8 +314,12 @@ public class ProfileFragment extends Fragment {
                         Map result = g.fromJson(responseData, Map.class);
                         profileName.setText(String.format("%s %s", result.get("firstName"), result.get("lastName")));
                         profileEmail.setText((CharSequence) result.get("email"));
-                        profileDesc.setText((CharSequence) result.get("bio"));
-
+                        if (result.get("bio") != null){
+                            profileDesc.setText((CharSequence) result.get("bio"));
+                        }
+                        else {
+                            profileDesc.setText("");
+                        }
                         profileBirthday.setVisibility(view.INVISIBLE);
 //                        if (result.get("birthday") != null) {
 //                            String birthday = result.get("birthday").toString();

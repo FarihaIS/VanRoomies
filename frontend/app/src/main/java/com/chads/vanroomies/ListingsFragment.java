@@ -51,8 +51,6 @@ import okhttp3.Response;
 public class ListingsFragment extends Fragment implements ListingsItemSelectListener{
     final static String TAG = "ListingsFragment";
     private OkHttpClient httpClient;
-    // TODO: Maintain user_id within the app and use it as an input here
-    String userId = "65402f35e10ec75253936947";
     public SwitchMaterial toggleButton;
     public Button addListingButton;
     public TextView titleText;
@@ -108,11 +106,11 @@ public class ListingsFragment extends Fragment implements ListingsItemSelectList
         recyclerView = view.findViewById(R.id.idListingsRV);
 
         SharedPreferences sharedPref = getActivity().getSharedPreferences(Constants.userData, Context.MODE_PRIVATE);
-        String user_id = sharedPref.getString(Constants.userIdKey, Constants.userDefault);
+        String userId = sharedPref.getString(Constants.userIdKey, Constants.userDefault);
         Log.d(TAG, sharedPref.getString(Constants.userIdKey, Constants.userDefault));
 
         httpClient = HTTPSClientFactory.createClient(getActivity().getApplication());
-        getRecommendedListings(httpClient, view, getActivity(), user_id);
+        getRecommendedListings(httpClient, view, getActivity(), userId);
 
         // Setting up Toggle Button
         toggleButton = view.findViewById(R.id.listings_toggle);
