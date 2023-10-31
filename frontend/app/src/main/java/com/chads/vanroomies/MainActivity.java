@@ -33,6 +33,7 @@ public class MainActivity extends AppCompatActivity {
     private int RC_SIGN_IN = 1;
     private OkHttpClient httpClient;
     final static Gson g = new Gson();
+    private String tempUserId;
 
     private GoogleSignInClient mGoogleSignInClient;
 
@@ -133,8 +134,11 @@ public class MainActivity extends AppCompatActivity {
 
         @Override
         protected void onPostExecute(String result) {
-            Intent listingsIntent = new Intent(MainActivity.this, HomeActivity.class); // intent for listings
-            startActivity(listingsIntent);
+            Intent profileIntent = new Intent(MainActivity.this, HomeActivity.class); // intent for fragments
+            Bundle b = new Bundle();
+            b.putString("userId", result);
+            profileIntent.putExtras(b);
+            startActivity(profileIntent);
         }
     }
 

@@ -110,9 +110,15 @@ public class ProfileFragment extends Fragment {
                              Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_profile, container, false);
         httpClient = HTTPSClientFactory.createClient(getActivity().getApplication());
-        SharedPreferences sharedPref = getActivity().getSharedPreferences(Constants.userData, Context.MODE_PRIVATE);
-        String userId = sharedPref.getString(Constants.userIdKey, Constants.userDefault);
-        Log.d(TAG, sharedPref.getString(Constants.userIdKey, Constants.userDefault));
+
+        // Bundle used for the first time this is loaded in-case the information isn't done saving
+        Bundle b = getActivity().getIntent().getExtras();
+        String userId = b.getString("userId");
+        if (userId == null){
+            SharedPreferences sharedPref = getActivity().getSharedPreferences(Constants.userData, Context.MODE_PRIVATE);
+            userId = sharedPref.getString(Constants.userIdKey, Constants.userDefault);
+        }
+        Log.d(TAG, userId);
 
         // For testing connectivity with backend
         String result = GetHelloWorldTest.testGetHelloWorld(httpClient , getActivity());
@@ -144,31 +150,32 @@ public class ProfileFragment extends Fragment {
 
         // Set up button for editing user bio
         editDescButton = view.findViewById(R.id.edit_desc_button);
+        String finalUserId = userId;
         editDescButton.setOnClickListener(temp -> {
-                    AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(getContext());
-                    // Initialize the edit box
-                    final EditText et = new EditText(getContext());
-                    et.setText(profileDesc.getText());
-                    et.setHeight(pxFromDp(getContext(), 250));
-                    alertDialogBuilder.setView(et);
+            AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(getContext());
+            // Initialize the edit box
+            final EditText et = new EditText(getContext());
+            et.setText(profileDesc.getText());
+            et.setHeight(pxFromDp(getContext(), 250));
+            alertDialogBuilder.setView(et);
 
-                    alertDialogBuilder.setCancelable(true).setPositiveButton("Save", new DialogInterface.OnClickListener() {
-                        public void onClick(DialogInterface dialog, int id) {
-                            dialog.dismiss();
-                            try {
-                                updateUserBio(httpClient, view, getActivity(), userId, et.getText().toString());
-                            } catch (JSONException e) {
-                                throw new RuntimeException(e);
-                            }
-                        }
-                    }).setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
-                        public void onClick(DialogInterface dialog, int id) {
-                            dialog.dismiss();
-                        }
-                    });
-                    AlertDialog alertDialog = alertDialogBuilder.create();
-                    alertDialog.show();
-                });
+            alertDialogBuilder.setCancelable(true).setPositiveButton("Save", new DialogInterface.OnClickListener() {
+                public void onClick(DialogInterface dialog, int id) {
+                    dialog.dismiss();
+                    try {
+                        updateUserBio(httpClient, view, getActivity(), finalUserId, et.getText().toString());
+                    } catch (JSONException e) {
+                        throw new RuntimeException(e);
+                    }
+                }
+            }).setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+                public void onClick(DialogInterface dialog, int id) {
+                    dialog.dismiss();
+                }
+            });
+            AlertDialog alertDialog = alertDialogBuilder.create();
+            alertDialog.show();
+        });
 
         // Set up button for editing user preferences
         editPreferencesButton = view.findViewById(R.id.edit_preferences_button);
