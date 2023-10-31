@@ -111,16 +111,16 @@ public class ChatFragment extends Fragment {
                 activity.runOnUiThread(() -> {
                     try {
                         String responseData = response.body().string();
-                        Type listType = new TypeToken<List<Conversation>>(){}.getType();
+                        Type listType = new TypeToken<List<ChatConversation>>(){}.getType();
                         Log.d(TAG, "responseData for Conversations is " + responseData);
-                        List<Conversation> allConversations = gson.fromJson(responseData, listType);
+                        List<ChatConversation> allConversations = gson.fromJson(responseData, listType);
 
                         // Iterate through all user conversations
-                        for (Conversation conversation : allConversations) {
+                        for (ChatConversation conversation : allConversations) {
                             UserProfile user;
                             ArrayList<ChatMessage> eachMessageList = new ArrayList<>();
 
-                            List<String> userPair = conversation.users;
+                            List<String> userPair = conversation.getUsers();
                             if (userPair.get(0).equals(thisUserId)) {
                                 user = new UserProfile(userPair.get(1));
                             }
@@ -128,7 +128,7 @@ public class ChatFragment extends Fragment {
                                 user = new UserProfile(userPair.get(0));
                             }
 
-                            eachMessageList = conversation.messages;
+                            eachMessageList = conversation.getMessages();
 
                             // Check for null userId in case app crashes
                             if (user == null) {
@@ -173,14 +173,5 @@ public class ChatFragment extends Fragment {
                 });
             }
         });
-    }
-
-    static class Conversation {
-        String _id;
-        List<String> users;
-        ArrayList<ChatMessage> messages;
-        String __v;
-        public Conversation() {
-        }
     }
 }
