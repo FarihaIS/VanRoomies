@@ -157,10 +157,11 @@ public class ProfileFragment extends Fragment {
                         Map result = g.fromJson(responseData, Map.class);
                         profileName.setText(String.format("%s %s", result.get("firstName"), result.get("lastName")));
                         profileDesc.setText((CharSequence) result.get("bio"));
-                        byte[] decodedString = Base64.decode((String) result.get("profilePicture"), Base64.DEFAULT);
-                        Bitmap decodedByte = BitmapFactory.decodeByteArray(decodedString, 0, decodedString.length);
-                        profilePicture.setImageBitmap(decodedByte);
-
+                        if (result.get("profilePicture") != null){
+                            byte[] decodedString = Base64.decode((String) result.get("profilePicture"), Base64.DEFAULT);
+                            Bitmap decodedByte = BitmapFactory.decodeByteArray(decodedString, 0, decodedString.length);
+                            profilePicture.setImageBitmap(decodedByte);
+                        }
                     } catch (IOException e){
                         e.printStackTrace();
                     }
