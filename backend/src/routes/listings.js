@@ -1,6 +1,6 @@
 const express = require('express');
 const Listing = require('../models/listingModel');
-const { authenticateJWT } = require('../authentication/jwtAuthentication');
+// const { authenticateJWT } = require('../authentication/jwtAuthentication');
 const router = express.Router();
 
 /**

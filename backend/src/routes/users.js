@@ -4,7 +4,7 @@ const { default: mongoose } = require('mongoose');
 const Listing = require('../models/listingModel');
 const Preferences = require('../models/preferencesModel');
 const validateGoogleIdToken = require('../authentication/googleAuthentication');
-const { generateAuthenticationToken, authenticateJWT } = require('../authentication/jwtAuthentication');
+const { generateAuthenticationToken } = require('../authentication/jwtAuthentication');
 const router = express.Router();
 
 /**
