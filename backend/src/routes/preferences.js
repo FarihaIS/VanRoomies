@@ -140,7 +140,7 @@ router.get('/:userId/recommendations/listings', async (req, res, next) => {
         } else {
             let error = 'No matching listings available!';
             res.status(404).json({ error: error });
-            next(error);
+            next(new Error(error));
         }
     } catch (error) {
         res.status(400).json({ error: error.message });
