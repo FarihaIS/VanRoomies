@@ -83,17 +83,15 @@ public class ChatFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         View v = inflater.inflate(R.layout.fragment_chat, container, false);
+
         httpClient = HTTPSClientFactory.createClient(getActivity().getApplication());
         gson = new Gson();
         allChatMesssages = new HashMap<>();
-        chatListRecycler = v.findViewById(R.id.chatlistrecycle);
-
         // TODO: Get userId from backend
         thisUserId = "654013e0b19c872e994eac8b";
+        chatListRecycler = v.findViewById(R.id.chatlistrecycle);
 
-        // TODO: Get chatList from backend
         setAllChatMesssages(httpClient, getActivity(), v);
-//        setUserProfileNameAndImage(httpClient, getActivity());
 
         return v;
     }
@@ -118,8 +116,9 @@ public class ChatFragment extends Fragment {
                         // Iterate through all user conversations
                         for (ChatConversation conversation : allConversations) {
                             UserProfile user;
-                            ArrayList<ChatMessage> eachMessageList = new ArrayList<>();
+                            ArrayList<ChatMessage> eachMessageList;
 
+                            // Get userId of both users in a conversation
                             List<String> userPair = conversation.getUsers();
                             if (userPair.get(0).equals(thisUserId)) {
                                 user = new UserProfile(userPair.get(1));
@@ -130,19 +129,20 @@ public class ChatFragment extends Fragment {
 
                             eachMessageList = conversation.getMessages();
 
-                            // Check for null userId in case app crashes
+                            // Check for null userId
                             if (user == null) {
-                                Log.d(TAG, "Null userId while retrieving conversations");
+                                Log.d(TAG, "Null userId while retrieving conversation");
                             }
                             else {
                                 allChatMesssages.put(user, eachMessageList);
-                                chatListAdapter = new ChatListAdapter(v.getContext(), allChatMesssages, thisUserId);
-                                Log.d(TAG, "Created adapter");
-                                chatListRecycler.setAdapter((chatListAdapter));
-                                Log.d(TAG, "Adding user: " + user.getUserProfileId());
+                                // TODO: Get username and image for each conversation user
+//                                setUserProfileNameAndImage(httpClient, getActivity());
                             }
                         }
-                    } catch (IOException e){
+                        chatListAdapter = new ChatListAdapter(v.getContext(), allChatMesssages, thisUserId);
+                        chatListRecycler.setAdapter((chatListAdapter));
+                    }
+                    catch (IOException e) {
                         e.printStackTrace();
                     }
                 });
@@ -165,8 +165,7 @@ public class ChatFragment extends Fragment {
                     try {
                         String responseData = response.body().string();
                         Log.d(TAG, "responseData for Users is " + responseData);
-                        // TODO: Fix according to the right response data structure
-                        List<Map<String, List<Object>>> allConversations = gson.fromJson(responseData, List.class);
+                        // TODO: Complete according to the right response data structure
                     } catch (IOException e){
                         e.printStackTrace();
                     }
