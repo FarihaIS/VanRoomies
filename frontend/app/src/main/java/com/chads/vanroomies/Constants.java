@@ -24,4 +24,5 @@ public class Constants {
     final static String userData = "userData";
     final static String userIdKey = "userId";
     final static String userTokenKey = "userToken";
+    final static String userDefault = "DEFAULT";
 }

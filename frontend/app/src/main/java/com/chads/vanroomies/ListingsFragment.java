@@ -108,11 +108,11 @@ public class ListingsFragment extends Fragment implements ListingsItemSelectList
         recyclerView = view.findViewById(R.id.idListingsRV);
 
         SharedPreferences sharedPref = getActivity().getSharedPreferences(Constants.userData, Context.MODE_PRIVATE);
-        Log.d(TAG, sharedPref.getString(Constants.userIdKey, "DEFAULT"));
+        String user_id = sharedPref.getString(Constants.userIdKey, Constants.userDefault);
+        Log.d(TAG, sharedPref.getString(Constants.userIdKey, Constants.userDefault));
 
         httpClient = HTTPSClientFactory.createClient(getActivity().getApplication());
-        // TODO: Maintain user_id within the app and use it as an input here
-        getRecommendedListings(httpClient, view, getActivity());
+        getRecommendedListings(httpClient, view, getActivity(), user_id);
 
         // Setting up Toggle Button
         toggleButton = view.findViewById(R.id.listings_toggle);
