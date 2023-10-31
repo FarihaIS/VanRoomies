@@ -89,23 +89,17 @@ public class ChatFragment extends Fragment {
         chatListRecycler = v.findViewById(R.id.chatlistrecycle);
 
         // TODO: Get userId from backend
-        thisUserId = "6540111d3a6c1d73e153310c";
+        thisUserId = "654013e0b19c872e994eac8b";
 
         // TODO: Get chatList from backend
         setAllChatMesssages(httpClient, getActivity(), v);
 //        setUserProfileNameAndImage(httpClient, getActivity());
 
-        for (Map.Entry<UserProfile, ArrayList<ChatMessage>> entry : allChatMesssages.entrySet()) {
-            if (entry.getKey().getUserProfileImageId() == -1) {
-                entry.getKey().setUserProfileImageId(R.drawable.ic_profile);
-            }
-        }
-
         return v;
     }
 
     private void setAllChatMesssages(OkHttpClient client, Activity activity, View v) {
-        Request request = new Request.Builder().url(Constants.localBaseServerURL + Constants.userChatListEndpoint + thisUserId).build();
+        Request request = new Request.Builder().url(Constants.baseServerURL + Constants.userChatListEndpoint + thisUserId).build();
         client.newCall(request).enqueue(new Callback() {
             @Override
             public void onFailure(@NonNull Call call, @NonNull IOException e) {
@@ -158,7 +152,7 @@ public class ChatFragment extends Fragment {
 
     private void setUserProfileNameAndImage(OkHttpClient httpClient, FragmentActivity activity) {
         // TODO: Get the right endpoint
-        Request request = new Request.Builder().url(Constants.localBaseServerURL + Constants.userChatListEndpoint + thisUserId).build();
+        Request request = new Request.Builder().url(Constants.baseServerURL + Constants.userChatListEndpoint + thisUserId).build();
         httpClient.newCall(request).enqueue(new Callback() {
             @Override
             public void onFailure(@NonNull Call call, @NonNull IOException e) {

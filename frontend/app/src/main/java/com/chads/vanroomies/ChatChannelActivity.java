@@ -1,6 +1,8 @@
 package com.chads.vanroomies;
 
 // Reference: https://sendbird.com/developer/tutorials/android-chat-tutorial-building-a-messaging-ui
+import static java.util.Collections.singletonMap;
+
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -12,9 +14,14 @@ import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
+import org.json.JSONException;
+import org.json.JSONObject;
 import java.net.URISyntaxException;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.HashMap;
+import java.util.Map;
+import io.socket.client.Ack;
 import io.socket.client.IO;
 import io.socket.client.Socket;
 
@@ -41,8 +48,12 @@ public class ChatChannelActivity extends AppCompatActivity {
         chatUser = (UserProfile) chatIntent.getSerializableExtra("otherUserProfile");
         chatMessages = (ArrayList<ChatMessage>) chatIntent.getSerializableExtra("otherUserMessages");
 
+        Map<String, String> userIdMap = new HashMap<>();
+        userIdMap.put("userId", thisUserId);
+        IO.Options socketOptions = IO.Options.builder().setAuth(userIdMap).build();
+
         try {
-            chatSocket = IO.socket(Constants.localBaseServerURL);
+            chatSocket = IO.socket(Constants.baseServerURL, socketOptions);
             chatSocket.connect();
         } catch (URISyntaxException e) {
             Log.d(TAG, Log.getStackTraceString(e));
@@ -50,7 +61,7 @@ public class ChatChannelActivity extends AppCompatActivity {
 
         Calendar calendar = Calendar.getInstance();
         calendar.set(Calendar.YEAR, 2023);
-        calendar.set(Calendar.MONTH, Calendar.OCTOBER); // October is 9 in Calendar
+        calendar.set(Calendar.MONTH, Calendar.OCTOBER);
         calendar.set(Calendar.DAY_OF_MONTH, 28);
         calendar.set(Calendar.HOUR_OF_DAY, 13);
         calendar.set(Calendar.MINUTE, 5);
@@ -60,10 +71,20 @@ public class ChatChannelActivity extends AppCompatActivity {
         chatChannelRecycler.setLayoutManager(new LinearLayoutManager(this));
 
         chatChannelImage = findViewById(R.id.chat_image);
-        chatChannelImage.setImageResource(chatUser.getUserProfileImageId());
+        if (chatUser.getUserProfileImageId() == -1) {
+            chatChannelImage.setImageResource(R.drawable.ic_profile);
+        }
+        else {
+            chatChannelImage.setImageResource(chatUser.getUserProfileImageId());
+        }
 
         chatChannelName = findViewById(R.id.chat_name);
-        chatChannelName.setText(chatUser.getUserProfileName());
+        if (chatUser.getUserProfileName().isEmpty()) {
+            chatChannelName.setText("First Last");
+        }
+        else {
+            chatChannelName.setText(chatUser.getUserProfileName());
+        }
 
         chatChannelText = findViewById(R.id.edit_chat_message);
         chatChannelButton = findViewById(R.id.chat_send_button);
@@ -76,7 +97,24 @@ public class ChatChannelActivity extends AppCompatActivity {
                 // TODO: PUT request to send message
                 Log.d(TAG, "Adding new message");
                 ChatMessage newMessage = new ChatMessage(thisUserId, message, System.currentTimeMillis());
-                chatSocket.emit("private message", newMessage);
+
+                JSONObject messageObj = new JSONObject();
+                try {
+                    messageObj.put("content", message);
+                    messageObj.put("to", chatUser.getUserProfileId());
+                } catch (JSONException e) {
+                    throw new RuntimeException(e);
+                }
+                chatSocket.emit("private message", messageObj, (Ack) args -> {
+                    JSONObject response = (JSONObject) args[0];
+                    try {
+                        Log.d(TAG, "Emit event response code is " + response.getString("status"));
+                    }
+                    catch (JSONException e) {
+                        throw new RuntimeException(e);
+                    }
+                });
+
                 chatMessages.add(newMessage);
                 chatChannelAdapter = new ChatChannelAdapter(ChatChannelActivity.this, chatMessages, thisUserId);
                 chatChannelRecycler.setAdapter(chatChannelAdapter);

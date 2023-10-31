@@ -41,8 +41,19 @@ public class ChatListAdapter extends RecyclerView.Adapter {
         String otherUserName = otherUserProfile.getUserProfileName();
         int otherUserImage = otherUserProfile.getUserProfileImageId();
 
-        ((ChatListHolder) holder).name.setText(otherUserName);
-        ((ChatListHolder) holder).image.setImageResource(otherUserImage);
+        if (otherUserName.isEmpty()) {
+            ((ChatListHolder) holder).name.setText("First Last");
+        }
+        else {
+            ((ChatListHolder) holder).name.setText(otherUserName);
+        }
+
+        if (otherUserImage == -1) {
+            ((ChatListHolder) holder).image.setImageResource(R.drawable.ic_profile);
+        }
+        else {
+            ((ChatListHolder) holder).image.setImageResource(otherUserImage);
+        }
 
         holder.itemView.setOnClickListener(v -> {
             Intent chatChannelIntent = new Intent(chatListContext, ChatChannelActivity.class);
