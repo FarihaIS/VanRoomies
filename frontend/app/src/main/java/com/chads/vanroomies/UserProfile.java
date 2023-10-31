@@ -17,6 +17,7 @@ public class UserProfile implements Serializable {
         this.userProfilePreferences = "";
         this.userProfileImageId = -1;
     }
+
     public UserProfile(String id, String name, int age, String preferences, int imageId) {
         this.userProfileId = id;
         this.userProfileName = name;
@@ -43,6 +44,7 @@ public class UserProfile implements Serializable {
     }
 
     public void setUserProfileId(String id) { this.userProfileId = id; }
+
     public void setUserProfileName(String name) {
         this.userProfileName = name;
     }
