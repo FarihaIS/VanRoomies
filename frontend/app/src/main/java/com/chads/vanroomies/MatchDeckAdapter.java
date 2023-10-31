@@ -1,6 +1,9 @@
 package com.chads.vanroomies;
 
 import android.content.Context;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.util.Base64;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -44,8 +47,9 @@ public class MatchDeckAdapter extends BaseAdapter {
         ((TextView) v.findViewById(R.id.matches_name)).setText(users.get(position).getName());
         ((TextView) v.findViewById(R.id.matches_age)).setText(String.valueOf(users.get(position).getAge()));
         ((TextView) v.findViewById(R.id.matches_preferences)).setText(users.get(position).getPreferences());
-        // TODO: Figure out how to convert base64 string to image
-        ((ImageView) v.findViewById(R.id.matches_image)).setImageResource(users.get(position).getImageString());
+        byte[] decodedString = Base64.decode(users.get(position).getImageString(), Base64.DEFAULT);
+        Bitmap decodedByte = BitmapFactory.decodeByteArray(decodedString, 0, decodedString.length);
+        ((ImageView) v.findViewById(R.id.matches_image)).setImageBitmap(decodedByte);
 
         return v;
     }

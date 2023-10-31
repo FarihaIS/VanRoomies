@@ -5,7 +5,10 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import android.content.Intent;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.os.Bundle;
+import android.util.Base64;
 import android.util.Log;
 import android.widget.Button;
 import android.widget.ImageView;
@@ -107,8 +110,9 @@ public class ChatChannelActivity extends AppCompatActivity {
             chatChannelImage.setImageResource(R.drawable.ic_profile);
         }
         else {
-            // TODO: Figure out how to encode base64 string to image
-            chatChannelImage.setImageResource(chatUser.getImageString());
+            byte[] decodedString = Base64.decode(chatUser.getImageString(), Base64.DEFAULT);
+            Bitmap decodedByte = BitmapFactory.decodeByteArray(decodedString, 0, decodedString.length);
+            chatChannelImage.setImageBitmap(decodedByte);
         }
 
         chatChannelName = findViewById(R.id.chat_name);

@@ -2,6 +2,9 @@ package com.chads.vanroomies;
 
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.util.Base64;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -52,8 +55,9 @@ public class ChatListAdapter extends RecyclerView.Adapter {
             ((ChatListHolder) holder).imageView.setImageResource(R.drawable.ic_profile);
         }
         else {
-            // TODO: Figure out how to encode from base64 string to image
-            ((ChatListHolder) holder).imageView.setImageResource(otherUserImage);
+            byte[] decodedString = Base64.decode(otherUserImage, Base64.DEFAULT);
+            Bitmap decodedByte = BitmapFactory.decodeByteArray(decodedString, 0, decodedString.length);
+            ((ChatListHolder) holder).imageView.setImageBitmap(decodedByte);
         }
 
         holder.itemView.setOnClickListener(v -> {
