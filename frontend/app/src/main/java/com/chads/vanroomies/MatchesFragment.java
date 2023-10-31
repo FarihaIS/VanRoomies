@@ -66,9 +66,8 @@ public class MatchesFragment extends Fragment {
                              Bundle savedInstanceState) {
 
         View v = inflater.inflate(R.layout.fragment_matches, container, false);
-
         userMatches = new ArrayList<>();
-        cardStack = (SwipeDeck) v.findViewById(R.id.matches_swipe_deck);
+        cardStack = v.findViewById(R.id.matches_swipe_deck);
 
         // TODO: do GET request to show updated list of matched users
         userMatches.add(new UserProfile("abc00", "Denis", 45, "Late-night owl, messy, smokes regularly", R.drawable.ic_listings));
@@ -76,6 +75,12 @@ public class MatchesFragment extends Fragment {
         userMatches.add(new UserProfile("ghi22", "Matt", 30, "Early-riser, drinks regularly", R.drawable.ic_match));
         userMatches.add(new UserProfile("jkl33", "Max", 83, "Early-riser, clean, no smoking, no drinking", R.drawable.ic_chat));
 
+        updateMatchesFragmentLayout(v);
+
+        return v;
+    }
+
+    private void updateMatchesFragmentLayout(View v) {
         matchDeckAdapter = new MatchDeckAdapter(userMatches, v.getContext());
         cardStack.setAdapter(matchDeckAdapter);
 
@@ -106,7 +111,5 @@ public class MatchesFragment extends Fragment {
                 Log.d(TAG, "CARDS MOVED UP");
             }
         });
-
-        return v;
     }
 }
