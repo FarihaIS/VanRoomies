@@ -1,23 +1,5 @@
 const mongoose = require('mongoose');
-
-// Define a Message schema
-// const messageSchema = new mongoose.Schema({
-//   sender: { type: String, required: true },
-//   message: { type: String, required: true },
-//   timestamp: { type: Date, default: Date.now },
-//   conversationId: { type: mongoose.Schema.Types.ObjectId, required: true },
-// });
-
-// // Define the Message model
-// const Message = mongoose.model('Message', messageSchema);
-
-class Message {
-    constructor(sender, message) {
-        this.sender = sender;
-        this.message = message;
-        this.timestamp = Date.now();
-    }
-}
+const Message = require('./Message');
 
 const conversationSchema = new mongoose.Schema({
     users: { type: [String], required: true },
@@ -34,28 +16,10 @@ class MessageStore {
         return MessageStore.instance;
     }
 
-    async getConversationId(user1, user2) {
+    async sendMessage(content, fromId, toId) {
         try {
-            const conversation = await Conversation.findOne({
-                users: { $all: [user1, user2] },
-            });
-            if (conversation) {
-                return conversation._id;
-            }
-
-            const newConversation = new Conversation({ users: [user1, user2] });
-            const result = await newConversation.save();
-
-            return result._id;
-        } catch (error) {
-            console.error(error);
-        }
-    }
-
-    async saveMessage(sender, content, conversationId) {
-        try {
-            const message = new Message(sender, content);
-            const conversation = await Conversation.findById(conversationId);
+            const conversation = await this.getConversationIfAbsent(fromId, toId);
+            const message = new Message(fromId, content);
             conversation.messages.push(message);
             await conversation.save();
         } catch (error) {
@@ -63,9 +27,19 @@ class MessageStore {
         }
     }
 
-    async getConversation(conversationId) {
+    async getConversationIfAbsent(userId1, userId2) {
         try {
-            return await Conversation.findById(conversationId);
+            const conversation = await Conversation.findOne({
+                users: { $all: [userId1, userId2] },
+            });
+            if (conversation) {
+                return conversation;
+            }
+
+            const newConversation = new Conversation({ users: [userId1, userId2] });
+            const result = await newConversation.save();
+
+            return result;
         } catch (error) {
             console.error(error);
         }

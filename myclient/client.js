@@ -1,12 +1,12 @@
 const io = require("socket.io-client");
-
-const socket = io("https://localhost:3000", { autoConnect: false, rejectUnauthorized: false });
 const readline = require("readline");
+const socket = io("https://localhost:3000", { autoConnect: false, rejectUnauthorized: false });
 
 async function sendPrivateMessage(message, to) {
 	const response = await socket.emitWithAck('private message', { content: message, to: to });
 	console.log(response);
 }
+
 socket.on('user connected', (msg) => {
 	console.log(msg);
 });
@@ -26,11 +26,6 @@ socket.on("connect_error", (err) => {
 socket.on('private message', async ({ content, from }) => {
 	console.log(`${from} sent you a message: ${content}`);
 });
-
-// socket.onAny((eventName, ...args) => {
-//   console.log(eventName);
-//   console.log(args);
-// });
 
 const rl = readline.createInterface({
     input: process.stdin, 
@@ -58,7 +53,6 @@ function startMessaging() {
 
 socket.on('connect', async () => {
 	console.log('Client has connected to the server!');
-	// const users = getUsers();
 	startMessaging();
 });
 
