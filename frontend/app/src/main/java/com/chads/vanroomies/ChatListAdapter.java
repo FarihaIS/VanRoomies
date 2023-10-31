@@ -39,8 +39,6 @@ public class ChatListAdapter extends RecyclerView.Adapter {
         ArrayList<ChatMessage> otherUserMessages = entry.getValue();
 
         String otherUserName = otherUserProfile.getUserProfileName();
-        int otherUserImage = otherUserProfile.getUserProfileImageId();
-
         if (otherUserName.isEmpty()) {
             ((ChatListHolder) holder).name.setText("First Last");
         }
@@ -48,6 +46,7 @@ public class ChatListAdapter extends RecyclerView.Adapter {
             ((ChatListHolder) holder).name.setText(otherUserName);
         }
 
+        int otherUserImage = otherUserProfile.getUserProfileImageId();
         if (otherUserImage == -1) {
             ((ChatListHolder) holder).image.setImageResource(R.drawable.ic_profile);
         }
