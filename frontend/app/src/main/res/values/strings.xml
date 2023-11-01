@@ -61,6 +61,8 @@
     <string name="profile_name">Test Person</string>
     <string name="profile_name_desc">Profile Name</string>
     <string name="profile_image_desc">Profile Picture</string>
+    <string name="profile_email">User Email</string>
+    <string name="profile_birthday">2001–11–13</string>
     <string name="listing_name">Test Listing</string>
     <string name="listing_name_desc">Listing Title</string>
     <string name="listing_image_desc">Listing Picture</string>

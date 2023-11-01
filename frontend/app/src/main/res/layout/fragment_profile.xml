@@ -39,13 +39,44 @@
             android:textAlignment="center"
             android:textSize="20sp" />
 
+        <TextView
+            android:id="@+id/profile_email"
+            android:layout_width="250dp"
+            android:layout_height="wrap_content"
+            android:layout_alignParentBottom="true"
+            android:layout_centerHorizontal="true"
+            android:layout_marginBottom="150dp"
+            android:contentDescription="@string/profile_email"
+            android:fontFamily="sans-serif"
+            android:text="@string/profile_email"
+            android:textAlignment="center"
+            android:textSize="14dp"
+            android:translationY="16dp" />
+
+        <TextView
+            android:id="@+id/profile_birthday"
+            android:layout_width="250dp"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/null"
+            android:layout_alignParentBottom="true"
+            android:layout_centerHorizontal="true"
+            android:layout_marginTop="-129dp"
+            android:layout_marginBottom="150dp"
+            android:contentDescription="@string/profile_birthday"
+            android:fontFamily="sans-serif"
+            android:text="@string/profile_birthday"
+            android:textAlignment="center"
+            android:textSize="14dp"
+            android:translationY="147dp" />
+
         <androidx.cardview.widget.CardView
             android:layout_width="300dp"
-            android:layout_height="125dp"
+            android:layout_height="110dp"
             android:layout_alignParentBottom="true"
+            android:layout_centerHorizontal="true"
             android:layout_marginBottom="20dp"
-            app:cardBackgroundColor="#D2E2E0"
-            android:layout_centerHorizontal="true">
+            android:translationY="-5dp"
+            app:cardBackgroundColor="#D2E2E0">
 
             <TextView
                 android:id="@+id/profile_blurb"

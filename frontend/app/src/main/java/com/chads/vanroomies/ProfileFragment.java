@@ -40,7 +40,10 @@ public class ProfileFragment extends Fragment {
     private OkHttpClient httpClient;
     final static Gson g = new Gson();
     private TextView profileName;
+    private TextView profileEmail;
     private TextView profileDesc;
+    private TextView profileBirthday;
+
     private ImageView profilePicture;
     private Button editDescButton;
     // TODO: Keep track of userId and replace the one below
@@ -98,7 +101,9 @@ public class ProfileFragment extends Fragment {
 
         // Get profile
         profileName = view.findViewById(R.id.profile_name);
+        profileEmail = view.findViewById(R.id.profile_email);
         profileDesc = view.findViewById(R.id.profile_blurb);
+        profileBirthday = view.findViewById(R.id.profile_birthday);
         profilePicture = view.findViewById(R.id.profile_picture);
         getProfile(httpClient, view, getActivity(), userId);
 
@@ -150,7 +155,9 @@ public class ProfileFragment extends Fragment {
                         String responseData = response.body().string();
                         Map result = g.fromJson(responseData, Map.class);
                         profileName.setText(String.format("%s %s", result.get("firstName"), result.get("lastName")));
+                        profileEmail.setText((CharSequence) result.get("email"));
                         profileDesc.setText((CharSequence) result.get("bio"));
+                        profileBirthday.setText(String.format("%s %s", "Birthday:", result.get("birthday")));
 
                         if (result.get("profilePicture") != null) {
                             byte[] decodedString = Base64.decode((String) result.get("profilePicture"), Base64.DEFAULT);
