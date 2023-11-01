@@ -9,6 +9,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.CompoundButton;
 import android.widget.TextView;
 import androidx.recyclerview.widget.GridLayoutManager;
@@ -39,6 +40,7 @@ public class ListingsFragment extends Fragment implements ListingsItemSelectList
     // TODO: Maintain user_id within the app and use it as an input here
     String userId = "65402f35e10ec75253936947";
     public SwitchMaterial toggleButton;
+    public Button addListingButton;
     public TextView titleText;
     final static Gson g = new Gson();
     final static int view_cols = 2;
@@ -98,15 +100,25 @@ public class ListingsFragment extends Fragment implements ListingsItemSelectList
         // Setting up Toggle Button
         toggleButton = view.findViewById(R.id.listings_toggle);
         toggleButton.setText("");
+
+        // Setting up Create Listing Button
+        addListingButton = view.findViewById(R.id.createListingButton);
+        addListingButton.setEnabled(false);
+        addListingButton.setVisibility(View.INVISIBLE);
+
         titleText = (TextView) view.findViewById(R.id.listings_header);
         titleText.setText(getString(R.string.listings_header_recommended));
         toggleButton.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton buttonView,boolean isChecked) {
                 if(isChecked){
+                    addListingButton.setEnabled(true);
+                    addListingButton.setVisibility(View.VISIBLE);
                     titleText.setText(getString(R.string.listings_header_owned));
                     getOwnedListings(httpClient, view, getActivity(), userId);
                 } else {
+                    addListingButton.setEnabled(false);
+                    addListingButton.setVisibility(View.INVISIBLE);
                     titleText.setText(getString(R.string.listings_header_recommended));
                     getRecommendedListings(httpClient, view, getActivity(), userId);
                 }
