@@ -47,9 +47,14 @@ public class MatchDeckAdapter extends BaseAdapter {
         String fullName = users.get(position).getFirstName() + " " + users.get(position).getLastName();
         ((TextView) v.findViewById(R.id.matches_name)).setText(fullName);
         ((TextView) v.findViewById(R.id.matches_bio)).setText(users.get(position).getBio());
-        byte[] decodedString = Base64.decode(users.get(position).getProfilePicture(), Base64.DEFAULT);
-        Bitmap decodedByte = BitmapFactory.decodeByteArray(decodedString, 0, decodedString.length);
-        ((ImageView) v.findViewById(R.id.matches_image)).setImageBitmap(decodedByte);
+        if (users.get(position).getProfilePicture().isEmpty()) {
+            ((ImageView) v.findViewById(R.id.matches_image)).setImageResource(R.drawable.ic_profile);
+        }
+        else {
+            byte[] decodedString = Base64.decode(users.get(position).getProfilePicture(), Base64.DEFAULT);
+            Bitmap decodedByte = BitmapFactory.decodeByteArray(decodedString, 0, decodedString.length);
+            ((ImageView) v.findViewById(R.id.matches_image)).setImageBitmap(decodedByte);
+        }
 
         return v;
     }
