@@ -66,7 +66,7 @@
             android:fontFamily="sans-serif"
             android:text="@string/profile_birthday"
             android:textAlignment="center"
-            android:textSize="14dp"
+            android:textSize="14sp"
             android:translationY="147dp" />
 
         <androidx.cardview.widget.CardView
