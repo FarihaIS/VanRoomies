@@ -88,12 +88,12 @@ public class ChatFragment extends Fragment {
         thisUserId = "654013e0b19c872e994eac8b";
         chatListRecycler = v.findViewById(R.id.chatlistrecycle);
 
-        setAllChatMessages(httpClient, getActivity(), v);
+        getAllChatMessages(httpClient, getActivity(), v);
 
         return v;
     }
 
-    private void setAllChatMessages(OkHttpClient client, Activity activity, View v) {
+    private void getAllChatMessages(OkHttpClient client, Activity activity, View v) {
         Request request = new Request.Builder().url(Constants.baseServerURL + Constants.chatsByUserIdEndpoint + thisUserId).build();
         client.newCall(request).enqueue(new Callback() {
             @Override
@@ -127,8 +127,7 @@ public class ChatFragment extends Fragment {
                             eachMessageList = conversation.getMessages();
 
                             allChatMessages.put(user, eachMessageList);
-                            // TODO: Get username and image for each conversation user
-//                                setUserProfileNameAndImage(httpClient, getActivity());
+                            // TODO: Get username and image for each conversation user setUserProfileNameAndImage(httpClient, getActivity());
                         }
 
                         if (allChatMessages.isEmpty()) {

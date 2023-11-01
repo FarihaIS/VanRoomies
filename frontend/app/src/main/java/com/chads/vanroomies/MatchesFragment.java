@@ -148,7 +148,7 @@ public class MatchesFragment extends Fragment {
                         Log.d(TAG, "responseData for Conversations is " + responseData);
                         ArrayList<UserProfile> allMatches = gson.fromJson(responseData, listType);
 
-//                        userMatches = allMatches;
+                        userMatches = allMatches;
                         if (userMatches.isEmpty()) {
                             Toast.makeText(getActivity(), R.string.no_matches_found, Toast.LENGTH_LONG).show();
                         }
