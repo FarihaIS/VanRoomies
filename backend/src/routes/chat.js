@@ -34,7 +34,7 @@ router.put('/conversations/user/:userId', async (req, res, next) => {
             throw new Error('Conversation not found');
         }
         conversation.users.forEach((user) => {
-            if (user.user == sendingUserId) {
+            if (user.userId == sendingUserId) {
                 user.inactive = req.body.inactive;
             }
         });
