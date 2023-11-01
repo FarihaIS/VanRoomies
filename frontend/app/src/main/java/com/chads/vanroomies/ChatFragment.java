@@ -125,7 +125,7 @@ public class ChatFragment extends Fragment {
                             eachMessageList = conversation.getMessages();
 
                             // Check for null userId
-                            if (user == null) {
+                            if (user.getId() == null) {
                                 Log.d(TAG, "Null userId while retrieving conversation");
                             }
                             else {

@@ -16,6 +16,8 @@
     <!-- Chat Channel Activity -->
     <string name="chat_send_button_text">Send</string>
     <string name="edit_chat_message_text">Enter Message</string>
+    <string name="default_name">First Last</string>
+    <string name="invalid_input_message">First Last</string>
 
     <!-- Chat Item -->
     <string name="chat_date">June 10</string>

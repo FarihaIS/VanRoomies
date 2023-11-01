@@ -84,7 +84,7 @@ public class ChatChannelActivity extends AppCompatActivity {
         chatChannelButton.setOnClickListener(v -> {
             String message = chatChannelText.getText().toString().trim();
             if (message.isEmpty()) {
-                Toast.makeText(ChatChannelActivity.this, "Please Write Something Here", Toast.LENGTH_LONG).show();
+                Toast.makeText(ChatChannelActivity.this, R.string.invalid_input_message, Toast.LENGTH_LONG).show();
             }
             else {
                 ChatMessage newMessage = new ChatMessage(thisUserId, message, System.currentTimeMillis());
@@ -117,7 +117,7 @@ public class ChatChannelActivity extends AppCompatActivity {
 
         chatChannelName = findViewById(R.id.chat_name);
         if (chatUser.getName().isEmpty()) {
-            chatChannelName.setText("First Last");
+            chatChannelName.setText(R.string.default_name);
         }
         else {
             chatChannelName.setText(chatUser.getName());

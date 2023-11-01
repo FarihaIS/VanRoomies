@@ -16,10 +16,10 @@ import java.util.ArrayList;
 import java.util.Map;
 
 public class ChatListAdapter extends RecyclerView.Adapter {
-    private Context context;
-    private ArrayList<Map.Entry<UserProfile, ArrayList<ChatMessage>>> chats;
+    private final Context context;
+    private final ArrayList<Map.Entry<UserProfile, ArrayList<ChatMessage>>> chats;
     // TODO: If defined somewhere else, can get rid of userId
-    private String userId;
+    private final String userId;
 
     public ChatListAdapter(Context context, Map<UserProfile, ArrayList<ChatMessage>> chats, String userId) {
         this.context = context;
@@ -44,7 +44,7 @@ public class ChatListAdapter extends RecyclerView.Adapter {
 
         String otherUserName = otherUserProfile.getName();
         if (otherUserName.isEmpty()) {
-            ((ChatListHolder) holder).nameView.setText("First Last");
+            ((ChatListHolder) holder).nameView.setText(R.string.default_name);
         }
         else {
             ((ChatListHolder) holder).nameView.setText(otherUserName);

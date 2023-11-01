@@ -15,7 +15,7 @@ import java.util.Locale;
 public class ChatChannelAdapter extends RecyclerView.Adapter {
     private static final int VIEW_TYPE_MESSAGE_SENT = 1;
     private static final int VIEW_TYPE_MESSAGE_RECEIVED = 0;
-    private Context context;
+    private final Context context;
     final private ArrayList<ChatMessage> messages;
     final private String userId;
 

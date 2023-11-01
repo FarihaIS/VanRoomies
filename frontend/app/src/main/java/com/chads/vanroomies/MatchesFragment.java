@@ -91,7 +91,7 @@ public class MatchesFragment extends Fragment {
 
             @Override
             public void cardSwipedRight(int position) {
-                // TODO: Opem chat session with accepted match
+                // TODO: Open chat session with accepted match
                 Log.d(TAG, "Match accepted");
             }
 
