@@ -80,4 +80,3 @@ public class ChatListAdapter extends RecyclerView.Adapter {
         }
     }
 }
-

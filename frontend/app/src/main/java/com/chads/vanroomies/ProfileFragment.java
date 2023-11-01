@@ -7,10 +7,8 @@ import android.content.DialogInterface;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.Bundle;
-
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
-
 import android.util.Base64;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -20,14 +18,10 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
-
 import com.google.gson.Gson;
-
 import org.json.JSONException;
-
 import java.io.IOException;
 import java.util.Map;
-
 import okhttp3.Call;
 import okhttp3.Callback;
 import okhttp3.FormBody;
@@ -157,7 +151,8 @@ public class ProfileFragment extends Fragment {
                         Map result = g.fromJson(responseData, Map.class);
                         profileName.setText(String.format("%s %s", result.get("firstName"), result.get("lastName")));
                         profileDesc.setText((CharSequence) result.get("bio"));
-                        if (result.get("profilePicture") != null){
+
+                        if (result.get("profilePicture") != null) {
                             byte[] decodedString = Base64.decode((String) result.get("profilePicture"), Base64.DEFAULT);
                             Bitmap decodedByte = BitmapFactory.decodeByteArray(decodedString, 0, decodedString.length);
                             profilePicture.setImageBitmap(decodedByte);

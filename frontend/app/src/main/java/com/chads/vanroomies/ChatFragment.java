@@ -43,15 +43,12 @@ public class ChatFragment extends Fragment {
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
     private static final String ARG_PARAM1 = "param1";
     private static final String ARG_PARAM2 = "param2";
-
     // TODO: Rename and change types of parameters
     private String mParam1;
     private String mParam2;
-
     public ChatFragment() {
         // Required empty public constructor
     }
-
     /**
      * Use this factory method to create a new instance of
      * this fragment using the provided parameters.
@@ -69,7 +66,6 @@ public class ChatFragment extends Fragment {
         fragment.setArguments(args);
         return fragment;
     }
-
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -78,7 +74,6 @@ public class ChatFragment extends Fragment {
             mParam2 = getArguments().getString(ARG_PARAM2);
         }
     }
-
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
@@ -97,7 +92,7 @@ public class ChatFragment extends Fragment {
     }
 
     private void setAllChatMesssages(OkHttpClient client, Activity activity, View v) {
-        Request request = new Request.Builder().url(Constants.baseServerURL + Constants.userChatListEndpoint + thisUserId).build();
+        Request request = new Request.Builder().url(Constants.baseServerURL + Constants.chatsByUserIdEndpoint + thisUserId).build();
         client.newCall(request).enqueue(new Callback() {
             @Override
             public void onFailure(@NonNull Call call, @NonNull IOException e) {
@@ -152,7 +147,7 @@ public class ChatFragment extends Fragment {
 
     private void setUserProfileNameAndImage(OkHttpClient httpClient, FragmentActivity activity) {
         // TODO: Get the right endpoint
-        Request request = new Request.Builder().url(Constants.baseServerURL + Constants.userChatListEndpoint + thisUserId).build();
+        Request request = new Request.Builder().url(Constants.baseServerURL + Constants.chatsByUserIdEndpoint + thisUserId).build();
         httpClient.newCall(request).enqueue(new Callback() {
             @Override
             public void onFailure(@NonNull Call call, @NonNull IOException e) {

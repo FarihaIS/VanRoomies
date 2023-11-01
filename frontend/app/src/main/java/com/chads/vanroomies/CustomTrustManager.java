@@ -1,12 +1,11 @@
 package com.chads.vanroomies;
+
 import android.content.Context;
 import android.content.res.Resources;
-
 import java.io.InputStream;
 import java.security.KeyStore;
 import java.security.cert.CertificateFactory;
 import java.security.cert.X509Certificate;
-
 import javax.net.ssl.TrustManagerFactory;
 import javax.net.ssl.X509TrustManager;
 

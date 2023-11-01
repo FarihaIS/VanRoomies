@@ -1,6 +1,5 @@
 <resources>
     <string name="app_name">VanRoomies</string>
-    <string name="placeholder">FREE HOUSE</string>
 
     <!-- Navigation and Fragments -->
     <string name="menu_listings">Listings</string>
@@ -26,11 +25,6 @@
     <!-- Chat Row -->
     <string name="chat_row_name_text">Their Name</string>
     <string name="chat_row_block_text">Block User</string>
-
-    <string name="placeholder_listings">Listings Fragment</string>
-    <string name="placeholder_profile">Profile Fragment</string>
-    <string name="placeholder_matches">Matches Fragment</string>
-    <string name="placeholder_chat">Chat Fragment</string>
 
     <!-- Profile Fragment -->
     <string name="profile_blurb">Profile Blurb</string>
@@ -69,4 +63,10 @@
     <string name="listing_image_desc">Listing Picture</string>
     <string name="housing_type">Housing Type</string>
 
+    <!-- Placeholder strings -->
+    <string name="placeholder_listings">Listings Fragment</string>
+    <string name="placeholder_profile">Profile Fragment</string>
+    <string name="placeholder_matches">Matches Fragment</string>
+    <string name="placeholder_chat">Chat Fragment</string>
+    <string name="placeholder">FREE HOUSE</string>
 </resources>
