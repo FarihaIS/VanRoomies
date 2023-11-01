@@ -4,37 +4,23 @@ const bodyParser = require('body-parser');
 const https = require('https');
 const fs = require('fs');
 const path = require('path');
+const mongoSanitize = require('express-mongo-sanitize');
+
+const { logErrors, errorHandler } = require('./middlewares');
 
 // Configure environment variable path
 require('dotenv').config({ path: `./.env.${process.env.NODE_ENV}` });
 
-const app = express();
 const credentials = {
     key: fs.readFileSync(path.resolve(process.env.KEY_PATH)),
     cert: fs.readFileSync(path.resolve(process.env.CERT_PATH)),
 };
-
+const app = express();
 const httpsServer = https.createServer(credentials, app);
-const port = 3000;
-
-function logErrors(err, req, res, next) {
-    console.error(err.message);
-    next(err);
-}
-
-function errorHandler(err, req, res, next) {
-    if (res.headersSent) {
-        return next(err);
-    }
-    res.status(500);
-    res.json({ error: err.message });
-}
+const port = process.env.PORT || 3000;
 
 // Connect to MongoDB server through URI from environment variable
-mongoose.connect(process.env.MONGODB_TEST_URI, {
-    useNewUrlParser: true,
-    useUnifiedTopology: true,
-});
+mongoose.connect(process.env.MONGODB_TEST_URI || 'mongodb://localhost:27017/vanroomies');
 
 const db = mongoose.connection;
 db.on('error', console.error.bind(console, 'Connection error! Make sure MongoDB server is running! '));
@@ -47,10 +33,13 @@ app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.raw());
 
+app.use(mongoSanitize());
+
 // routes
+app.use('/api/users', require('./routes/users'));
 app.use('/api/listings', require('./routes/listings'));
 app.use('/api/users', require('./routes/preferences'));
-app.use('/api/users', require('./routes/users'));
+app.use('/api/chat', require('./routes/chat'));
 
 app.get('/', (req, res) => {
     res.send('Hello World!');
@@ -59,6 +48,9 @@ app.get('/', (req, res) => {
 app.use(logErrors);
 app.use(errorHandler);
 
+// use socket.io
+require('./sock.js')(httpsServer);
+
 httpsServer.listen(port, () => {
-    console.log(`Example app listening on port ${port}`);
+    console.log(`VanRoomies server at https://localhost:${port}`);
 });

@@ -1,3 +1,5 @@
+const validator = require('validator');
+
 /**
  * Rank a set of IDs based on their corresponding aggregate score.
  * Generalized for both user scoring and listing scoring.
@@ -22,4 +24,8 @@ const calculatePetFriendlinessScore = (user, other) => {
     return user.petFriendly === other.petFriendly ? 1 : 0;
 };
 
-module.exports = { generateRecommendations, calculatePetFriendlinessScore };
+const sanitize = (message) => {
+    return validator.escape(validator.trim(message));
+};
+
+module.exports = { generateRecommendations, calculatePetFriendlinessScore, sanitize };
