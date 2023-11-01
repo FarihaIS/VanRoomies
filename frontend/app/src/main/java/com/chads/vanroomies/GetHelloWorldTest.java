@@ -3,9 +3,7 @@ package com.chads.vanroomies;
 import android.app.Activity;
 import android.util.Log;
 import androidx.annotation.NonNull;
-
 import java.io.IOException;
-
 import okhttp3.Call;
 import okhttp3.Callback;
 import okhttp3.OkHttpClient;

@@ -1,7 +1,6 @@
 package com.chads.vanroomies;
 
 import java.util.HashMap;
-import java.util.Map;
 
 // Reference: https://www.geeksforgeeks.org/recyclerview-using-gridlayoutmanager-in-android-with-example/
 public class ListingsRecyclerData {

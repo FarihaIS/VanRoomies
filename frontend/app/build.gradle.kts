@@ -39,7 +39,6 @@ android {
 }
 
 dependencies {
-
     implementation("androidx.appcompat:appcompat:1.6.1")
     implementation("com.google.android.material:material:1.8.0")
     implementation("androidx.constraintlayout:constraintlayout:2.1.4")
@@ -54,4 +53,7 @@ dependencies {
     implementation("com.squareup.okhttp3:okhttp:4.9.1")
     implementation("com.google.code.gson:gson:2.8.9")
     implementation ("com.google.android.material:material:1.9.0")
+    implementation ("com.daprlabs.aaron:cardstack:0.3.1-beta0")
+    implementation ("de.hdodenhof:circleimageview:2.2.0")
+    implementation("io.socket:socket.io-client:2.1.0")
 }

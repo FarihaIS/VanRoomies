@@ -1,12 +1,14 @@
 package com.chads.vanroomies;
 
+// Reference: https://www.geeksforgeeks.org/tinder-swipe-view-with-example-in-android/
 import android.os.Bundle;
-
-import androidx.fragment.app.Fragment;
-
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import androidx.fragment.app.Fragment;
+import java.util.ArrayList;
+import com.daprlabs.cardstack.SwipeDeck;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -15,6 +17,9 @@ import android.view.ViewGroup;
  */
 public class MatchesFragment extends Fragment {
     final static String TAG = "MatchesFragment";
+    private ArrayList<UserProfile> userMatches;
+    private MatchDeckAdapter matchDeckAdapter;
+    private SwipeDeck cardStack;
 
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
@@ -59,7 +64,51 @@ public class MatchesFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_matches, container, false);
+        View v = inflater.inflate(R.layout.fragment_matches, container, false);
+        userMatches = new ArrayList<>();
+        cardStack = v.findViewById(R.id.matches_swipe_deck);
+
+        // TODO: do GET request to show updated list of matched users
+        userMatches.add(new UserProfile("abc00", "Denis", 45, "Late-night owl, messy, smokes regularly", ""));
+        userMatches.add(new UserProfile("def11", "Fariha", 23, "Early riser, clean, 2-bedroom house", ""));
+        userMatches.add(new UserProfile("ghi22", "Matt", 30, "Early-riser, drinks regularly", ""));
+        userMatches.add(new UserProfile("jkl33", "Max", 83, "Early-riser, clean, no smoking, no drinking", ""));
+
+        updateMatchesFragmentLayout(v);
+
+        return v;
+    }
+
+    private void updateMatchesFragmentLayout(View v) {
+        matchDeckAdapter = new MatchDeckAdapter(userMatches, v.getContext());
+        cardStack.setAdapter(matchDeckAdapter);
+
+        cardStack.setEventCallback(new SwipeDeck.SwipeEventCallback() {
+            @Override
+            public void cardSwipedLeft(int position) {
+                Log.d(TAG, "Match Rejected");
+            }
+
+            @Override
+            public void cardSwipedRight(int position) {
+                // TODO: Open chat session with accepted match
+                Log.d(TAG, "Match accepted");
+            }
+
+            @Override
+            public void cardsDepleted() {
+                Log.d(TAG, "No more matches");
+            }
+
+            @Override
+            public void cardActionDown() {
+                Log.d(TAG, "CARDS MOVED DOWN");
+            }
+
+            @Override
+            public void cardActionUp() {
+                Log.d(TAG, "CARDS MOVED UP");
+            }
+        });
     }
 }

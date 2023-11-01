@@ -1,17 +1,21 @@
 <?xml version="1.0" encoding="utf-8"?>
-<menu xmlns:android="http://schemas.android.com/apk/res/android">
+<menu
+    xmlns:android="http://schemas.android.com/apk/res/android">
     <item
         android:id="@+id/menu_profile"
         android:title="@string/menu_profile"
         android:icon="@drawable/ic_profile"/>
+
     <item
         android:id="@+id/menu_listings"
         android:title="@string/menu_listings"
         android:icon="@drawable/ic_listings"/>
+
     <item
         android:id="@+id/menu_matches"
         android:title="@string/menu_matches"
         android:icon="@drawable/ic_match"/>
+
     <item
         android:id="@+id/menu_chat"
         android:title="@string/menu_chat"

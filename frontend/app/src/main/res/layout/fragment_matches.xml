@@ -1,14 +1,26 @@
 <?xml version="1.0" encoding="utf-8"?>
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:swipedeck="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".MatchesFragment">
+    android:orientation="vertical"
+    tools:context=".MainActivity">
 
-    <!-- TODO: Update blank fragment layout -->
-    <TextView
+    <com.daprlabs.cardstack.SwipeFrameLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:text="@string/placeholder_matches" />
+        android:orientation="vertical">
 
-</FrameLayout>
+        <com.daprlabs.cardstack.SwipeDeck
+            android:id="@+id/matches_swipe_deck"
+            android:layout_width="match_parent"
+            android:layout_height="567dp"
+            android:padding="20dp"
+            swipedeck:card_spacing="10dp"
+            swipedeck:max_visible="3"
+            swipedeck:render_above="true"
+            swipedeck:rotation_degrees="15" />
+    </com.daprlabs.cardstack.SwipeFrameLayout>
+</RelativeLayout>
