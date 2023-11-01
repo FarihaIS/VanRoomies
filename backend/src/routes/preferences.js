@@ -86,15 +86,16 @@ router.get('/:userId/recommendations/users', async (req, res, next) => {
             res.status(404).json({ error: error });
             next(new Error(error));
         }
-
-        const tentativeMatchPreferences = await Preferences.find({ userId: { $ne: req.params.userId } }).lean();
+        const currUser = await User.findById(req.params.userId);
+        const excluded = [req.params.userId, ...currUser.notRecommended];
+        const tentativeMatchPreferences = await Preferences.find({ userId: { $nin: excluded } }).lean();
         if (tentativeMatchPreferences) {
             let scores = generateUserScores(userPreferences, tentativeMatchPreferences);
 
             // TODO: This REQUIRES optimization for further milestones - too transactionally-heavy
             let rankedUsers = [];
             for (const id of generateRecommendations(scores)) {
-                const currUser = await User.findById(id).lean();
+                const currUser = await User.findById(id).select('firstName lastName profilePicture bio').lean();
                 rankedUsers.push(currUser);
             }
             res.status(200).json(rankedUsers);
@@ -102,6 +103,33 @@ router.get('/:userId/recommendations/users', async (req, res, next) => {
             let error = 'No preferences found for given user!';
             res.status(404).json({ error: error });
             next(new Error(error));
+        }
+    } catch (error) {
+        res.status(400).json({ error: error.message });
+        next(error);
+    }
+});
+
+/**
+ * This endpoint pushes a new userId on the list of excluded users that are
+ * not to be recommended for a given user via the recommendation routes
+ *
+ * Route: POST /api/users/:userId/recommendations/users
+ *
+ * Body: {excludedId: ""}
+ */
+router.put('/:userId/recommendations/users', async (req, res, next) => {
+    try {
+        const excludedUser = new mongoose.Types.ObjectId(req.body.excludedId);
+        const updatedUser = await User.updateOne(
+            { _id: req.params.userId },
+            { $push: { notRecommended: excludedUser } },
+            { new: true },
+        );
+        if (updatedUser) {
+            res.status(200).json(updatedUser);
+        } else {
+            res.status(404).json({ error: 'Cannot update, user not found' });
         }
     } catch (error) {
         res.status(400).json({ error: error.message });
@@ -125,7 +153,6 @@ router.get('/:userId/recommendations/listings', async (req, res, next) => {
             res.status(404).json({ error: error });
             next(new Error(error));
         }
-
         const tentativeMatchListings = await Listing.find({ userId: { $ne: req.params.userId } }).lean();
         if (tentativeMatchListings) {
             let scores = generateListingScores(userPreferences, tentativeMatchListings);

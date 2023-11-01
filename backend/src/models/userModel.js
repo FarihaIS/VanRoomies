@@ -51,6 +51,10 @@ const UserSchema = new mongoose.Schema({
     bio: {
         type: String,
     },
+    notRecommended: {
+        type: [{ type: mongoose.Types.ObjectId }],
+        default: [],
+    },
     // password: { type: String, required: true, minength: 8, maxlength: 30 },
 });
 
