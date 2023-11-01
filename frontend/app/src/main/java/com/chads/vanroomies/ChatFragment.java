@@ -37,7 +37,7 @@ public class ChatFragment extends Fragment {
     private String thisUserId;
     private OkHttpClient httpClient;
     private Gson gson;
-    private Map<UserProfile, ArrayList<ChatMessage>> allChatMesssages;
+    private Map<UserProfile, ArrayList<ChatMessage>> allChatMessages;
 
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
@@ -81,17 +81,17 @@ public class ChatFragment extends Fragment {
 
         httpClient = HTTPSClientFactory.createClient(getActivity().getApplication());
         gson = new Gson();
-        allChatMesssages = new HashMap<>();
+        allChatMessages = new HashMap<>();
         // TODO: Get userId from backend
         thisUserId = "654013e0b19c872e994eac8b";
         chatListRecycler = v.findViewById(R.id.chatlistrecycle);
 
-        setAllChatMesssages(httpClient, getActivity(), v);
+        setAllChatMessages(httpClient, getActivity(), v);
 
         return v;
     }
 
-    private void setAllChatMesssages(OkHttpClient client, Activity activity, View v) {
+    private void setAllChatMessages(OkHttpClient client, Activity activity, View v) {
         Request request = new Request.Builder().url(Constants.baseServerURL + Constants.chatsByUserIdEndpoint + thisUserId).build();
         client.newCall(request).enqueue(new Callback() {
             @Override
@@ -124,11 +124,11 @@ public class ChatFragment extends Fragment {
 
                             eachMessageList = conversation.getMessages();
 
-                            allChatMesssages.put(user, eachMessageList);
+                            allChatMessages.put(user, eachMessageList);
                             // TODO: Get username and image for each conversation user
 //                                setUserProfileNameAndImage(httpClient, getActivity());
                         }
-                        chatListAdapter = new ChatListAdapter(v.getContext(), allChatMesssages, thisUserId);
+                        chatListAdapter = new ChatListAdapter(v.getContext(), allChatMessages, thisUserId);
                         chatListRecycler.setAdapter((chatListAdapter));
                     }
                     catch (IOException e) {
