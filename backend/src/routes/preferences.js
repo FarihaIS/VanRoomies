@@ -116,7 +116,7 @@ router.get('/:userId/recommendations/users', async (req, res, next) => {
  *
  * Route: POST /api/users/:userId/recommendations/users
  *
- * Body: {exludedId: ""}
+ * Body: {excludedId: ""}
  */
 router.put('/:userId/recommendations/users', async (req, res, next) => {
     try {
