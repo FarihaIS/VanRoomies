@@ -45,7 +45,7 @@ const ListingSchema = new mongoose.Schema({
         type: {
             latitude: { type: Number, required: true },
             longitude: { type: Number, required: true },
-        }
+        },
     },
     images: [{ type: String }],
 });
