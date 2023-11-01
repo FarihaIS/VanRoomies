@@ -1,12 +1,13 @@
-const mongoose = require('mongoose');
+const Conversation = require('../models/conversationModel');
 const Message = require('./Message');
 
-const conversationSchema = new mongoose.Schema({
-    users: { type: [String], required: true },
-    messages: { type: [Object], default: [] },
-});
-
-const Conversation = mongoose.model('Conversation', conversationSchema);
+class UserRecord {
+    // userId: ObjectId, inactive: Boolean
+    constructor(userId, inactive) {
+        this.userId = userId;
+        this.inactive = inactive ? inactive : false;
+    }
+}
 
 class MessageStore {
     constructor() {
@@ -27,19 +28,33 @@ class MessageStore {
         }
     }
 
+    async getConversation(userId1, userId2) {
+        try {
+            return await Conversation.findOne({
+                $and: [
+                    {
+                        users: { $elemMatch: { userId: userId1 } },
+                    },
+                    {
+                        users: { $elemMatch: { userId: userId2 } },
+                    },
+                ],
+            });
+        } catch (error) {
+            console.error(error);
+        }
+    }
+
     async getConversationIfAbsent(userId1, userId2) {
         try {
-            const conversation = await Conversation.findOne({
-                users: { $all: [userId1, userId2] },
-            });
+            const conversation = await this.getConversation(userId1, userId2);
             if (conversation) {
                 return conversation;
             }
-
-            const newConversation = new Conversation({ users: [userId1, userId2] });
-            const result = await newConversation.save();
-
-            return result;
+            const user1 = new UserRecord(userId1);
+            const user2 = new UserRecord(userId2);
+            const newConversation = new Conversation({ users: [user1, user2] });
+            return await newConversation.save();
         } catch (error) {
             console.error(error);
         }
@@ -47,7 +62,9 @@ class MessageStore {
 
     async getConversationsByUser(userId) {
         try {
-            const conversations = await Conversation.find({ users: userId });
+            const conversations = await Conversation.find({
+                users: { $elemMatch: { userId: userId } },
+            });
             return conversations;
         } catch (error) {
             console.error(error);
