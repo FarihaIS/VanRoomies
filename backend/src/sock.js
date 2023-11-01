@@ -1,8 +1,8 @@
 const mongoose = require('mongoose');
 const User = require('./models/userModel');
-const { sanitize } = require('./utils');
 const messageStore = require('./chat/messageStore');
 const { Server } = require('socket.io');
+const { sanitize } = require('./utils/utils');
 
 module.exports = function (server) {
     const io = new Server(server);
