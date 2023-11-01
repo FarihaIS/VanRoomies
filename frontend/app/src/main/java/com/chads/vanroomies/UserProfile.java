@@ -3,61 +3,56 @@ package com.chads.vanroomies;
 import java.io.Serializable;
 
 public class UserProfile implements Serializable {
-    private String id;
-    private String name;
-    private int age;
-    private String preferences;
-    private String imageString;
+    private String _id;
+    private String firstName;
+    private String lastName;
+    private String bio;
+    private String profilePicture;
 
     public UserProfile(String id) {
 
-        this.id = id;
-        this.name = "";
-        this.age = -1;
-        this.preferences = "";
-        this.imageString = "";
+        this._id = id;
+        this.firstName = "";
+        this.bio = "";
+        this.profilePicture = "";
     }
 
     public UserProfile(String id, String name, int age, String preferences, String imageString) {
-        this.id = id;
-        this.name = name;
-        this.age = age;
-        this.preferences = preferences;
-        this.imageString = imageString;
+        this._id = id;
+        this.firstName = name;
+        this.bio = preferences;
+        this.profilePicture = imageString;
     }
 
-    public String getId() { return id; }
-    public String getName() {
-        return name;
+    public String get_id() { return _id; }
+
+    public String getFirstName() {
+        return firstName;
     }
 
-    public int getAge() {
-        return age;
+    public String getLastName() { return lastName; }
+
+    public String getBio() {
+        return bio;
     }
 
-    public String getPreferences() {
-        return preferences;
+    public String getProfilePicture() {
+        return profilePicture;
     }
 
-    public String getImageString() {
-        return imageString;
+    public void set_id(String _id) { this._id = _id; }
+
+    public void setFirstName(String firstName) {
+        this.firstName = firstName;
     }
 
-    public void setId(String id) { this.id = id; }
+    public void setLastName(String lastName) { this.lastName = lastName; }
 
-    public void setName(String name) {
-        this.name = name;
+    public void setBio(String bio) {
+        this.bio = bio;
     }
 
-    public void setAge(int age) {
-        this.age = age;
-    }
-
-    public void setPreferences(String preferences) {
-        this.preferences = preferences;
-    }
-
-    public void setImageString(String imageString) {
-        this.imageString = imageString;
+    public void setProfilePicture(String profilePicture) {
+        this.profilePicture = profilePicture;
     }
 }

@@ -11,6 +11,8 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Toast;
+
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 import java.io.IOException;
@@ -128,8 +130,14 @@ public class ChatFragment extends Fragment {
                             // TODO: Get username and image for each conversation user
 //                                setUserProfileNameAndImage(httpClient, getActivity());
                         }
-                        chatListAdapter = new ChatListAdapter(v.getContext(), allChatMessages, thisUserId);
-                        chatListRecycler.setAdapter((chatListAdapter));
+
+                        if (allChatMessages.isEmpty()) {
+                            Toast.makeText(getActivity(), R.string.no_chats_found, Toast.LENGTH_LONG).show();
+                        }
+                        else {
+                            chatListAdapter = new ChatListAdapter(v.getContext(), allChatMessages, thisUserId);
+                            chatListRecycler.setAdapter((chatListAdapter));
+                        }
                     }
                     catch (IOException e) {
                         e.printStackTrace();

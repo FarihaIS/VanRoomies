@@ -16,7 +16,7 @@ public class MatchDeckAdapter extends BaseAdapter {
     private ArrayList<UserProfile> users;
     private Context context;
 
-    public MatchDeckAdapter(ArrayList<UserProfile> data, Context context) {
+    public MatchDeckAdapter(Context context, ArrayList<UserProfile> data) {
         this.users = data;
         this.context = context;
     }
@@ -44,10 +44,10 @@ public class MatchDeckAdapter extends BaseAdapter {
             v = LayoutInflater.from(context).inflate(R.layout.matches_layout, parent, false);
         }
 
-        ((TextView) v.findViewById(R.id.matches_name)).setText(users.get(position).getName());
-        ((TextView) v.findViewById(R.id.matches_age)).setText(String.valueOf(users.get(position).getAge()));
-        ((TextView) v.findViewById(R.id.matches_preferences)).setText(users.get(position).getPreferences());
-        byte[] decodedString = Base64.decode(users.get(position).getImageString(), Base64.DEFAULT);
+        String fullName = users.get(position).getFirstName() + " " + users.get(position).getLastName();
+        ((TextView) v.findViewById(R.id.matches_name)).setText(fullName);
+        ((TextView) v.findViewById(R.id.matches_bio)).setText(users.get(position).getBio());
+        byte[] decodedString = Base64.decode(users.get(position).getProfilePicture(), Base64.DEFAULT);
         Bitmap decodedByte = BitmapFactory.decodeByteArray(decodedString, 0, decodedString.length);
         ((ImageView) v.findViewById(R.id.matches_image)).setImageBitmap(decodedByte);
 

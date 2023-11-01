@@ -42,15 +42,16 @@ public class ChatListAdapter extends RecyclerView.Adapter {
         UserProfile otherUserProfile = entry.getKey();
         ArrayList<ChatMessage> otherUserMessages = entry.getValue();
 
-        String otherUserName = otherUserProfile.getName();
+        String otherUserName = otherUserProfile.getFirstName();
         if (otherUserName.isEmpty()) {
             ((ChatListHolder) holder).nameView.setText(R.string.default_name);
         }
         else {
-            ((ChatListHolder) holder).nameView.setText(otherUserName);
+            String fullName = otherUserProfile.getFirstName() + " " + otherUserProfile.getLastName();
+            ((ChatListHolder) holder).nameView.setText(fullName);
         }
 
-        String otherUserImage = otherUserProfile.getImageString();
+        String otherUserImage = otherUserProfile.getProfilePicture();
         if (otherUserImage.isEmpty()) {
             ((ChatListHolder) holder).imageView.setImageResource(R.drawable.ic_profile);
         }
