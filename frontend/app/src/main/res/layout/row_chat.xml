@@ -29,7 +29,7 @@
             android:textSize="18sp" />
 
         <ImageButton
-            android:id="@+id/chat_row_block"
+            android:id="@+id/chat_row_delete"
             android:layout_width="60dp"
             android:layout_height="60dp"
             android:layout_alignParentEnd="true"
