@@ -124,15 +124,9 @@ public class ChatFragment extends Fragment {
 
                             eachMessageList = conversation.getMessages();
 
-                            // Check for null userId
-                            if (user.getId() == null) {
-                                Log.d(TAG, "Null userId while retrieving conversation");
-                            }
-                            else {
-                                allChatMesssages.put(user, eachMessageList);
-                                // TODO: Get username and image for each conversation user
+                            allChatMesssages.put(user, eachMessageList);
+                            // TODO: Get username and image for each conversation user
 //                                setUserProfileNameAndImage(httpClient, getActivity());
-                            }
                         }
                         chatListAdapter = new ChatListAdapter(v.getContext(), allChatMesssages, thisUserId);
                         chatListRecycler.setAdapter((chatListAdapter));
