@@ -5,7 +5,7 @@ class UserRecord {
     // userId: ObjectId, inactive: Boolean
     constructor(userId, inactive) {
         this.userId = userId;
-        this.inactive = inactive ? inactive : false;
+        this.inactive = inactive;
     }
 }
 
