@@ -38,7 +38,7 @@ module.exports = function (server) {
                     return callback({ status: 'error', message: 'User not supplied' });
                 }
                 const sanitizedMessage = sanitize(content);
-                await messageStore.sendMessage(socket.userId, sanitizedMessage, socket.userId, to);
+                await messageStore.sendMessage(sanitizedMessage, socket.userId, to);
                 socket
                     .timeout(5000)
                     .to(to)
