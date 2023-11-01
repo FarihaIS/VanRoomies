@@ -63,6 +63,7 @@
     <string name="profile_image_desc">Profile Picture</string>
     <string name="profile_email">User Email</string>
     <string name="profile_birthday">2001–11–13</string>
+    <string name="preferences_title">User Preferences</string>
     <string name="listing_name">Test Listing</string>
     <string name="listing_name_desc">Listing Title</string>
     <string name="listing_image_desc">Listing Picture</string>
