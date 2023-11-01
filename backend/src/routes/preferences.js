@@ -94,7 +94,7 @@ router.get('/:userId/recommendations/users', async (req, res, next) => {
             // TODO: This REQUIRES optimization for further milestones - too transactionally-heavy
             let rankedUsers = [];
             for (const id of generateRecommendations(scores)) {
-                const currUser = await User.findById(id).lean();
+                const currUser = await User.findById(id).select('firstName lastName profilePicture bio').lean();
                 rankedUsers.push(currUser);
             }
             res.status(200).json(rankedUsers);
