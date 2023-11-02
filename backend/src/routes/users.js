@@ -27,6 +27,8 @@ router.get('/', async (req, res, next) => {
  * middleware to validate their ID token. The login serves a 2-fold purpose
  * of signing up a new user and creating their record on the database
  * or simply querying their profile otherwise.
+ * 
+ * TODO: Middleware for Google Sign In + JWT will be added following
  *
  * Route: POST /api/users/login
  * Content-Type: application/json
@@ -41,7 +43,7 @@ router.get('/', async (req, res, next) => {
  *      status(200): User Object
  *      status(201): {userToken: String, user: User}
  */
-router.post('/login', validateGoogleIdToken, async (req, res, next) => {
+router.post('/login', async (req, res, next) => {
     try {
         const currentUser = await User.findOne({ email: req.body.email });
         if (currentUser) {
