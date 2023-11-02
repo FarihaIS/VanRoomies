@@ -190,6 +190,21 @@ public class ProfileFragment extends Fragment {
             // final EditText moveInDate = new EditText(context);
             final EditText leaseLength = new EditText(context);
 
+            // If we are editing and not creating, prefill fields
+            if (editPreferencesButton.getText().equals(getString(R.string.edit_preferences_button))) {
+                minPrice.setText(getExistingPreferenceField(preferencesMinPrice.getText()));
+                maxPrice.setText(getExistingPreferenceField(preferencesMaxPrice.getText()));
+                housingType.setText(getExistingPreferenceField(preferencesHousingType.getText()));
+                roommateCount.setText(getExistingPreferenceField(preferencesRoommateCount.getText()));
+                petFriendly.setText(getExistingPreferenceField(preferencesPetFriendly.getText()));
+                smoking.setText(getExistingPreferenceField(preferencesSmoking.getText()));
+                partying.setText(getExistingPreferenceField(preferencesPartying.getText()));
+                drinking.setText(getExistingPreferenceField(preferencesDrinking.getText()));
+                noise.setText(getExistingPreferenceField(preferencesNoise.getText()));
+                gender.setText(getExistingPreferenceField(preferencesGender.getText()));
+                leaseLength.setText(getExistingPreferenceField(preferencesLeaseLength.getText()));
+            }
+
             minPrice.setHint("Minimum Price (Numerical)");
             maxPrice.setHint("Rental Price (Numerical)");
             housingType.setHint("Housing Type (Must be: 'studio', '1-bedroom', '2-bedroom', or 'other')");
@@ -299,14 +314,15 @@ public class ProfileFragment extends Fragment {
                         profileEmail.setText((CharSequence) result.get("email"));
                         profileDesc.setText((CharSequence) result.get("bio"));
 
-                        if (result.get("birthday") != null) {\
-                            String birthday = result.get("birthday").toString();
-                            profileBirthday.setVisibility(view.VISIBLE);
-                            profileBirthday.setText(String.format("%s %s", "Birthday:", birthday.split("T")[0]));
-                        } else {
-                            profileBirthday.setText("");
-                            profileBirthday.setVisibility(view.INVISIBLE);
-                        }
+                        profileBirthday.setVisibility(view.INVISIBLE);
+//                        if (result.get("birthday") != null) {
+//                            String birthday = result.get("birthday").toString();
+//                            profileBirthday.setVisibility(view.VISIBLE);
+//                            profileBirthday.setText(String.format("%s %s", "Birthday:", birthday.split("T")[0]));
+//                        } else {
+//                            profileBirthday.setText("");
+//                            profileBirthday.setVisibility(view.INVISIBLE);
+//                        }
 
                         if (result.get("profilePicture") != null) {
                             byte[] decodedString = Base64.decode((String) result.get("profilePicture"), Base64.DEFAULT);
@@ -456,5 +472,10 @@ public class ProfileFragment extends Fragment {
         } catch(NumberFormatException e){
             return false;
         }
+    }
+
+    // Takes the current text from the screen and converts it to what was previously inputted
+    public static String getExistingPreferenceField(CharSequence input){
+        return input.toString().split(": ")[1];
     }
 }
