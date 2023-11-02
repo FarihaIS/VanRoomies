@@ -11,6 +11,7 @@ import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.Bundle;
+import android.os.StrictMode;
 import android.util.Base64;
 import android.util.Log;
 import android.view.View;
@@ -49,6 +50,8 @@ public class ViewListingActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        StrictMode.ThreadPolicy policy = new StrictMode.ThreadPolicy.Builder().permitAll().build();
+        StrictMode.setThreadPolicy(policy);
         setContentView(R.layout.activity_view_listing);
 
         // Grabbing parameters from listings view
@@ -214,7 +217,7 @@ public class ViewListingActivity extends AppCompatActivity {
                         // Fetching Parameters
                         String photoString = "";
                         List<String> imagesList = result.getImages();
-                        if (imagesList.size() > 0){
+                        if (imagesList.size() > 0 && imagesList.get(0).matches(Constants.base64Regex)){
                             photoString = imagesList.get(0);
                         }
                         String title = result.getTitle();
@@ -233,7 +236,7 @@ public class ViewListingActivity extends AppCompatActivity {
                         TextView move_in_date_textview = findViewById(R.id.move_in_date);
                         TextView pet_textview = findViewById(R.id.pet_friendly);
 
-                        // Setting ImageView
+                        // Setting ImageView. Verification done when setting photoString
                         byte[] decodedString = Base64.decode(photoString, Base64.DEFAULT);
                         Bitmap decodedByte = BitmapFactory.decodeByteArray(decodedString, 0, decodedString.length);
                         listing_image.setImageBitmap(decodedByte);

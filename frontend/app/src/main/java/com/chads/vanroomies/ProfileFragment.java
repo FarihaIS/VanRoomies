@@ -10,6 +10,8 @@ import android.graphics.BitmapFactory;
 import android.os.Bundle;
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
+
+import android.os.StrictMode;
 import android.util.Base64;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -99,6 +101,8 @@ public class ProfileFragment extends Fragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        StrictMode.ThreadPolicy policy = new StrictMode.ThreadPolicy.Builder().permitAll().build();
+        StrictMode.setThreadPolicy(policy);
         if (getArguments() != null) {
             mParam1 = getArguments().getString(ARG_PARAM1);
             mParam2 = getArguments().getString(ARG_PARAM2);
@@ -339,7 +343,9 @@ public class ProfileFragment extends Fragment {
 //                        }
 
                         if (result.get("profilePicture") != null) {
-                            byte[] decodedString = Base64.decode((String) result.get("profilePicture"), Base64.DEFAULT);
+                            String imageString = result.get("profilePicture").toString().matches(Constants.base64Regex)
+                                    ? result.get("profilePicture").toString() : "";
+                            byte[] decodedString = Base64.decode(imageString, Base64.DEFAULT);
                             Bitmap decodedByte = BitmapFactory.decodeByteArray(decodedString, 0, decodedString.length);
                             profilePicture.setImageBitmap(decodedByte);
                         }

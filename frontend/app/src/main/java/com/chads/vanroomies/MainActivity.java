@@ -157,7 +157,6 @@ public class MainActivity extends AppCompatActivity {
             public void onFailure(@NonNull Call call, @NonNull IOException e) {
                 Log.d(TAG, e.getMessage());
             }
-
             @Override
             public void onResponse(@NonNull Call call, @NonNull Response response) {
                 act.runOnUiThread(() -> {

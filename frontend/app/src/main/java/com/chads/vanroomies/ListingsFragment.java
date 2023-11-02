@@ -10,6 +10,8 @@ import android.content.SharedPreferences;
 import android.os.Bundle;
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
+
+import android.os.StrictMode;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -41,6 +43,7 @@ import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import okhttp3.RequestBody;
 import okhttp3.Response;
+import okhttp3.ResponseBody;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -92,6 +95,8 @@ public class ListingsFragment extends Fragment implements ListingsItemSelectList
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        StrictMode.ThreadPolicy policy = new StrictMode.ThreadPolicy.Builder().permitAll().build();
+        StrictMode.setThreadPolicy(policy);
         if (getArguments() != null) {
             mParam1 = getArguments().getString(ARG_PARAM1);
             mParam2 = getArguments().getString(ARG_PARAM2);
@@ -221,32 +226,35 @@ public class ListingsFragment extends Fragment implements ListingsItemSelectList
                 act.runOnUiThread(() -> {
                     try {
                         recyclerDataArrayList = new ArrayList<>();
-                        String responseData = response.body().string();
-                        List<Map<String, Object>> responseDataList = g.fromJson(responseData, List.class);
+                        ResponseBody responseBody = response.body();
+                        String responseData = responseBody.string();
 
-                        for (int index = 0; index < responseDataList.size(); index++){
-                            Map<String, Object> listing_json = responseDataList.get(index);
-                            JSONObject listing_obj = new JSONObject(listing_json);
-                            String listing_title = listing_obj.getString("title");
-                            JSONArray listing_photo_array = listing_obj.getJSONArray("images");
-                            String listing_photo = "";
-                            if (listing_photo_array.length() > 0){
-                                listing_photo = listing_photo_array.get(0).toString();
+                        if (response.isSuccessful() && responseData.length() > 0){
+                            List<Map<String, Object>> responseDataList = g.fromJson(responseData, List.class);
+
+                            for (int index = 0; index < responseDataList.size(); index++){
+                                Map<String, Object> listing_json = responseDataList.get(index);
+                                JSONObject listing_obj = new JSONObject(listing_json);
+                                String listing_title = listing_obj.getString("title");
+                                JSONArray listing_photo_array = listing_obj.getJSONArray("images");
+                                String listing_photo = "";
+                                if (listing_photo_array.length() > 0){
+                                    listing_photo = listing_photo_array.get(0).toString();
+                                }
+                                // Information taken to individual listing
+
+                                String listing_id = listing_obj.getString("_id");
+                                HashMap<String, String> additionalInfo = new HashMap<>();
+                                additionalInfo.put("owner_id", listing_obj.getString("userId"));
+                                additionalInfo.put("description", listing_obj.getString("description"));
+                                additionalInfo.put("housingType", listing_obj.getString("housingType"));
+                                additionalInfo.put("listingDate", listing_obj.getString("listingDate"));
+                                additionalInfo.put("moveInDate", listing_obj.getString("moveInDate"));
+                                additionalInfo.put("petFriendly", listing_obj.getString("petFriendly"));
+
+                                recyclerDataArrayList.add(new ListingsRecyclerData(listing_title, listing_photo, listing_id, additionalInfo));
                             }
-                            // Information taken to individual listing
-
-                            String listing_id = listing_obj.getString("_id");
-                            HashMap<String, String> additionalInfo = new HashMap<>();
-                            additionalInfo.put("owner_id", listing_obj.getString("userId"));
-                            additionalInfo.put("description", listing_obj.getString("description"));
-                            additionalInfo.put("housingType", listing_obj.getString("housingType"));
-                            additionalInfo.put("listingDate", listing_obj.getString("listingDate"));
-                            additionalInfo.put("moveInDate", listing_obj.getString("moveInDate"));
-                            additionalInfo.put("petFriendly", listing_obj.getString("petFriendly"));
-
-                            recyclerDataArrayList.add(new ListingsRecyclerData(listing_title, listing_photo, listing_id, additionalInfo));
                         }
-
                         // added data from arraylist to adapter class.
                         ListingsRecyclerViewAdapter adapter = new ListingsRecyclerViewAdapter(recyclerDataArrayList, ListingsFragment.this, view.getContext());
 
