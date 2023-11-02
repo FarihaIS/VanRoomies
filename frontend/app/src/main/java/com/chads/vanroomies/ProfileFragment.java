@@ -17,10 +17,15 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
+import android.widget.Toast;
+
 import com.google.gson.Gson;
 import org.json.JSONException;
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 import okhttp3.Call;
 import okhttp3.Callback;
@@ -61,7 +66,7 @@ public class ProfileFragment extends Fragment {
     private ImageView profilePicture;
     private Button editDescButton;
     // TODO: Keep track of userId and replace the one below
-    private String userId = "653dde0848a54c10b096a65e";
+    private String userId = "6543164db187d19842432911";
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
     private static final String ARG_PARAM1 = "param1";
     private static final String ARG_PARAM2 = "param2";
@@ -163,6 +168,115 @@ public class ProfileFragment extends Fragment {
                     alertDialog.show();
                 });
 
+        // Set up button for editing user preferences
+        editPreferencesButton = view.findViewById(R.id.edit_preferences_button);
+        editPreferencesButton.setOnClickListener(temp -> {
+            // Setting up Add Listing Prompt
+            Context context = view.getContext();
+            AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(context);
+            LinearLayout layout = new LinearLayout(context);
+            layout.setOrientation(LinearLayout.VERTICAL);
+
+            final EditText minPrice = new EditText(context);
+            final EditText maxPrice = new EditText(context);
+            final EditText housingType = new EditText(context);
+            final EditText roommateCount = new EditText(context);
+            final EditText petFriendly = new EditText(context);
+            final EditText smoking = new EditText(context);
+            final EditText partying = new EditText(context);
+            final EditText drinking = new EditText(context);
+            final EditText noise = new EditText(context);
+            final EditText gender = new EditText(context);
+            // final EditText moveInDate = new EditText(context);
+            final EditText leaseLength = new EditText(context);
+
+            minPrice.setHint("Minimum Price (Numerical)");
+            maxPrice.setHint("Rental Price (Numerical)");
+            housingType.setHint("Housing Type (Must be: 'studio', '1-bedroom', '2-bedroom', or 'other')");
+            roommateCount.setHint("Preferred # Roommates (Numerical)");
+            petFriendly.setHint("Pets Allowed? (Y/N)");
+            smoking.setHint("'no-smoking', 'neutral', or 'regular'");
+            partying.setHint("'no-partying', 'neutral', or 'regular'");
+            drinking.setHint("'no-drinking', 'neutral', or 'regular'");
+            noise.setHint("'no-noise', 'neutral', or 'regular'");
+            gender.setHint("'male', 'female', or 'neutral'");
+            leaseLength.setHint("Preferred Lease Length (Numerical)");
+
+            layout.addView(minPrice);
+            layout.addView(maxPrice);
+            layout.addView(housingType);
+            layout.addView(roommateCount);
+            layout.addView(petFriendly);
+            layout.addView(smoking);
+            layout.addView(partying);
+            layout.addView(drinking);
+            layout.addView(noise);
+            layout.addView(gender);
+            layout.addView(leaseLength);
+
+            alertDialogBuilder.setView(layout); // Again this is a set method, not add
+            alertDialogBuilder.setCancelable(true).setPositiveButton("Create", new DialogInterface.OnClickListener() {
+                public void onClick(DialogInterface dialog, int id) {
+                    dialog.dismiss();
+                    List<String> preferenceParams = new ArrayList<>();
+                    preferenceParams.add(minPrice.getText().toString());
+                    preferenceParams.add(maxPrice.getText().toString());
+                    preferenceParams.add(housingType.getText().toString());
+                    preferenceParams.add(roommateCount.getText().toString());
+                    preferenceParams.add(petFriendly.getText().toString());
+                    preferenceParams.add(smoking.getText().toString());
+                    preferenceParams.add(partying.getText().toString());
+                    preferenceParams.add(drinking.getText().toString());
+                    preferenceParams.add(noise.getText().toString());
+                    preferenceParams.add(gender.getText().toString());
+                    preferenceParams.add(leaseLength.getText().toString());
+
+                    // Ensuring all fields are filled out + valid
+                    if (preferenceParams.contains("")) {
+                        Toast.makeText(context, "Please fill in all fields.", Toast.LENGTH_LONG).show();
+                    } else if (!isNumeric(preferenceParams.get(0))) {
+                        Toast.makeText(context, "The min price must be numerical (i.e. '1500').", Toast.LENGTH_LONG).show();
+                    } else if (!isNumeric(preferenceParams.get(1))) {
+                        Toast.makeText(context, "The max price must be numerical (i.e. '1500').", Toast.LENGTH_LONG).show();
+                    } else if (!preferenceParams.get(2).equals("studio") && !preferenceParams.get(2).equals("1-bedroom")
+                            && !preferenceParams.get(2).equals("2-bedroom") && !preferenceParams.get(2).equals("other")) {
+                        Toast.makeText(context, "Housing Type must be one of: 'studio', " +
+                                "'1-bedroom', '2-bedroom', or 'other'", Toast.LENGTH_LONG).show();
+                    } else if (!isNumeric(preferenceParams.get(3))){ //
+                        Toast.makeText(context, "The preferred roommates must be numerical (i.e. '3').", Toast.LENGTH_LONG).show();
+                    } else if (!preferenceParams.get(4).equals("Y") && !preferenceParams.get(4).equals("N")) {
+                        Toast.makeText(context, "Pet Friendly must be 'Y' or 'N'", Toast.LENGTH_LONG).show();
+                    } else if (!preferenceParams.get(5).equals("no-smoking") && !preferenceParams.get(5).equals("neutral")
+                    && !preferenceParams.get(5).equals("regular")) {
+                        Toast.makeText(context, "Smoking must be 'no-smoking', 'neutral', or 'regular'", Toast.LENGTH_LONG).show();
+                    } else if (!preferenceParams.get(6).equals("no-partying") && !preferenceParams.get(6).equals("neutral")
+                            && !preferenceParams.get(6).equals("regular")) {
+                        Toast.makeText(context, "Partying must be 'no-partying', 'neutral', or 'regular'", Toast.LENGTH_LONG).show();
+                    } else if (!preferenceParams.get(7).equals("no-drinking") && !preferenceParams.get(7).equals("neutral")
+                            && !preferenceParams.get(7).equals("regular")) {
+                        Toast.makeText(context, "Drinking must be 'no-drinking', 'neutral', or 'regular'", Toast.LENGTH_LONG).show();
+                    } else if (!preferenceParams.get(8).equals("no-noise") && !preferenceParams.get(8).equals("neutral")
+                            && !preferenceParams.get(8).equals("regular")) {
+                        Toast.makeText(context, "Noise must be 'no-noise', 'neutral', or 'regular'", Toast.LENGTH_LONG).show();
+                    } else if (!preferenceParams.get(9).equals("male") && !preferenceParams.get(9).equals("female")
+                            && !preferenceParams.get(9).equals("neutral")) {
+                        Toast.makeText(context, "Gender must be 'male', 'female', or 'neutral'", Toast.LENGTH_LONG).show();
+                    } else if (!isNumeric(preferenceParams.get(0))) {
+                        Toast.makeText(context, "The lease must be numerical (i.e. '12').", Toast.LENGTH_LONG).show();
+                    } else {
+                        Log.d(TAG, "Editing/Adding Preferences.");
+                        editOrAddPreferences(httpClient, view, getActivity(), userId, preferenceParams);
+                    }
+                }
+            }).setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+                public void onClick(DialogInterface dialog, int id) {
+                    dialog.dismiss();
+                }
+            });
+            AlertDialog alertDialog = alertDialogBuilder.create();
+            alertDialog.show();
+        });
+
         // Inflate the layout for this fragment
         return view;
     }
@@ -184,7 +298,8 @@ public class ProfileFragment extends Fragment {
                         profileName.setText(String.format("%s %s", result.get("firstName"), result.get("lastName")));
                         profileEmail.setText((CharSequence) result.get("email"));
                         profileDesc.setText((CharSequence) result.get("bio"));
-                        profileBirthday.setText(String.format("%s %s", "Birthday:", result.get("birthday")));
+                        String birthday = result.get("birthday").toString();
+                        profileBirthday.setText(String.format("%s %s", "Birthday:", birthday.split("T")[0]));
 
                         if (result.get("profilePicture") != null) {
                             byte[] decodedString = Base64.decode((String) result.get("profilePicture"), Base64.DEFAULT);
@@ -212,11 +327,11 @@ public class ProfileFragment extends Fragment {
                 act.runOnUiThread(() -> {
                     try {
                         ResponseBody responseBody = response.body();
+                        String responseData = responseBody.string();
+                        UserPreferencesResponseResult result = g.fromJson(responseData, UserPreferencesResponseResult.class);
                         // User has Preferences
-                        if (responseBody != null) {
+                        if (result.getMinPrice() != null) {
                             Log.d(TAG, "Existing Preferences Found!");
-                            String responseData = responseBody.string();
-                            UserPreferencesResponseResult result = g.fromJson(responseData, UserPreferencesResponseResult.class);
                             preferencesMinPrice.setText(String.format("Min Price: %s", result.getMinPrice()));
                             preferencesMaxPrice.setText(String.format("Max Price: %s", result.getMaxPrice()));
                             preferencesHousingType.setText(String.format("Housing Type: %s", result.getHousingType()));
@@ -228,20 +343,21 @@ public class ProfileFragment extends Fragment {
                             preferencesNoise.setText(String.format("Noise: %s", result.getNoise()));
                             preferencesGender.setText(String.format("Gender: %s", result.getGender()));
                             preferencesLeaseLength.setText(String.format("Lease Length: %s", result.getLeaseLength()));
+                            editPreferencesButton.setText(getString(R.string.edit_preferences_button));
                         }
                         else {
                             Log.d(TAG, "No existing preferences");
-                            preferencesMinPrice.setText("N/A");
-                            preferencesMaxPrice.setText("N/A");
-                            preferencesHousingType.setText("N/A");
-                            preferencesRoommateCount.setText("N/A");
-                            preferencesPetFriendly.setText("N/A");
-                            preferencesSmoking.setText("N/A");
-                            preferencesPartying.setText("N/A");
-                            preferencesDrinking.setText("N/A");
-                            preferencesNoise.setText("N/A");
-                            preferencesGender.setText("N/A");
-                            preferencesLeaseLength.setText("N/A");
+                            preferencesMinPrice.setText(String.format("Min Price: %s", "N/A"));
+                            preferencesMaxPrice.setText(String.format("Max Price: %s", "N/A"));
+                            preferencesHousingType.setText(String.format("Housing Type: %s", "N/A"));
+                            preferencesRoommateCount.setText(String.format("Roommates: %s", "N/A"));
+                            preferencesPetFriendly.setText(String.format("Pet Friendly: %s", "N/A"));
+                            preferencesSmoking.setText(String.format("Smoking: %s", "N/A"));
+                            preferencesPartying.setText(String.format("Partying: %s", "N/A"));
+                            preferencesDrinking.setText(String.format("Drinking: %s", "N/A"));
+                            preferencesNoise.setText(String.format("Noise: %s", "N/A"));
+                            preferencesGender.setText(String.format("Gender: %s", "N/A"));
+                            preferencesLeaseLength.setText(String.format("Lease Length: %s", "N/A"));
                             editPreferencesButton.setText(getString(R.string.add_preferences_button));
                         }
 
@@ -253,6 +369,48 @@ public class ProfileFragment extends Fragment {
         });
     }
 
+    public void editOrAddPreferences(OkHttpClient client, View view, Activity act, String user_id, List<String> preferenceParams){
+        String petFriendly = preferenceParams.get(4).equals("Y") ? "true" : "false";
+        // Setting up a POST request
+        RequestBody formBody = new FormBody.Builder()
+                .add("minPrice", preferenceParams.get(0))
+                .add("maxPrice", preferenceParams.get(1))
+                .add("housingType", preferenceParams.get(2))
+                .add("roommateCount", preferenceParams.get(3))
+                .add("petFriendly", petFriendly)
+                .add("smoking", preferenceParams.get(5))
+                .add("partying", preferenceParams.get(6))
+                .add("drinking", preferenceParams.get(7))
+                .add("noise", preferenceParams.get(8))
+                .add("gender", preferenceParams.get(9))
+                .add("moveInDate", "2024-01-01") // ToDo: Get from user and parse in future milestones
+                .add("leaseLength", preferenceParams.get(10))
+                .build();
+
+        Request request;
+        if (editPreferencesButton.getText().equals("Add")){
+            request = new Request.Builder().url(Constants.baseServerURL + Constants.userPreferencesEndpoint(user_id))
+                .post(formBody) // POST
+                .build();
+        }
+        else {
+            request = new Request.Builder().url(Constants.baseServerURL + Constants.userPreferencesEndpoint(user_id))
+                .put(formBody) // PUT
+                .build();
+        }
+
+        client.newCall(request).enqueue(new Callback() {
+            @Override
+            public void onFailure(@NonNull Call call, @NonNull IOException e) {
+                Log.d(TAG, e.getMessage());
+            }
+
+            @Override
+            public void onResponse(@NonNull Call call, @NonNull Response response) {
+                act.runOnUiThread(() -> getUserPreferences(client, view, act, user_id));
+            }
+        });
+    }
     public void updateUserBio(OkHttpClient client, View view, Activity act, String user_id, String desc) throws JSONException {
         // Setting up the request
         RequestBody formBody = new FormBody.Builder()
@@ -282,5 +440,14 @@ public class ProfileFragment extends Fragment {
     // From https://stackoverflow.com/questions/37929419/set-size-of-contents-dynamically-in-dp-in-android
     public static int pxFromDp(Context context, float dp) {
         return (int)(dp * context.getResources().getDisplayMetrics().density);
+    }
+
+    public static boolean isNumeric(String input) {
+        try {
+            Double.parseDouble(input);
+            return true;
+        } catch(NumberFormatException e){
+            return false;
+        }
     }
 }

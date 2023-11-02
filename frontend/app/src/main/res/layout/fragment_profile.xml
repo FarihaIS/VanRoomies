@@ -131,6 +131,7 @@
         android:layout_height="wrap_content"
         android:contentDescription="@string/min_price"
         android:text="@string/min_price"
+        android:textAlignment="viewStart"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.108"
@@ -144,6 +145,7 @@
         android:layout_height="wrap_content"
         android:contentDescription="@string/max_price"
         android:text="@string/max_price"
+        android:textAlignment="viewStart"
         android:translationY="20dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
@@ -158,13 +160,14 @@
         android:layout_height="wrap_content"
         android:contentDescription="@string/housing_type"
         android:text="@string/housing_type"
+        android:textAlignment="viewStart"
         android:translationY="60dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.118"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/preferences_minPrice"
-        app:layout_constraintVertical_bias="0.007" />
+        app:layout_constraintVertical_bias="0.01" />
 
     <TextView
         android:id="@+id/preferences_roommateCount4"
@@ -172,13 +175,14 @@
         android:layout_height="wrap_content"
         android:contentDescription="@string/roommate_count"
         android:text="@string/roommate_count"
+        android:textAlignment="viewStart"
         android:translationY="100dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.114"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/preferences_minPrice"
-        app:layout_constraintVertical_bias="0.007" />
+        app:layout_constraintVertical_bias="0.01" />
 
     <TextView
         android:id="@+id/preferences_petFriendly"
@@ -186,10 +190,11 @@
         android:layout_height="wrap_content"
         android:contentDescription="@string/pet_friendly"
         android:text="@string/pet_friendly"
+        android:textAlignment="viewStart"
         android:translationY="140dp"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toStartOf="@+id/preferences_noise"
-        app:layout_constraintHorizontal_bias="0.215"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.112"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/preferences_minPrice"
         app:layout_constraintVertical_bias="0.01" />
@@ -200,6 +205,7 @@
         android:layout_height="wrap_content"
         android:contentDescription="@string/lease_length"
         android:text="@string/lease_length"
+        android:textAlignment="viewStart"
         android:translationY="180dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
@@ -214,10 +220,11 @@
         android:layout_height="wrap_content"
         android:contentDescription="@string/preferences_title"
         android:text="@string/smoking"
+        android:textAlignment="viewStart"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.592"
-        app:layout_constraintStart_toEndOf="@+id/preferences_minPrice"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toEndOf="@+id/splitter"
         app:layout_constraintTop_toBottomOf="@+id/preferences_title"
         app:layout_constraintVertical_bias="0.041" />
 
@@ -227,13 +234,14 @@
         android:layout_height="wrap_content"
         android:contentDescription="@string/partying"
         android:text="@string/partying"
+        android:textAlignment="viewStart"
         android:translationY="20dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.577"
-        app:layout_constraintStart_toEndOf="@+id/preferences_maxPrice"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toEndOf="@+id/splitter"
         app:layout_constraintTop_toBottomOf="@+id/preferences_smoking"
-        app:layout_constraintVertical_bias="0.0" />
+        app:layout_constraintVertical_bias="0.01" />
 
     <TextView
         android:id="@+id/preferences_drinking"
@@ -241,13 +249,14 @@
         android:layout_height="wrap_content"
         android:contentDescription="@string/drinking"
         android:text="@string/drinking"
+        android:textAlignment="viewStart"
         android:translationY="60dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.532"
-        app:layout_constraintStart_toEndOf="@+id/preferences_housingType"
-        app:layout_constraintTop_toTopOf="@+id/preferences_partying"
-        app:layout_constraintVertical_bias="0.0" />
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toEndOf="@+id/splitter"
+        app:layout_constraintTop_toBottomOf="@+id/preferences_smoking"
+        app:layout_constraintVertical_bias="0.014" />
 
     <TextView
         android:id="@+id/preferences_noise"
@@ -255,13 +264,14 @@
         android:layout_height="wrap_content"
         android:contentDescription="@string/noise"
         android:text="@string/noise"
+        android:textAlignment="viewStart"
         android:translationY="100dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.517"
-        app:layout_constraintStart_toEndOf="@+id/preferences_roommateCount4"
-        app:layout_constraintTop_toTopOf="@+id/preferences_partying"
-        app:layout_constraintVertical_bias="0.0" />
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toEndOf="@+id/splitter"
+        app:layout_constraintTop_toBottomOf="@+id/preferences_smoking"
+        app:layout_constraintVertical_bias="0.014" />
 
     <TextView
         android:id="@+id/preferences_gender"
@@ -269,13 +279,14 @@
         android:layout_height="wrap_content"
         android:contentDescription="@string/gender"
         android:text="@string/gender"
+        android:textAlignment="viewStart"
         android:translationY="140dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.548"
-        app:layout_constraintStart_toEndOf="@+id/preferences_petFriendly"
-        app:layout_constraintTop_toTopOf="@+id/preferences_partying"
-        app:layout_constraintVertical_bias="0.0" />
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toEndOf="@+id/splitter"
+        app:layout_constraintTop_toBottomOf="@+id/preferences_smoking"
+        app:layout_constraintVertical_bias="0.01" />
 
     <Button
         android:id="@+id/edit_preferences_button"
@@ -291,5 +302,14 @@
         app:layout_constraintStart_toEndOf="@+id/preferences_leaseLength"
         app:layout_constraintTop_toBottomOf="@+id/preferences_smoking"
         app:layout_constraintVertical_bias="0.0" />
+
+    <TextView
+        android:id="@+id/splitter"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/relativeLayout2" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
