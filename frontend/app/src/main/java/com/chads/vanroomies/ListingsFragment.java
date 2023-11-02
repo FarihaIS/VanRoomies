@@ -6,7 +6,6 @@ import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.content.Context;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import androidx.annotation.NonNull;
@@ -172,7 +171,7 @@ public class ListingsFragment extends Fragment implements ListingsItemSelectList
                     } else {
                         try {
                             Log.d(TAG, "Creating Listing.");
-                            createListing(httpClient, view, getActivity(), listingParams);
+                            createListing(httpClient, view, getActivity(), listingParams, userId);
                         } catch (JSONException e) {
                             throw new RuntimeException(e);
                         }
@@ -197,18 +196,18 @@ public class ListingsFragment extends Fragment implements ListingsItemSelectList
                     addListingButton.setEnabled(true);
                     addListingButton.setVisibility(View.VISIBLE);
                     titleText.setText(getString(R.string.listings_header_owned));
-                    getOwnedListings(httpClient, view, getActivity());
+                    getOwnedListings(httpClient, view, getActivity(), userId);
                 } else {
                     addListingButton.setEnabled(false);
                     addListingButton.setVisibility(View.INVISIBLE);
                     titleText.setText(getString(R.string.listings_header_recommended));
-                    getRecommendedListings(httpClient, view, getActivity());
+                    getRecommendedListings(httpClient, view, getActivity(), userId);
                 }
             }
         });
         return view;
     }
-    public void getRecommendedListings(OkHttpClient client, View view, Activity act){
+    public void getRecommendedListings(OkHttpClient client, View view, Activity act, String userId){
         Request request = new Request.Builder().url(Constants.baseServerURL + Constants.listingByUserIdEndpoint + userId).build();
         // recommended
         // Request request = new Request.Builder().url(Constants.BaseServerURL + Constants.listingByRecommendationsEndpoint(userId)).build();
@@ -269,7 +268,7 @@ public class ListingsFragment extends Fragment implements ListingsItemSelectList
             }
         });
     }
-    public void getOwnedListings(OkHttpClient client, View view, Activity act){
+    public void getOwnedListings(OkHttpClient client, View view, Activity act, String userId){
         Request request = new Request.Builder().url(Constants.baseServerURL + Constants.listingByUserIdEndpoint + userId).build();
         Log.d(String.format("%s: OWNED", TAG), Constants.baseServerURL + Constants.listingByUserIdEndpoint + userId);
         client.newCall(request).enqueue(new Callback() {
@@ -343,7 +342,7 @@ public class ListingsFragment extends Fragment implements ListingsItemSelectList
         startActivity(intent);
     }
 
-    public void createListing(OkHttpClient client, View view, Activity act, List<String> params) throws JSONException {
+    public void createListing(OkHttpClient client, View view, Activity act, List<String> params, String userId) throws JSONException {
         String petFriendly;
         if (params.get(4).equals("Y")){
             petFriendly = "true";
@@ -375,7 +374,7 @@ public class ListingsFragment extends Fragment implements ListingsItemSelectList
 
             @Override
             public void onResponse(@NonNull Call call, @NonNull Response response) {
-                act.runOnUiThread(() -> getOwnedListings(client, view, act));
+                act.runOnUiThread(() -> getOwnedListings(client, view, act, userId));
             }
         });
     }

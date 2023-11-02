@@ -33,7 +33,6 @@ public class MainActivity extends AppCompatActivity {
     private int RC_SIGN_IN = 1;
     private OkHttpClient httpClient;
     final static Gson g = new Gson();
-    private String tempUserId;
 
     private GoogleSignInClient mGoogleSignInClient;
 

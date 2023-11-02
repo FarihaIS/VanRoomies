@@ -179,6 +179,7 @@ public class ProfileFragment extends Fragment {
 
         // Set up button for editing user preferences
         editPreferencesButton = view.findViewById(R.id.edit_preferences_button);
+        String finalUserId1 = userId;
         editPreferencesButton.setOnClickListener(temp -> {
             // Setting up Add Listing Prompt
             Context context = view.getContext();
@@ -289,7 +290,7 @@ public class ProfileFragment extends Fragment {
                         Toast.makeText(context, "The lease must be numerical (i.e. '12').", Toast.LENGTH_LONG).show();
                     } else {
                         Log.d(TAG, "Editing/Adding Preferences.");
-                        editOrAddPreferences(httpClient, view, getActivity(), userId, preferenceParams);
+                        editOrAddPreferences(httpClient, view, getActivity(), finalUserId1, preferenceParams);
                     }
                 }
             }).setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
