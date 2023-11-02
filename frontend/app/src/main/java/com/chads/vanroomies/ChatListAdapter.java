@@ -9,12 +9,12 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageButton;
-import android.widget.ImageView;
 import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 import java.util.ArrayList;
 import java.util.Map;
+import de.hdodenhof.circleimageview.CircleImageView;
 
 public class ChatListAdapter extends RecyclerView.Adapter {
     private final Context context;
@@ -76,7 +76,7 @@ public class ChatListAdapter extends RecyclerView.Adapter {
     }
 
     public static class ChatListHolder extends RecyclerView.ViewHolder {
-        ImageView imageView;
+        CircleImageView imageView;
         TextView nameView;
         ImageButton deleteButton;
 

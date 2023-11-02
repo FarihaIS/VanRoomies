@@ -40,7 +40,7 @@ android {
 
 dependencies {
     implementation("androidx.appcompat:appcompat:1.6.1")
-    implementation("com.google.android.material:material:1.8.0")
+    implementation("com.google.android.material:material:1.9.0")
     implementation("androidx.constraintlayout:constraintlayout:2.1.4")
     implementation("com.google.android.gms:play-services-auth:20.7.0")
     testImplementation("junit:junit:4.13.2")
@@ -52,8 +52,8 @@ dependencies {
     implementation ("pl.droidsonroids.gif:android-gif-drawable:1.2.22")
     implementation("com.squareup.okhttp3:okhttp:4.9.1")
     implementation("com.google.code.gson:gson:2.8.9")
-    implementation ("com.google.android.material:material:1.9.0")
     implementation ("com.daprlabs.aaron:cardstack:0.3.1-beta0")
-    implementation ("de.hdodenhof:circleimageview:2.2.0")
+    implementation ("androidx.cardview:cardview:1.0.0")
+    implementation ("de.hdodenhof:circleimageview:3.1.0")
     implementation("io.socket:socket.io-client:2.1.0")
 }
