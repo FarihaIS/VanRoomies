@@ -206,7 +206,7 @@ public class ProfileFragment extends Fragment {
             }
 
             minPrice.setHint("Minimum Price (Numerical)");
-            maxPrice.setHint("Rental Price (Numerical)");
+            maxPrice.setHint("Maximum Price (Numerical)");
             housingType.setHint("Housing Type (Must be: 'studio', '1-bedroom', '2-bedroom', or 'other')");
             roommateCount.setHint("Preferred # Roommates (Numerical)");
             petFriendly.setHint("Pets Allowed? (Y/N)");
