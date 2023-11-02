@@ -476,6 +476,13 @@ public class ProfileFragment extends Fragment {
 
     // Takes the current text from the screen and converts it to what was previously inputted
     public static String getExistingPreferenceField(CharSequence input){
-        return input.toString().split(": ")[1];
+        String preference = input.toString().split(": ")[1];
+        if (preference.equals("true")){
+            preference = "Y";
+        }
+        else if (preference.equals("false")) {
+            preference = "N";
+        }
+        return preference;
     }
 }
