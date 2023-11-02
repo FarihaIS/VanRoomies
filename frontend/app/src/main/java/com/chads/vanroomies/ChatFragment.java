@@ -92,13 +92,8 @@ public class ChatFragment extends Fragment {
     }
 
     private void updateChatFragment(View v) {
-        if (allChatMessages.isEmpty()) {
-            Toast.makeText(getActivity(), R.string.no_chats_found, Toast.LENGTH_LONG).show();
-        }
-        else {
-            chatListAdapter = new ChatListAdapter(v.getContext(), allChatMessages, thisUserId);
-            chatListRecycler.setAdapter((chatListAdapter));
-        }
+        chatListAdapter = new ChatListAdapter(v.getContext(), allChatMessages, thisUserId);
+        chatListRecycler.setAdapter((chatListAdapter));
     }
 
     private void getAllChatMessages(OkHttpClient client, Activity activity, View v) {
@@ -118,6 +113,10 @@ public class ChatFragment extends Fragment {
                         Type listType = new TypeToken<List<ChatConversation>>(){}.getType();
                         Log.d(TAG, "responseData for Conversations is " + responseData);
                         List<ChatConversation> allConversations = gson.fromJson(responseData, listType);
+
+                        if (allConversations.isEmpty()) {
+                            Toast.makeText(getActivity(), R.string.no_chats_found, Toast.LENGTH_LONG).show();
+                        }
 
                         // Iterate through all user conversations
                         for (ChatConversation conversation : allConversations) {
