@@ -66,7 +66,7 @@ public class ProfileFragment extends Fragment {
     private ImageView profilePicture;
     private Button editDescButton;
     // TODO: Keep track of userId and replace the one below
-    private String userId = "6543164db187d19842432911";
+    private String userId = "65432c8d6ae83d9fc72e0900";
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
     private static final String ARG_PARAM1 = "param1";
     private static final String ARG_PARAM2 = "param2";
@@ -230,7 +230,7 @@ public class ProfileFragment extends Fragment {
             layout.addView(leaseLength);
 
             alertDialogBuilder.setView(layout); // Again this is a set method, not add
-            alertDialogBuilder.setCancelable(true).setPositiveButton("Create", new DialogInterface.OnClickListener() {
+            alertDialogBuilder.setCancelable(true).setPositiveButton("Save", new DialogInterface.OnClickListener() {
                 public void onClick(DialogInterface dialog, int id) {
                     dialog.dismiss();
                     List<String> preferenceParams = new ArrayList<>();
