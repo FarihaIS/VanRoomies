@@ -298,8 +298,15 @@ public class ProfileFragment extends Fragment {
                         profileName.setText(String.format("%s %s", result.get("firstName"), result.get("lastName")));
                         profileEmail.setText((CharSequence) result.get("email"));
                         profileDesc.setText((CharSequence) result.get("bio"));
-                        String birthday = result.get("birthday").toString();
-                        profileBirthday.setText(String.format("%s %s", "Birthday:", birthday.split("T")[0]));
+
+                        if (result.get("birthday") != null) {\
+                            String birthday = result.get("birthday").toString();
+                            profileBirthday.setVisibility(view.VISIBLE);
+                            profileBirthday.setText(String.format("%s %s", "Birthday:", birthday.split("T")[0]));
+                        } else {
+                            profileBirthday.setText("");
+                            profileBirthday.setVisibility(view.INVISIBLE);
+                        }
 
                         if (result.get("profilePicture") != null) {
                             byte[] decodedString = Base64.decode((String) result.get("profilePicture"), Base64.DEFAULT);
