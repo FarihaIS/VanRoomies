@@ -18,8 +18,10 @@ import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 import okhttp3.Call;
 import okhttp3.Callback;
+import okhttp3.MultipartBody;
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
+import okhttp3.RequestBody;
 import okhttp3.Response;
 
 /**
@@ -106,6 +108,8 @@ public class MatchesFragment extends Fragment {
             public void cardSwipedRight(int position) {
                 // TODO: Open chat session with accepted match
                 Log.d(TAG, "Match accepted");
+                excludeUserFromFutureMatches(httpClient, getActivity(), v, userMatches.get(position).get_id());
+                startChatWithMatchedUser(httpClient, getActivity(), v, userMatches.get(position).get_id());
             }
 
             @Override
@@ -159,51 +163,66 @@ public class MatchesFragment extends Fragment {
         });
     }
 
-//    private void startChat(OkHttpClient client, Activity activity, View v) {
-//        Request request = new Request.Builder().url(Constants.baseServerURL + Constants.chatsByUserIdEndpoint + thisUserId).build();
-//        client.newCall(request).enqueue(new Callback() {
-//            @Override
-//            public void onFailure(@NonNull Call call, @NonNull IOException e) {
-//                Log.d(TAG, e.getMessage());
-//            }
-//
-//            @Override
-//            public void onResponse(@NonNull Call call, @NonNull Response response) {
-//                activity.runOnUiThread(() -> {
-//                    try {
-//                        String responseData = response.body().string();
-//                        Type listType = new TypeToken<List<ChatConversation>>(){}.getType();
-//                        Log.d(TAG, "responseData for Conversations is " + responseData);
-//                        List<ChatConversation> allConversations = gson.fromJson(responseData, listType);
-//
-//                        // Iterate through all user conversations
-//                        for (ChatConversation conversation : allConversations) {
-//                            UserProfile user;
-//                            ArrayList<ChatMessage> eachMessageList;
-//
-//                            // Get userId of both users in a conversation
-//                            List<String> userPair = conversation.getUsers();
-//                            if (userPair.get(0).equals(thisUserId)) {
-//                                user = new UserProfile(userPair.get(1));
-//                            }
-//                            else {
-//                                user = new UserProfile(userPair.get(0));
-//                            }
-//
-//                            eachMessageList = conversation.getMessages();
-//
-//                            allChatMessages.put(user, eachMessageList);
-//                            // TODO: Get username and image for each conversation user
-////                                setUserProfileNameAndImage(httpClient, getActivity());
-//                        }
-//                        chatListAdapter = new ChatListAdapter(v.getContext(), allChatMessages, thisUserId);
-//                        chatListRecycler.setAdapter((chatListAdapter));
-//                    }
-//                    catch (IOException e) {
-//                        e.printStackTrace();
-//                    }
-//                });
-//            }
-//        });
-//    }
+    private void excludeUserFromFutureMatches(OkHttpClient client, Activity activity, View v, String matchUserId) {
+        String url = Constants.baseServerURL + Constants.userEndpoint + thisUserId + Constants.matchesByUserIdEndpoint;
+        RequestBody requestBody = new MultipartBody.Builder()
+                .setType(MultipartBody.FORM)
+                .addFormDataPart("excludedId", matchUserId)
+                .build();
+        Request request = new Request.Builder()
+                .url(url)
+                .put(requestBody)
+                .build();
+        client.newCall(request).enqueue(new Callback() {
+            @Override
+            public void onFailure(@NonNull Call call, @NonNull IOException e) {
+                Log.d(TAG, e.getMessage());
+            }
+
+            @Override
+            public void onResponse(@NonNull Call call, @NonNull Response response) {
+                activity.runOnUiThread(() -> {
+                    try {
+                        String responseData = response.body().string();
+                        Log.d(TAG, "responseData in excludeUserFromFutureMatchesr is " + responseData);
+                    }
+                    catch (IOException e) {
+                        e.printStackTrace();
+                    }
+                });
+            }
+        });
+    }
+
+    private void startChatWithMatchedUser(OkHttpClient client, Activity activity, View v, String matchUserId) {
+        String url = Constants.baseServerURL + Constants.chatsByUserIdEndpoint + thisUserId;
+        RequestBody requestBody = new MultipartBody.Builder()
+                .setType(MultipartBody.FORM)
+                .addFormDataPart("to", matchUserId)
+                .addFormDataPart("content", Constants.defaultFirstMessage)
+                .build();
+        Request request = new Request.Builder()
+                .url(url)
+                .post(requestBody)
+                .build();
+        client.newCall(request).enqueue(new Callback() {
+            @Override
+            public void onFailure(@NonNull Call call, @NonNull IOException e) {
+                Log.d(TAG, e.getMessage());
+            }
+
+            @Override
+            public void onResponse(@NonNull Call call, @NonNull Response response) {
+                activity.runOnUiThread(() -> {
+                    try {
+                        String responseData = response.body().string();
+                        Log.d(TAG, "responseData in startChatWithMatchedUser is " + responseData);
+                    }
+                    catch (IOException e) {
+                        e.printStackTrace();
+                    }
+                });
+            }
+        });
+    }
 }

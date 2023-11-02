@@ -11,6 +11,10 @@ public class Constants {
     final static String chatsByUserIdEndpoint = "/api/chat/conversations/user/"; // GET needs user_id appended.
     final static String matchesByUserIdEndpoint = "/recommendations/users"; // GET needs user_id appended beforehand. POST needs request body.
 
+    // Functions
     public static String listingByRecommendationsEndpoint(String user_id) { return String.format("/api/users/%s/recommendations/listings", user_id); } // GET, needs userId
     public static String userPreferencesEndpoint(String user_id) { return String.format("/api/users/%s/preferences", user_id);} // GET/POST/PUT, need userId
+
+    // Default chat message
+    final static String defaultFirstMessage = "Hello!";
 }

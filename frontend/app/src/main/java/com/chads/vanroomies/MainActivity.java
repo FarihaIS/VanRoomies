@@ -1,11 +1,9 @@
 package com.chads.vanroomies;
 
 import androidx.appcompat.app.AppCompatActivity;
-
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
-
 import com.google.android.gms.auth.api.signin.GoogleSignIn;
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
 import com.google.android.gms.auth.api.signin.GoogleSignInClient;
@@ -80,5 +78,4 @@ public class MainActivity extends AppCompatActivity {
             startActivity(listingsIntent); // Go to listings
         }
     }
-
 }
