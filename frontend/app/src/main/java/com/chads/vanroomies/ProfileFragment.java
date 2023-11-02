@@ -29,6 +29,7 @@ import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import okhttp3.RequestBody;
 import okhttp3.Response;
+import okhttp3.ResponseBody;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -43,6 +44,19 @@ public class ProfileFragment extends Fragment {
     private TextView profileEmail;
     private TextView profileDesc;
     private TextView profileBirthday;
+    private TextView preferencesMinPrice;
+    private TextView preferencesMaxPrice;
+    private TextView preferencesHousingType;
+    private TextView preferencesRoommateCount;
+    private TextView preferencesPetFriendly;
+    private TextView preferencesSmoking;
+    private TextView preferencesPartying;
+    private TextView preferencesDrinking;
+    private TextView preferencesNoise;
+    private TextView preferencesGender;
+    private TextView preferencesLeaseLength;
+    private Button editPreferencesButton;
+
 
     private ImageView profilePicture;
     private Button editDescButton;
@@ -107,6 +121,21 @@ public class ProfileFragment extends Fragment {
         profilePicture = view.findViewById(R.id.profile_picture);
         getProfile(httpClient, view, getActivity(), userId);
 
+        // Get user preferences
+        preferencesMinPrice = view.findViewById(R.id.preferences_minPrice);
+        preferencesMaxPrice = view.findViewById(R.id.preferences_maxPrice);
+        preferencesHousingType = view.findViewById(R.id.preferences_housingType);
+        preferencesRoommateCount = view.findViewById(R.id.preferences_roommateCount4);
+        preferencesPetFriendly = view.findViewById(R.id.preferences_petFriendly);
+        preferencesSmoking = view.findViewById(R.id.preferences_smoking);
+        preferencesPartying = view.findViewById(R.id.preferences_partying);
+        preferencesDrinking = view.findViewById(R.id.preferences_drinking);
+        preferencesNoise = view.findViewById(R.id.preferences_noise);
+        preferencesGender = view.findViewById(R.id.preferences_gender);
+        preferencesLeaseLength = view.findViewById(R.id.preferences_leaseLength);
+        getUserPreferences(httpClient, view, getActivity(), userId);
+
+        // Set up button for editing user bio
         editDescButton = view.findViewById(R.id.edit_desc_button);
         editDescButton.setOnClickListener(temp -> {
                     AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(getContext());
@@ -138,8 +167,6 @@ public class ProfileFragment extends Fragment {
         return view;
     }
 
-
-
     public void getProfile(OkHttpClient client, View view, Activity act, String user_id){
         Request request = new Request.Builder().url(Constants.baseServerURL + Constants.userEndpoint + user_id).build();
         client.newCall(request).enqueue(new Callback() {
@@ -164,6 +191,60 @@ public class ProfileFragment extends Fragment {
                             Bitmap decodedByte = BitmapFactory.decodeByteArray(decodedString, 0, decodedString.length);
                             profilePicture.setImageBitmap(decodedByte);
                         }
+                    } catch (IOException e){
+                        e.printStackTrace();
+                    }
+                });
+            }
+        });
+    }
+
+    public void getUserPreferences(OkHttpClient client, View view, Activity act, String user_id){
+        Request request = new Request.Builder().url(Constants.baseServerURL + Constants.userPreferencesEndpoint(user_id)).build();
+        client.newCall(request).enqueue(new Callback() {
+            @Override
+            public void onFailure(@NonNull Call call, @NonNull IOException e) {
+                Log.d(TAG, e.getMessage());
+            }
+
+            @Override
+            public void onResponse(@NonNull Call call, @NonNull Response response) {
+                act.runOnUiThread(() -> {
+                    try {
+                        ResponseBody responseBody = response.body();
+                        // User has Preferences
+                        if (responseBody != null) {
+                            Log.d(TAG, "Existing Preferences Found!");
+                            String responseData = responseBody.string();
+                            UserPreferencesResponseResult result = g.fromJson(responseData, UserPreferencesResponseResult.class);
+                            preferencesMinPrice.setText(String.format("Min Price: %s", result.getMinPrice()));
+                            preferencesMaxPrice.setText(String.format("Max Price: %s", result.getMaxPrice()));
+                            preferencesHousingType.setText(String.format("Housing Type: %s", result.getHousingType()));
+                            preferencesRoommateCount.setText(String.format("Roommates: %s", result.getRoommateCount()));
+                            preferencesPetFriendly.setText(String.format("Pet Friendly: %s", result.getPetFriendly()));
+                            preferencesSmoking.setText(String.format("Smoking: %s", result.getSmoking()));
+                            preferencesPartying.setText(String.format("Partying: %s", result.getPartying()));
+                            preferencesDrinking.setText(String.format("Drinking: %s", result.getDrinking()));
+                            preferencesNoise.setText(String.format("Noise: %s", result.getNoise()));
+                            preferencesGender.setText(String.format("Gender: %s", result.getGender()));
+                            preferencesLeaseLength.setText(String.format("Lease Length: %s", result.getLeaseLength()));
+                        }
+                        else {
+                            Log.d(TAG, "No existing preferences");
+                            preferencesMinPrice.setText("N/A");
+                            preferencesMaxPrice.setText("N/A");
+                            preferencesHousingType.setText("N/A");
+                            preferencesRoommateCount.setText("N/A");
+                            preferencesPetFriendly.setText("N/A");
+                            preferencesSmoking.setText("N/A");
+                            preferencesPartying.setText("N/A");
+                            preferencesDrinking.setText("N/A");
+                            preferencesNoise.setText("N/A");
+                            preferencesGender.setText("N/A");
+                            preferencesLeaseLength.setText("N/A");
+                            editPreferencesButton.setText(getString(R.string.add_preferences_button));
+                        }
+
                     } catch (IOException e){
                         e.printStackTrace();
                     }

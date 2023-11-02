@@ -77,6 +77,7 @@
     <string name="noise">Noise: </string>
     <string name="gender">Gender: </string>
     <string name="lease_length">Lease Length: </string>
+    <string name="add_preferences_button">Add</string>
     <string name="edit_preferences_button">Edit</string>
 
     <!-- Placeholder strings -->
