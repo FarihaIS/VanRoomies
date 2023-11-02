@@ -23,6 +23,7 @@ import com.google.gson.Gson;
 import org.json.JSONException;
 
 import java.io.IOException;
+import java.util.List;
 import java.util.Objects;
 
 import okhttp3.Call;
@@ -208,7 +209,11 @@ public class ViewListingActivity extends AppCompatActivity {
 
 
                         // Fetching Parameters
-                        String photo_string = result.getImages().get(0);
+                        String photoString = "";
+                        List<String> imagesList = result.getImages();
+                        if (imagesList.size() > 0){
+                            photoString = imagesList.get(0);
+                        }
                         String title = result.getTitle();
                         String description = result.getDescription();
                         String housingType = result.getHousingType();
@@ -226,7 +231,7 @@ public class ViewListingActivity extends AppCompatActivity {
                         TextView pet_textview = findViewById(R.id.pet_friendly);
 
                         // Setting ImageView
-                        byte[] decodedString = Base64.decode(photo_string, Base64.DEFAULT);
+                        byte[] decodedString = Base64.decode(photoString, Base64.DEFAULT);
                         Bitmap decodedByte = BitmapFactory.decodeByteArray(decodedString, 0, decodedString.length);
                         listing_image.setImageBitmap(decodedByte);
 

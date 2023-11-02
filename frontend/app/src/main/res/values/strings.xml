@@ -54,6 +54,7 @@
     <string name="allowed">Allowed</string>
     <string name="not_allowed">Not Allowed</string>
     <string name="datetime_regex">T</string>
+    <string name="add_listing_button_text">+</string>
 
     <!-- Content Descriptions -->
     <string name="home_screen_logo">App Logo</string>
