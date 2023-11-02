@@ -208,9 +208,7 @@ public class ListingsFragment extends Fragment implements ListingsItemSelectList
         return view;
     }
     public void getRecommendedListings(OkHttpClient client, View view, Activity act, String userId){
-        Request request = new Request.Builder().url(Constants.baseServerURL + Constants.listingByUserIdEndpoint + userId).build();
-        // recommended
-        // Request request = new Request.Builder().url(Constants.BaseServerURL + Constants.listingByRecommendationsEndpoint(userId)).build();
+        Request request = new Request.Builder().url(Constants.baseServerURL + Constants.listingByRecommendationsEndpoint(userId)).build();
         Log.d(String.format("%s: RECOMMENDED", TAG), Constants.baseServerURL + Constants.listingByRecommendationsEndpoint(userId));
         client.newCall(request).enqueue(new Callback() {
             @Override
