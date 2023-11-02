@@ -28,7 +28,7 @@ router.get('/', async (req, res, next) => {
  * of signing up a new user and creating their record on the database
  * or simply querying their profile otherwise.
  * 
- * TODO: Middleware for Google Sign In + JWT will be added following
+ * TODO: Middleware for Google Sign In + JWT ready, FE integration coming soon
  *
  * Route: POST /api/users/login
  * Content-Type: application/json
@@ -61,7 +61,6 @@ router.post('/login', async (req, res, next) => {
             res.status(201).json({ userId: savedUser._id, userToken: userToken });
         }
     } catch (err) {
-        res.status(400).json({ error: err.message });
         next(err);
     }
 });

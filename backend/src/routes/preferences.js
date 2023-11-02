@@ -23,7 +23,6 @@ router.get('/:userId/preferences', async (req, res, next) => {
             res.status(404).json({ error: 'Did not match any user!' });
         }
     } catch (error) {
-        res.status(400).json({ error: error.message });
         next(error);
     }
 });
@@ -43,7 +42,6 @@ router.post('/:userId/preferences', async (req, res, next) => {
         await preferences.save();
         res.status(201).json(preferences);
     } catch (error) {
-        res.status(400).json({ error: error.message });
         next(error);
     }
 });
@@ -66,7 +64,6 @@ router.put('/:userId/preferences', async (req, res, next) => {
             res.status(404).json({ error: 'Did not match any user!' });
         }
     } catch (error) {
-        res.status(400).json({ error: error.message });
         next(error);
     }
 });
@@ -84,8 +81,7 @@ router.get('/:userId/recommendations/users', async (req, res, next) => {
         const userPreferences = await Preferences.findOne({ userId: req.params.userId }).lean();
         if (!userPreferences) {
             let error = 'No preferences found for given user!';
-            res.status(404).json({ error: error });
-            next(new Error(error));
+            return res.status(404).json({ error: error });
         }
         const currUser = await User.findById(req.params.userId);
         const excluded = [req.params.userId, ...currUser.notRecommended];
@@ -103,10 +99,8 @@ router.get('/:userId/recommendations/users', async (req, res, next) => {
         } else {
             let error = 'No preferences found for given user!';
             res.status(404).json({ error: error });
-            next(new Error(error));
         }
     } catch (error) {
-        res.status(400).json({ error: error.message });
         next(error);
     }
 });
@@ -133,10 +127,8 @@ router.put('/:userId/recommendations/users', async (req, res, next) => {
             res.status(404).json({ error: 'Cannot update, user not found' });
         }
     } catch (error) {
-        res.status(400).json({ error: error.message });
         next(error);
     }
-    next();
 });
 
 /**
@@ -152,8 +144,7 @@ router.get('/:userId/recommendations/listings', async (req, res, next) => {
         const userPreferences = await Preferences.findOne({ userId: req.params.userId }).lean();
         if (!userPreferences) {
             let error = 'No preferences found for given user!';
-            res.status(404).json({ error: error });
-            next(new Error(error));
+            return res.status(404).json({ error: error });
         }
         const tentativeMatchListings = await Listing.find({ userId: { $ne: req.params.userId } }).lean();
         if (tentativeMatchListings) {
@@ -169,13 +160,10 @@ router.get('/:userId/recommendations/listings', async (req, res, next) => {
         } else {
             let error = 'No matching listings available!';
             res.status(404).json({ error: error });
-            next(new Error(error));
         }
     } catch (error) {
-        res.status(400).json({ error: error.message });
         next(error);
     }
-    next();
 });
 
 module.exports = router;
