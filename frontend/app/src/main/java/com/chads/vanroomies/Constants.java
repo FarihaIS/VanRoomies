@@ -10,5 +10,6 @@ public class Constants {
     final static String userEndpoint = "/api/users/"; // GET/PUT/DELETE needs user_id appended. POST does not.
     public static String chatsByUserIdEndpoint = "/api/chat/conversations/user/";
 
-    public static String listingByRecommendationsEndpoint(String user_id) { return String.format("/api/users/%s/recommendations/listings", user_id); } //GET, needs userId
+    public static String listingByRecommendationsEndpoint(String user_id) { return String.format("/api/users/%s/recommendations/listings", user_id); } // GET, needs userId
+    public static String userPreferencesEndpoint(String user_id) { return String.format("/api/users/%s/preferences", user_id);} // GET/POST/PUT, need userId
 }

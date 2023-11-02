@@ -61,10 +61,24 @@
     <string name="profile_name">Test Person</string>
     <string name="profile_name_desc">Profile Name</string>
     <string name="profile_image_desc">Profile Picture</string>
+    <string name="profile_email">User Email</string>
+    <string name="profile_birthday">2001–11–13</string>
+    <string name="preferences_title">User Preferences</string>
     <string name="listing_name">Test Listing</string>
     <string name="listing_name_desc">Listing Title</string>
     <string name="listing_image_desc">Listing Picture</string>
-    <string name="housing_type">Housing Type</string>
+    <string name="min_price">Min Price: </string>
+    <string name="max_price">Max Price: </string>
+    <string name="housing_type">Housing Type: </string>
+    <string name="roommate_count">Roommates: </string>
+    <string name="smoking">Smoking: </string>
+    <string name="partying">Partying: </string>
+    <string name="drinking">Drinking: </string>
+    <string name="noise">Noise: </string>
+    <string name="gender">Gender: </string>
+    <string name="lease_length">Lease Length: </string>
+    <string name="add_preferences_button">Add</string>
+    <string name="edit_preferences_button">Edit</string>
 
     <!-- Placeholder strings -->
     <string name="placeholder_listings">Listings Fragment</string>

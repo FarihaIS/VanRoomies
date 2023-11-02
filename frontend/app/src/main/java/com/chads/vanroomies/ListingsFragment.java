@@ -234,6 +234,7 @@ public class ListingsFragment extends Fragment implements ListingsItemSelectList
                                 listing_photo = listing_photo_array.get(0).toString();
                             }
                             // Information taken to individual listing
+
                             String listing_id = listing_obj.getString("_id");
                             HashMap<String, String> additionalInfo = new HashMap<>();
                             additionalInfo.put("owner_id", listing_obj.getString("userId"));

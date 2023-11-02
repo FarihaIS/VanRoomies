@@ -8,6 +8,7 @@
 
 
     <RelativeLayout
+        android:id="@+id/relativeLayout2"
         android:layout_width="match_parent"
         android:layout_height="350dp"
         android:background="#D2E2E0"
@@ -23,8 +24,8 @@
             android:layout_alignParentBottom="true"
             android:layout_centerHorizontal="true"
             android:layout_marginBottom="180dp"
-            tools:srcCompat="@tools:sample/avatars"
-            android:contentDescription="@string/profile_image_desc"/>
+            android:contentDescription="@string/profile_image_desc"
+            tools:srcCompat="@tools:sample/avatars" />
 
         <TextView
             android:id="@+id/profile_name"
@@ -39,13 +40,44 @@
             android:textAlignment="center"
             android:textSize="20sp" />
 
-        <androidx.cardview.widget.CardView
-            android:layout_width="300dp"
-            android:layout_height="125dp"
+        <TextView
+            android:id="@+id/profile_email"
+            android:layout_width="250dp"
+            android:layout_height="wrap_content"
             android:layout_alignParentBottom="true"
+            android:layout_centerHorizontal="true"
+            android:layout_marginBottom="150dp"
+            android:contentDescription="@string/profile_email"
+            android:fontFamily="sans-serif"
+            android:text="@string/profile_email"
+            android:textAlignment="center"
+            android:textSize="14sp"
+            android:translationY="16dp" />
+
+        <TextView
+            android:id="@+id/profile_birthday"
+            android:layout_width="250dp"
+            android:layout_height="wrap_content"
+            android:layout_alignParentBottom="true"
+            android:layout_centerHorizontal="true"
+            android:layout_marginTop="-129dp"
+            android:layout_marginBottom="150dp"
+            android:contentDescription="@string/profile_birthday"
+            android:fontFamily="sans-serif"
+            android:text="@string/profile_birthday"
+            android:textAlignment="center"
+            android:textSize="14sp"
+            android:translationY="147dp" />
+
+        <androidx.cardview.widget.CardView
+            android:id="@+id/profile_card_view"
+            android:layout_width="300dp"
+            android:layout_height="110dp"
+            android:layout_alignParentBottom="true"
+            android:layout_centerHorizontal="true"
             android:layout_marginBottom="20dp"
-            app:cardBackgroundColor="#D2E2E0"
-            android:layout_centerHorizontal="true">
+            android:translationY="-5dp"
+            app:cardBackgroundColor="#D2E2E0">
 
             <TextView
                 android:id="@+id/profile_blurb"
@@ -77,5 +109,207 @@
             app:iconTint="#F44336" />
 
     </RelativeLayout>
+
+    <TextView
+        android:id="@+id/preferences_title"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"
+        android:contentDescription="@string/preferences_title"
+        android:text="@string/preferences_title"
+        android:textSize="20sp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.498"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/relativeLayout2"
+        app:layout_constraintVertical_bias="0.008" />
+
+    <TextView
+        android:id="@+id/preferences_minPrice"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:contentDescription="@string/min_price"
+        android:text="@string/min_price"
+        android:textAlignment="viewStart"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.108"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/preferences_title"
+        app:layout_constraintVertical_bias="0.041" />
+
+    <TextView
+        android:id="@+id/preferences_maxPrice"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:contentDescription="@string/max_price"
+        android:text="@string/max_price"
+        android:textAlignment="viewStart"
+        android:translationY="20dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.11"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/preferences_minPrice"
+        app:layout_constraintVertical_bias="0.007" />
+
+    <TextView
+        android:id="@+id/preferences_housingType"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:contentDescription="@string/housing_type"
+        android:text="@string/housing_type"
+        android:textAlignment="viewStart"
+        android:translationY="60dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.118"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/preferences_minPrice"
+        app:layout_constraintVertical_bias="0.01" />
+
+    <TextView
+        android:id="@+id/preferences_roommateCount4"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:contentDescription="@string/roommate_count"
+        android:text="@string/roommate_count"
+        android:textAlignment="viewStart"
+        android:translationY="100dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.114"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/preferences_minPrice"
+        app:layout_constraintVertical_bias="0.01" />
+
+    <TextView
+        android:id="@+id/preferences_petFriendly"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:contentDescription="@string/pet_friendly"
+        android:text="@string/pet_friendly"
+        android:textAlignment="viewStart"
+        android:translationY="140dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.112"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/preferences_minPrice"
+        app:layout_constraintVertical_bias="0.01" />
+
+    <TextView
+        android:id="@+id/preferences_leaseLength"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:contentDescription="@string/lease_length"
+        android:text="@string/lease_length"
+        android:textAlignment="viewStart"
+        android:translationY="180dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.117"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/preferences_minPrice"
+        app:layout_constraintVertical_bias="0.007" />
+
+    <TextView
+        android:id="@+id/preferences_smoking"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:contentDescription="@string/preferences_title"
+        android:text="@string/smoking"
+        android:textAlignment="viewStart"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toEndOf="@+id/splitter"
+        app:layout_constraintTop_toBottomOf="@+id/preferences_title"
+        app:layout_constraintVertical_bias="0.041" />
+
+    <TextView
+        android:id="@+id/preferences_partying"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:contentDescription="@string/partying"
+        android:text="@string/partying"
+        android:textAlignment="viewStart"
+        android:translationY="20dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toEndOf="@+id/splitter"
+        app:layout_constraintTop_toBottomOf="@+id/preferences_smoking"
+        app:layout_constraintVertical_bias="0.01" />
+
+    <TextView
+        android:id="@+id/preferences_drinking"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:contentDescription="@string/drinking"
+        android:text="@string/drinking"
+        android:textAlignment="viewStart"
+        android:translationY="60dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toEndOf="@+id/splitter"
+        app:layout_constraintTop_toBottomOf="@+id/preferences_smoking"
+        app:layout_constraintVertical_bias="0.014" />
+
+    <TextView
+        android:id="@+id/preferences_noise"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:contentDescription="@string/noise"
+        android:text="@string/noise"
+        android:textAlignment="viewStart"
+        android:translationY="100dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toEndOf="@+id/splitter"
+        app:layout_constraintTop_toBottomOf="@+id/preferences_smoking"
+        app:layout_constraintVertical_bias="0.014" />
+
+    <TextView
+        android:id="@+id/preferences_gender"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:contentDescription="@string/gender"
+        android:text="@string/gender"
+        android:textAlignment="viewStart"
+        android:translationY="140dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toEndOf="@+id/splitter"
+        app:layout_constraintTop_toBottomOf="@+id/preferences_smoking"
+        app:layout_constraintVertical_bias="0.01" />
+
+    <Button
+        android:id="@+id/edit_preferences_button"
+        android:layout_width="75dp"
+        android:layout_height="40dp"
+        android:layout_marginStart="104dp"
+        android:text="@string/edit_preferences_button"
+        android:textSize="14sp"
+        android:translationY="170dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.49"
+        app:layout_constraintStart_toEndOf="@+id/preferences_leaseLength"
+        app:layout_constraintTop_toBottomOf="@+id/preferences_smoking"
+        app:layout_constraintVertical_bias="0.0" />
+
+    <TextView
+        android:id="@+id/splitter"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/relativeLayout2" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
