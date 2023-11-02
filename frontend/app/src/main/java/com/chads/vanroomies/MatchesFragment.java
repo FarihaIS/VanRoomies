@@ -144,7 +144,6 @@ public class MatchesFragment extends Fragment {
                     try {
                         String responseData = response.body().string();
                         Type listType = new TypeToken<ArrayList<UserProfile>>(){}.getType();
-                        Log.d(TAG, "responseData for Conversations is " + responseData);
                         ArrayList<UserProfile> allMatches = gson.fromJson(responseData, listType);
 
                         userMatches = allMatches;
@@ -205,6 +204,7 @@ public class MatchesFragment extends Fragment {
                 .url(url)
                 .post(requestBody)
                 .build();
+
         client.newCall(request).enqueue(new Callback() {
             @Override
             public void onFailure(@NonNull Call call, @NonNull IOException e) {

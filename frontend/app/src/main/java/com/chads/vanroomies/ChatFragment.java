@@ -5,14 +5,12 @@ import android.app.Activity;
 import android.os.Bundle;
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
-import androidx.fragment.app.FragmentActivity;
 import androidx.recyclerview.widget.RecyclerView;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Toast;
-
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 import java.io.IOException;
@@ -85,7 +83,7 @@ public class ChatFragment extends Fragment {
         gson = new Gson();
         allChatMessages = new HashMap<>();
         // TODO: Get userId from backend
-        thisUserId = "654013e0b19c872e994eac8b";
+        thisUserId = "653eb733261cabe911fe75fb";
         chatListRecycler = v.findViewById(R.id.chatlistrecycle);
 
         getAllChatMessages(httpClient, getActivity(), v);
@@ -93,7 +91,18 @@ public class ChatFragment extends Fragment {
         return v;
     }
 
+    private void updateChatFragment(View v) {
+        if (allChatMessages.isEmpty()) {
+            Toast.makeText(getActivity(), R.string.no_chats_found, Toast.LENGTH_LONG).show();
+        }
+        else {
+            chatListAdapter = new ChatListAdapter(v.getContext(), allChatMessages, thisUserId);
+            chatListRecycler.setAdapter((chatListAdapter));
+        }
+    }
+
     private void getAllChatMessages(OkHttpClient client, Activity activity, View v) {
+
         Request request = new Request.Builder().url(Constants.baseServerURL + Constants.chatsByUserIdEndpoint + thisUserId).build();
         client.newCall(request).enqueue(new Callback() {
             @Override
@@ -125,17 +134,8 @@ public class ChatFragment extends Fragment {
                             }
 
                             eachMessageList = conversation.getMessages();
-
-                            allChatMessages.put(user, eachMessageList);
-                            // TODO: Get username and image for each conversation user setUserProfileNameAndImage(httpClient, getActivity());
-                        }
-
-                        if (allChatMessages.isEmpty()) {
-                            Toast.makeText(getActivity(), R.string.no_chats_found, Toast.LENGTH_LONG).show();
-                        }
-                        else {
-                            chatListAdapter = new ChatListAdapter(v.getContext(), allChatMessages, thisUserId);
-                            chatListRecycler.setAdapter((chatListAdapter));
+                            updateUserProfile(httpClient, getActivity(), user, eachMessageList, v);
+                            Log.d(TAG, "Inside getAllChatMessages: first name is " + user.getFirstName());
                         }
                     }
                     catch (IOException e) {
@@ -146,10 +146,10 @@ public class ChatFragment extends Fragment {
         });
     }
 
-    private void setUserProfileNameAndImage(OkHttpClient httpClient, FragmentActivity activity) {
-        // TODO: Get the right endpoint
-        Request request = new Request.Builder().url(Constants.baseServerURL + Constants.chatsByUserIdEndpoint + thisUserId).build();
-        httpClient.newCall(request).enqueue(new Callback() {
+    private void updateUserProfile(OkHttpClient client, Activity activity, UserProfile user, ArrayList<ChatMessage> messages, View v) {
+        String url = Constants.baseServerURL + Constants.userEndpoint + user.get_id();
+        Request request = new Request.Builder().url(url).build();
+        client.newCall(request).enqueue(new Callback() {
             @Override
             public void onFailure(@NonNull Call call, @NonNull IOException e) {
                 Log.d(TAG, e.getMessage());
@@ -160,11 +160,18 @@ public class ChatFragment extends Fragment {
                 activity.runOnUiThread(() -> {
                     try {
                         String responseData = response.body().string();
-                        Log.d(TAG, "responseData for Users is " + responseData);
-                        // TODO: Complete according to the right response data structure
-                    } catch (IOException e){
+                        UserProfile fullUserProfile = gson.fromJson(responseData, UserProfile.class);
+
+                        user.setFirstName(fullUserProfile.getFirstName());
+                        user.setLastName(fullUserProfile.getLastName());
+                        user.setProfilePicture(fullUserProfile.getProfilePicture());
+                        Log.d(TAG, "Inside updateUserProfile: first name is " + user.getFirstName());
+                        allChatMessages.put(user, messages);
+                    }
+                    catch (IOException e) {
                         e.printStackTrace();
                     }
+                    updateChatFragment(v);
                 });
             }
         });
