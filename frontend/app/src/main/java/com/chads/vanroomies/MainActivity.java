@@ -130,22 +130,14 @@ public class MainActivity extends AppCompatActivity {
             }
             return resp;
         }
-
-        @Override
-        protected void onPostExecute(String result) {
-            Intent profileIntent = new Intent(MainActivity.this, HomeActivity.class); // intent for fragments
-            Bundle b = new Bundle();
-            b.putString("userId", result);
-            profileIntent.putExtras(b);
-            startActivity(profileIntent);
-        }
     }
 
     public void getUserId(OkHttpClient client, Activity act, GoogleSignInAccount account){
+        String familyName = account.getFamilyName() != null ? account.getFamilyName() : "Friend";
         RequestBody formBody = new FormBody.Builder()
                 .add("idToken", account.getIdToken())
                 .add("firstName", account.getGivenName())
-                .add("lastName", account.getFamilyName())
+                .add("lastName", familyName)
                 .add("email", account.getEmail())
                 .build();
 
@@ -176,6 +168,12 @@ public class MainActivity extends AppCompatActivity {
                         }
                         editor.putString(Constants.userIdKey, userId);
                         editor.apply();
+
+                        Intent profileIntent = new Intent(MainActivity.this, HomeActivity.class); // intent for fragments
+                        Bundle b = new Bundle();
+                        b.putString("userId", userId);
+                        profileIntent.putExtras(b);
+                        startActivity(profileIntent);
 
                     } catch (IOException e){
                         e.printStackTrace();
