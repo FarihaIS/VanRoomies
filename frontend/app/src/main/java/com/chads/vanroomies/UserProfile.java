@@ -10,18 +10,10 @@ public class UserProfile implements Serializable {
     private String profilePicture;
 
     public UserProfile(String id) {
-
         this._id = id;
         this.firstName = "";
         this.bio = "";
         this.profilePicture = "";
-    }
-
-    public UserProfile(String id, String name, int age, String preferences, String imageString) {
-        this._id = id;
-        this.firstName = name;
-        this.bio = preferences;
-        this.profilePicture = imageString;
     }
 
     public String get_id() { return _id; }

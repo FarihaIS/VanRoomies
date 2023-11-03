@@ -19,7 +19,6 @@ import de.hdodenhof.circleimageview.CircleImageView;
 public class ChatListAdapter extends RecyclerView.Adapter {
     private final Context context;
     private final ArrayList<Map.Entry<UserProfile, ArrayList<ChatMessage>>> chats;
-    // TODO: If defined somewhere else, can get rid of userId
     private final String userId;
 
     public ChatListAdapter(Context context, Map<UserProfile, ArrayList<ChatMessage>> chats, String userId) {
@@ -53,13 +52,15 @@ public class ChatListAdapter extends RecyclerView.Adapter {
         }
 
         String otherUserImage = otherUserProfile.getProfilePicture();
-        if (otherUserImage.isEmpty()) {
-            ((ChatListHolder) holder).imageView.setImageResource(R.drawable.ic_profile);
-        }
-        else {
-            byte[] decodedString = Base64.decode(otherUserImage, Base64.DEFAULT);
+        if (otherUserImage != null) {
+            String imageString = otherUserImage.toString().matches(Constants.base64Regex)
+                    ? otherUserImage.toString() : "";
+            byte[] decodedString = Base64.decode(imageString, Base64.DEFAULT);
             Bitmap decodedByte = BitmapFactory.decodeByteArray(decodedString, 0, decodedString.length);
             ((ChatListHolder) holder).imageView.setImageBitmap(decodedByte);
+        }
+        else {
+            ((ChatListHolder) holder).imageView.setImageResource(R.drawable.ic_profile);
         }
 
         ((ChatListHolder) holder).deleteButton.setOnClickListener(v -> {

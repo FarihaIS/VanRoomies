@@ -2,6 +2,8 @@ package com.chads.vanroomies;
 
 // Reference: https://www.geeksforgeeks.org/how-to-implement-chat-functionality-in-social-media-android-app/
 import android.app.Activity;
+import android.content.Context;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
@@ -79,11 +81,13 @@ public class ChatFragment extends Fragment {
                              Bundle savedInstanceState) {
         View v = inflater.inflate(R.layout.fragment_chat, container, false);
 
+        SharedPreferences sharedPref = getActivity().getSharedPreferences(Constants.userData, Context.MODE_PRIVATE);
+        thisUserId = sharedPref.getString(Constants.userIdKey, Constants.userDefault);
+        Log.d(TAG, sharedPref.getString(Constants.userIdKey, Constants.userDefault));
+
         httpClient = HTTPSClientFactory.createClient(getActivity().getApplication());
         gson = new Gson();
         allChatMessages = new HashMap<>();
-        // TODO: Get userId from backend
-        thisUserId = "653eb733261cabe911fe75fb";
         chatListRecycler = v.findViewById(R.id.chatlistrecycle);
 
         getAllChatMessages(httpClient, getActivity(), v);

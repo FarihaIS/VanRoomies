@@ -2,6 +2,8 @@ package com.chads.vanroomies;
 
 // Reference: https://www.geeksforgeeks.org/tinder-swipe-view-with-example-in-android/
 import android.app.Activity;
+import android.content.Context;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -82,14 +84,16 @@ public class MatchesFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         View v = inflater.inflate(R.layout.fragment_matches, container, false);
+
+        SharedPreferences sharedPref = getActivity().getSharedPreferences(Constants.userData, Context.MODE_PRIVATE);
+        thisUserId = sharedPref.getString(Constants.userIdKey, Constants.userDefault);
+        Log.d(TAG, sharedPref.getString(Constants.userIdKey, Constants.userDefault));
+
         httpClient = HTTPSClientFactory.createClient(getActivity().getApplication());
         gson = new Gson();
         userMatches = new ArrayList<>();
-        // TODO: Get userId from backend
-        thisUserId = "653eb733261cabe911fe75fb";
         cardStack = v.findViewById(R.id.matches_swipe_deck);
 
-        // TODO: do GET request to show updated list of matched users
         getAllMatches(httpClient, getActivity(), v);
         return v;
     }
@@ -106,7 +110,6 @@ public class MatchesFragment extends Fragment {
 
             @Override
             public void cardSwipedRight(int position) {
-                // TODO: Open chat session with accepted match
                 Log.d(TAG, "Match accepted");
                 excludeUserFromFutureMatches(httpClient, getActivity(), v, userMatches.get(position).get_id());
                 startChatWithMatchedUser(httpClient, getActivity(), v, userMatches.get(position).get_id());

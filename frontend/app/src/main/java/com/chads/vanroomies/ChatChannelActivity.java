@@ -23,6 +23,7 @@ import de.hdodenhof.circleimageview.CircleImageView;
 import io.socket.client.Ack;
 import io.socket.client.IO;
 import io.socket.client.Socket;
+import io.socket.emitter.Emitter;
 
 public class ChatChannelActivity extends AppCompatActivity {
     final static String TAG = "ChatChannelActivity";
@@ -52,6 +53,30 @@ public class ChatChannelActivity extends AppCompatActivity {
         setUpChatChannelLayout();
         setUpChatChannelButton();
         updateChatChannelLayout();
+        chatSocketListen();
+    }
+
+    private void chatSocketListen() {
+        chatSocket.on(Constants.privateMessageEvent, new Emitter.Listener() {
+            @Override
+            public void call(Object... args) {
+                JSONObject payload = (JSONObject) args[0];
+                ChatChannelActivity.this.runOnUiThread(() -> {
+                    try {
+                        String from = payload.getString("from");
+                        String content = payload.getString("content");
+
+                        if (from.equals(chatUser.get_id())) {
+                            ChatMessage thisMessage = new ChatMessage(from, content, System.currentTimeMillis());
+                            chatMessages.add(thisMessage);
+                            updateChatChannelLayout();
+                        }
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                    }
+                });
+            }
+        });
     }
 
     private void updateChatChannelLayout() {
@@ -68,7 +93,7 @@ public class ChatChannelActivity extends AppCompatActivity {
         } catch (JSONException e) {
             throw new RuntimeException(e);
         }
-        chatSocket.emit("private message", messageObj, (Ack) args -> {
+        chatSocket.emit(Constants.privateMessageEvent, messageObj, (Ack) args -> {
             JSONObject response = (JSONObject) args[0];
             try {
                 Log.d(TAG, "Emit event response code is " + response.getString("status"));
@@ -106,13 +131,15 @@ public class ChatChannelActivity extends AppCompatActivity {
         chatChannelRecycler.setLayoutManager(new LinearLayoutManager(this));
 
         chatChannelImage = findViewById(R.id.chat_image);
-        if (chatUser.getProfilePicture().isEmpty()) {
-            chatChannelImage.setImageResource(R.drawable.ic_profile);
-        }
-        else {
-            byte[] decodedString = Base64.decode(chatUser.getProfilePicture(), Base64.DEFAULT);
+        if (chatUser.getProfilePicture() != null) {
+            String imageString = chatUser.getProfilePicture().toString().matches(Constants.base64Regex)
+                    ? chatUser.getProfilePicture().toString() : "";
+            byte[] decodedString = Base64.decode(imageString, Base64.DEFAULT);
             Bitmap decodedByte = BitmapFactory.decodeByteArray(decodedString, 0, decodedString.length);
             chatChannelImage.setImageBitmap(decodedByte);
+        }
+        else {
+            chatChannelImage.setImageResource(R.drawable.ic_profile);
         }
 
         chatChannelName = findViewById(R.id.chat_name);
