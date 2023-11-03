@@ -130,11 +130,6 @@ public class MainActivity extends AppCompatActivity {
             }
             return resp;
         }
-
-        @Override
-        protected void onPostExecute(String result) {
-            Log.d(TAG, "TEST");
-        }
     }
 
     public void getUserId(OkHttpClient client, Activity act, GoogleSignInAccount account){
