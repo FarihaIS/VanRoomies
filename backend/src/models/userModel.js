@@ -45,14 +45,19 @@ const UserSchema = new mongoose.Schema({
     },
     profilePicture: {
         type: String,
+        default: 'base64encoding',
     },
     bio: {
         type: String,
+        default: "Hi, I'm new to VanRoomies!",
     },
     notRecommended: {
         type: [{ type: mongoose.Types.ObjectId }],
         default: [],
     },
+    firebaseToken: {
+        type: String,
+    },  
 });
 
 const User = mongoose.model('User', UserSchema);
