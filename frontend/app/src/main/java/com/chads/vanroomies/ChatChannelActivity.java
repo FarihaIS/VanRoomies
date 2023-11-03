@@ -11,7 +11,6 @@ import android.os.Bundle;
 import android.util.Base64;
 import android.util.Log;
 import android.widget.Button;
-import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 import org.json.JSONException;
@@ -20,6 +19,7 @@ import java.net.URISyntaxException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
+import de.hdodenhof.circleimageview.CircleImageView;
 import io.socket.client.Ack;
 import io.socket.client.IO;
 import io.socket.client.Socket;
@@ -31,7 +31,7 @@ public class ChatChannelActivity extends AppCompatActivity {
     private UserProfile chatUser;
     private ArrayList<ChatMessage> chatMessages;
     private RecyclerView chatChannelRecycler;
-    private ImageView chatChannelImage;
+    private CircleImageView chatChannelImage;
     private TextView chatChannelName;
     private TextView chatChannelText;
     private Button chatChannelButton;
@@ -64,7 +64,7 @@ public class ChatChannelActivity extends AppCompatActivity {
         JSONObject messageObj = new JSONObject();
         try {
             messageObj.put("content", message);
-            messageObj.put("to", chatUser.getId());
+            messageObj.put("to", chatUser.get_id());
         } catch (JSONException e) {
             throw new RuntimeException(e);
         }
@@ -106,21 +106,22 @@ public class ChatChannelActivity extends AppCompatActivity {
         chatChannelRecycler.setLayoutManager(new LinearLayoutManager(this));
 
         chatChannelImage = findViewById(R.id.chat_image);
-        if (chatUser.getImageString().isEmpty()) {
+        if (chatUser.getProfilePicture().isEmpty()) {
             chatChannelImage.setImageResource(R.drawable.ic_profile);
         }
         else {
-            byte[] decodedString = Base64.decode(chatUser.getImageString(), Base64.DEFAULT);
+            byte[] decodedString = Base64.decode(chatUser.getProfilePicture(), Base64.DEFAULT);
             Bitmap decodedByte = BitmapFactory.decodeByteArray(decodedString, 0, decodedString.length);
             chatChannelImage.setImageBitmap(decodedByte);
         }
 
         chatChannelName = findViewById(R.id.chat_name);
-        if (chatUser.getName().isEmpty()) {
+        if (chatUser.getFirstName().isEmpty()) {
             chatChannelName.setText(R.string.default_name);
         }
         else {
-            chatChannelName.setText(chatUser.getName());
+            String fullName = chatUser.getFirstName() + " " + chatUser.getLastName();
+            chatChannelName.setText(fullName);
         }
 
         chatChannelText = findViewById(R.id.edit_chat_message);

@@ -1,14 +1,28 @@
 package com.chads.vanroomies;
 
 // Reference: https://www.geeksforgeeks.org/tinder-swipe-view-with-example-in-android/
+import android.app.Activity;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Toast;
+import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
+import java.io.IOException;
+import java.lang.reflect.Type;
 import java.util.ArrayList;
 import com.daprlabs.cardstack.SwipeDeck;
+import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
+import okhttp3.Call;
+import okhttp3.Callback;
+import okhttp3.FormBody;
+import okhttp3.OkHttpClient;
+import okhttp3.Request;
+import okhttp3.RequestBody;
+import okhttp3.Response;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -20,6 +34,9 @@ public class MatchesFragment extends Fragment {
     private ArrayList<UserProfile> userMatches;
     private MatchDeckAdapter matchDeckAdapter;
     private SwipeDeck cardStack;
+    private String thisUserId;
+    private OkHttpClient httpClient;
+    private Gson gson;
 
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
@@ -65,22 +82,20 @@ public class MatchesFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         View v = inflater.inflate(R.layout.fragment_matches, container, false);
+        httpClient = HTTPSClientFactory.createClient(getActivity().getApplication());
+        gson = new Gson();
         userMatches = new ArrayList<>();
+        // TODO: Get userId from backend
+        thisUserId = "653eb733261cabe911fe75fb";
         cardStack = v.findViewById(R.id.matches_swipe_deck);
 
         // TODO: do GET request to show updated list of matched users
-        userMatches.add(new UserProfile("abc00", "Denis", 45, "Late-night owl, messy, smokes regularly", ""));
-        userMatches.add(new UserProfile("def11", "Fariha", 23, "Early riser, clean, 2-bedroom house", ""));
-        userMatches.add(new UserProfile("ghi22", "Matt", 30, "Early-riser, drinks regularly", ""));
-        userMatches.add(new UserProfile("jkl33", "Max", 83, "Early-riser, clean, no smoking, no drinking", ""));
-
-        updateMatchesFragmentLayout(v);
-
+        getAllMatches(httpClient, getActivity(), v);
         return v;
     }
 
     private void updateMatchesFragmentLayout(View v) {
-        matchDeckAdapter = new MatchDeckAdapter(userMatches, v.getContext());
+        matchDeckAdapter = new MatchDeckAdapter(v.getContext(), userMatches);
         cardStack.setAdapter(matchDeckAdapter);
 
         cardStack.setEventCallback(new SwipeDeck.SwipeEventCallback() {
@@ -93,6 +108,8 @@ public class MatchesFragment extends Fragment {
             public void cardSwipedRight(int position) {
                 // TODO: Open chat session with accepted match
                 Log.d(TAG, "Match accepted");
+                excludeUserFromFutureMatches(httpClient, getActivity(), v, userMatches.get(position).get_id());
+                startChatWithMatchedUser(httpClient, getActivity(), v, userMatches.get(position).get_id());
             }
 
             @Override
@@ -108,6 +125,103 @@ public class MatchesFragment extends Fragment {
             @Override
             public void cardActionUp() {
                 Log.d(TAG, "CARDS MOVED UP");
+            }
+        });
+    }
+
+    private void getAllMatches(OkHttpClient client, Activity activity, View v) {
+        String url = Constants.baseServerURL + Constants.userEndpoint + thisUserId + Constants.matchesByUserIdEndpoint;
+        Request request = new Request.Builder().url(url).build();
+        client.newCall(request).enqueue(new Callback() {
+            @Override
+            public void onFailure(@NonNull Call call, @NonNull IOException e) {
+                Log.d(TAG, e.getMessage());
+            }
+
+            @Override
+            public void onResponse(@NonNull Call call, @NonNull Response response) {
+                activity.runOnUiThread(() -> {
+                    try {
+                        String responseData = response.body().string();
+                        Type listType = new TypeToken<ArrayList<UserProfile>>(){}.getType();
+                        ArrayList<UserProfile> allMatches = gson.fromJson(responseData, listType);
+
+                        userMatches = allMatches;
+                        if (userMatches.isEmpty()) {
+                            Toast.makeText(getActivity(), R.string.no_matches_found, Toast.LENGTH_LONG).show();
+                        }
+                        else {
+                            updateMatchesFragmentLayout(v);
+                        }
+                    }
+                    catch (IOException e) {
+                        e.printStackTrace();
+                    }
+                });
+            }
+        });
+    }
+
+    private void excludeUserFromFutureMatches(OkHttpClient client, Activity activity, View v, String matchUserId) {
+        String url = Constants.baseServerURL + Constants.userEndpoint + thisUserId + Constants.matchesByUserIdEndpoint;
+        Log.d(TAG, "Exclude userId " + matchUserId);
+        RequestBody requestBody = new FormBody.Builder()
+                .add("excludedId", matchUserId)
+                .build();
+        Request request = new Request.Builder()
+                .url(url)
+                .put(requestBody)
+                .build();
+
+        client.newCall(request).enqueue(new Callback() {
+            @Override
+            public void onFailure(@NonNull Call call, @NonNull IOException e) {
+                Log.d(TAG, e.getMessage());
+            }
+
+            @Override
+            public void onResponse(@NonNull Call call, @NonNull Response response) {
+                activity.runOnUiThread(() -> {
+                    try {
+                        String responseData = response.body().string();
+                        Log.d(TAG, "responseData in excludeUserFromFutureMatchesr is " + responseData);
+                    }
+                    catch (IOException e) {
+                        e.printStackTrace();
+                    }
+                });
+            }
+        });
+    }
+
+    private void startChatWithMatchedUser(OkHttpClient client, Activity activity, View v, String matchUserId) {
+        String url = Constants.baseServerURL + Constants.chatsByUserIdEndpoint + thisUserId;
+        RequestBody requestBody = new FormBody.Builder()
+                .add("to", matchUserId)
+                .add("content", Constants.defaultFirstMessage)
+                .build();
+        Request request = new Request.Builder()
+                .url(url)
+                .post(requestBody)
+                .build();
+
+        client.newCall(request).enqueue(new Callback() {
+            @Override
+            public void onFailure(@NonNull Call call, @NonNull IOException e) {
+                Log.d(TAG, e.getMessage());
+            }
+
+            @Override
+            public void onResponse(@NonNull Call call, @NonNull Response response) {
+                activity.runOnUiThread(() -> {
+                    try {
+                        String responseData = response.body().string();
+                        Log.d(TAG, "responseData in startChatWithMatchedUser is " + responseData);
+                    }
+                    catch (IOException e) {
+                        e.printStackTrace();
+                    }
+                });
             }
         });
     }

@@ -10,14 +10,16 @@
     <!-- Matching Fragment -->
     <string name="matches_name_string">First Last</string>
     <string name="matches_age_string">23</string>
-    <string name="matches_preferences_string">Preferences</string>
+    <string name="matches_bio_string">Bio</string>
     <string name="matches_instruction_string">Swipe right to match, and left to reject</string>
+    <string name="no_matches_found">Sorry, no matches found!</string>
 
     <!-- Chat Channel Activity -->
     <string name="chat_send_button_text">Send</string>
     <string name="edit_chat_message_text">Enter Message</string>
     <string name="default_name">First Last</string>
     <string name="invalid_input_message">First Last</string>
+    <string name="no_chats_found">Sorry, no chats found!</string>
 
     <!-- Chat Item -->
     <string name="chat_date">June 10</string>

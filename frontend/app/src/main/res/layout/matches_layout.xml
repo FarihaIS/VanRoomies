@@ -17,7 +17,7 @@
         <ImageView
             android:id="@+id/matches_image"
             android:layout_width="match_parent"
-            android:layout_height="453dp"
+            android:layout_height="395dp"
             android:scaleType="centerCrop" />
 
         <LinearLayout
@@ -28,31 +28,22 @@
 
             <TextView
                 android:id="@+id/matches_name"
-                android:layout_width="0dp"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:padding="3dp"
                 android:text="@string/matches_name_string"
                 android:textColor="@color/black" />
 
-            <TextView
-                android:id="@+id/matches_age"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:padding="3dp"
-                android:text="@string/matches_age_string"
-                android:textColor="@color/black" />
-
         </LinearLayout>
 
         <TextView
-            android:id="@+id/matches_preferences"
+            android:id="@+id/matches_bio"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:layout_height="86dp"
             android:layout_weight="1"
             android:padding="3dp"
-            android:text="@string/matches_preferences_string"
+            android:text="@string/matches_bio_string"
             android:textColor="@color/black" />
 
     </LinearLayout>

@@ -8,12 +8,13 @@ import android.util.Base64;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ImageView;
+import android.widget.ImageButton;
 import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 import java.util.ArrayList;
 import java.util.Map;
+import de.hdodenhof.circleimageview.CircleImageView;
 
 public class ChatListAdapter extends RecyclerView.Adapter {
     private final Context context;
@@ -42,15 +43,16 @@ public class ChatListAdapter extends RecyclerView.Adapter {
         UserProfile otherUserProfile = entry.getKey();
         ArrayList<ChatMessage> otherUserMessages = entry.getValue();
 
-        String otherUserName = otherUserProfile.getName();
+        String otherUserName = otherUserProfile.getFirstName();
         if (otherUserName.isEmpty()) {
             ((ChatListHolder) holder).nameView.setText(R.string.default_name);
         }
         else {
-            ((ChatListHolder) holder).nameView.setText(otherUserName);
+            String fullName = otherUserProfile.getFirstName() + " " + otherUserProfile.getLastName();
+            ((ChatListHolder) holder).nameView.setText(fullName);
         }
 
-        String otherUserImage = otherUserProfile.getImageString();
+        String otherUserImage = otherUserProfile.getProfilePicture();
         if (otherUserImage.isEmpty()) {
             ((ChatListHolder) holder).imageView.setImageResource(R.drawable.ic_profile);
         }
@@ -59,6 +61,10 @@ public class ChatListAdapter extends RecyclerView.Adapter {
             Bitmap decodedByte = BitmapFactory.decodeByteArray(decodedString, 0, decodedString.length);
             ((ChatListHolder) holder).imageView.setImageBitmap(decodedByte);
         }
+
+        ((ChatListHolder) holder).deleteButton.setOnClickListener(v -> {
+            // TODO: Add delete chat functionality
+        });
 
         holder.itemView.setOnClickListener(v -> {
             Intent chatChannelIntent = new Intent(context, ChatChannelActivity.class);
@@ -70,13 +76,15 @@ public class ChatListAdapter extends RecyclerView.Adapter {
     }
 
     public static class ChatListHolder extends RecyclerView.ViewHolder {
-        ImageView imageView;
+        CircleImageView imageView;
         TextView nameView;
+        ImageButton deleteButton;
 
         ChatListHolder(@NonNull View itemView) {
             super(itemView);
             imageView = itemView.findViewById(R.id.chat_row_image);
             nameView = itemView.findViewById(R.id.chat_row_name);
+            deleteButton = itemView.findViewById(R.id.chat_row_delete);
         }
     }
 }
