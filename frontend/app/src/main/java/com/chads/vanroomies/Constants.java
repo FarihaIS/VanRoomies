@@ -10,6 +10,7 @@ public class Constants {
     final static String userEndpoint = "/api/users/"; // GET/PUT/DELETE needs user_id appended. POST does not.
     final static String chatsByUserIdEndpoint = "/api/chat/conversations/user/"; // GET needs user_id appended.
     final static String matchesByUserIdEndpoint = "/recommendations/users"; // GET needs user_id appended beforehand. POST needs request body.
+    final static String loginEndpoint = "/api/users/login"; // POST
 
     // Functions
     public static String listingByRecommendationsEndpoint(String user_id) { return String.format("/api/users/%s/recommendations/listings", user_id); } // GET, needs userId
@@ -17,7 +18,7 @@ public class Constants {
 
     // Default chat message
     final static String defaultFirstMessage = "Hello!";
-    final static String loginEndpoint = "/api/users/login"; // POST
+    final static String privateMessageEvent = "private message";
 
     // Authentication
     final static String clientId = "49876246970-nvcs6gekl0ng450q1ujb4dfmhcufu3tp.apps.googleusercontent.com";
