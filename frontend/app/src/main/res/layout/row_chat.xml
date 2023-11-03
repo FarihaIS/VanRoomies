@@ -31,15 +31,5 @@
             android:textColor="@color/black"
             android:textSize="18sp" />
 
-        <ImageButton
-            android:id="@+id/chat_row_delete"
-            android:layout_width="60dp"
-            android:layout_height="60dp"
-            android:layout_alignParentEnd="true"
-            android:layout_centerVertical="true"
-            android:layout_gravity="center_vertical"
-            android:src="@drawable/ic_delete"
-            android:contentDescription="@string/chat_row_block_text" />
-
     </RelativeLayout>
 </androidx.cardview.widget.CardView>

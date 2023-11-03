@@ -4,6 +4,7 @@ import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.util.Base64;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -43,7 +44,7 @@ public class MatchDeckAdapter extends BaseAdapter {
         if (v == null) {
             v = LayoutInflater.from(context).inflate(R.layout.matches_layout, parent, false);
         }
-
+        Log.d("HELLO", "Line 47 match deck " + position);
         String fullName = users.get(position).getFirstName() + " " + users.get(position).getLastName();
         ((TextView) v.findViewById(R.id.matches_name)).setText(fullName);
         ((TextView) v.findViewById(R.id.matches_bio)).setText(users.get(position).getBio());

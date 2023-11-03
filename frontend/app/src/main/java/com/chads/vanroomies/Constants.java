@@ -11,6 +11,8 @@ public class Constants {
     final static String chatsByUserIdEndpoint = "/api/chat/conversations/user/"; // GET needs user_id appended.
     final static String matchesByUserIdEndpoint = "/recommendations/users"; // GET needs user_id appended beforehand. POST needs request body.
     final static String loginEndpoint = "/api/users/login"; // POST
+    final static String firebaseTokenEndpoint = "/api/firebase_token";
+
 
     // Functions
     public static String listingByRecommendationsEndpoint(String user_id) { return String.format("/api/users/%s/recommendations/listings", user_id); } // GET, needs userId

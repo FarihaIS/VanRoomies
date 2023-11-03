@@ -14,14 +14,21 @@ import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
 import com.google.android.gms.auth.api.signin.GoogleSignInClient;
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
 import com.google.android.gms.common.api.ApiException;
+import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
+import com.google.firebase.messaging.FirebaseMessaging;
 import com.google.gson.Gson;
 
 import java.io.IOException;
 import java.util.Map;
 
+import java.io.IOException;
+import java.util.Arrays;
+import java.util.Objects;
+
 import okhttp3.Call;
 import okhttp3.Callback;
+import okhttp3.ConnectionSpec;
 import okhttp3.FormBody;
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
@@ -78,7 +85,6 @@ public class MainActivity extends AppCompatActivity {
             GoogleSignInAccount account = completedTask.getResult(ApiException.class);
             // Signed in successfully, show authenticated UI.
             httpClient = HTTPSClientFactory.createClient(MainActivity.this.getApplication());
-
             RegistrationTaskParams params = new RegistrationTaskParams(httpClient, MainActivity.this, account);
             AsyncTaskRunner getUserIdTask = new AsyncTaskRunner();
             getUserIdTask.execute(params);
@@ -90,6 +96,19 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
+    private void getFirebaseTokenAndSend(String userId) {
+        FirebaseMessaging.getInstance().getToken()
+                .addOnCompleteListener(task -> {
+                    if (!task.isSuccessful()) {
+                        Log.w(TAG, "Fetching FCM registration token failed", task.getException());
+                        return;
+                    }
+                    // Get new FCM registration token
+                    String token = task.getResult();
+                    PushNotificationService.sendRegistrationToServer(token, httpClient, userId);
+                    Log.d(TAG, token);
+                });
+    }
     @Override
     protected void onStart() {
         super.onStart();
@@ -133,12 +152,20 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public void getUserId(OkHttpClient client, Activity act, GoogleSignInAccount account){
-        String familyName = account.getFamilyName() != null ? account.getFamilyName() : "Friend";
+        // If idToken or email is null, then something very bad has happened
+        String email = account.getEmail();
+        String idToken = account.getIdToken();
+        Objects.requireNonNull(email);
+        Objects.requireNonNull(idToken);
+        // We need to handle null family and given names, but since backend requires them, we set them to empty string
+        String familyName = (account.getGivenName() != null) ? account.getGivenName() : "Friend";
+        String givenName =  (account.getFamilyName() != null) ? account.getFamilyName() : "Friend";
+
         RequestBody formBody = new FormBody.Builder()
-                .add("idToken", account.getIdToken())
-                .add("firstName", account.getGivenName())
+                .add("idToken", idToken)
+                .add("firstName", givenName)
                 .add("lastName", familyName)
-                .add("email", account.getEmail())
+                .add("email", email)
                 .build();
 
         Request request = new Request.Builder().url(Constants.baseServerURL + Constants.loginEndpoint)
@@ -168,6 +195,7 @@ public class MainActivity extends AppCompatActivity {
                         }
                         editor.putString(Constants.userIdKey, userId);
                         editor.apply();
+                        getFirebaseTokenAndSend(userId);
 
                         Intent profileIntent = new Intent(MainActivity.this, HomeActivity.class); // intent for fragments
                         Bundle b = new Bundle();
