@@ -7,9 +7,11 @@ import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.Bundle;
+import android.os.StrictMode;
 import android.util.Base64;
 import android.util.Log;
 import android.view.View;
@@ -37,7 +39,6 @@ import okhttp3.Response;
 public class ViewListingActivity extends AppCompatActivity {
     final static String TAG = "ViewListing";
     OkHttpClient client;
-    String userId = "65402f35e10ec75253936947"; // TODO: Track userId instead of hardcoding
     static boolean isOwner = false;
     final static Gson g = new Gson();
 
@@ -49,18 +50,23 @@ public class ViewListingActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        StrictMode.ThreadPolicy policy = new StrictMode.ThreadPolicy.Builder().permitAll().build();
+        StrictMode.setThreadPolicy(policy);
         setContentView(R.layout.activity_view_listing);
 
         // Grabbing parameters from listings view
         Bundle b = getIntent().getExtras();
         client = HTTPSClientFactory.createClient(ViewListingActivity.this.getApplication());
+        SharedPreferences sharedPref = ViewListingActivity.this.getSharedPreferences(Constants.userData, Context.MODE_PRIVATE);
+        String user_id = sharedPref.getString(Constants.userIdKey, Constants.userDefault);
+        Log.d(TAG, sharedPref.getString(Constants.userIdKey, Constants.userDefault));
         if(b != null) {
-            String listing_id = b.getString("listing_id");
-            getListing(client, listing_id);
+            String listingId = b.getString("listing_id");
+            getListing(client, listingId, user_id);
         }
     }
 
-    public void enableButton(Button button, String attribute, TextView text_field, String listing_id){
+    public void enableButton(Button button, String attribute, TextView text_field, String listingId){
         button.setEnabled(true);
         button.setVisibility(View.VISIBLE);
         // Set Listener
@@ -76,7 +82,7 @@ public class ViewListingActivity extends AppCompatActivity {
                 public void onClick(DialogInterface dialog, int id) {
                     dialog.dismiss();
                     try {
-                        updateEditableText(client, view, ViewListingActivity.this, attribute, listing_id, text_field, et.getText().toString());
+                        updateEditableText(client, view, ViewListingActivity.this, attribute, listingId, text_field, et.getText().toString());
                     } catch (JSONException e) {
                         throw new RuntimeException(e);
                     }
@@ -91,7 +97,7 @@ public class ViewListingActivity extends AppCompatActivity {
         });
     }
 
-    public void enableToggle(Button button, String attribute, TextView text_field, String listing_id){
+    public void enableToggle(Button button, String attribute, TextView text_field, String listingId){
         button.setEnabled(true);
         button.setVisibility(View.VISIBLE);
         // Set Listener
@@ -101,54 +107,54 @@ public class ViewListingActivity extends AppCompatActivity {
                     .setCancelable(true)
                     .setTitle("Are pets allowed?")
                     .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
-                public void onClick(DialogInterface dialog, int id) {
-                    dialog.dismiss();
+                        public void onClick(DialogInterface dialog, int id) {
+                            dialog.dismiss();
 
-                    // Setting up a PUT request
-                    RequestBody formBody = new FormBody.Builder()
-                            .add(attribute, "true")
-                            .build();
-                    Request request = new Request.Builder()
-                            .url(Constants.baseServerURL + Constants.listingByListingIdEndpoint + listing_id)
-                            .put(formBody) // PUT
-                            .build();
-                    client.newCall(request).enqueue(new Callback() {
-                        @Override
-                        public void onFailure(@NonNull Call call, @NonNull IOException e) {
-                            Log.d(TAG, e.getMessage());
+                            // Setting up a PUT request
+                            RequestBody formBody = new FormBody.Builder()
+                                    .add(attribute, "true")
+                                    .build();
+                            Request request = new Request.Builder()
+                                    .url(Constants.baseServerURL + Constants.listingByListingIdEndpoint + listingId)
+                                    .put(formBody) // PUT
+                                    .build();
+                            client.newCall(request).enqueue(new Callback() {
+                                @Override
+                                public void onFailure(@NonNull Call call, @NonNull IOException e) {
+                                    Log.d(TAG, e.getMessage());
+                                }
+
+                                @Override
+                                public void onResponse(@NonNull Call call, @NonNull Response response) {
+                                }
+                            });
+                            // Change to allowed
+                            text_field.setText(String.format("%s %s", getString(R.string.pets), getString(R.string.allowed)));
                         }
+                    }).setNegativeButton("No", new DialogInterface.OnClickListener() {
+                        public void onClick(DialogInterface dialog, int id) {
+                            dialog.dismiss();
+                            // Setting up a PUT request
+                            RequestBody formBody = new FormBody.Builder()
+                                    .add(attribute, "false")
+                                    .build();
+                            Request request = new Request.Builder()
+                                    .url(Constants.baseServerURL + Constants.listingByListingIdEndpoint + listingId)
+                                    .put(formBody) // PUT
+                                    .build();
+                            client.newCall(request).enqueue(new Callback() {
+                                @Override
+                                public void onFailure(@NonNull Call call, @NonNull IOException e) {
+                                    Log.d(TAG, e.getMessage());
+                                }
 
-                        @Override
-                        public void onResponse(@NonNull Call call, @NonNull Response response) {
+                                @Override
+                                public void onResponse(@NonNull Call call, @NonNull Response response) {
+                                }
+                            });
+                            text_field.setText(String.format("%s %s", getString(R.string.pets), getString(R.string.not_allowed)));
                         }
                     });
-                    // Change to allowed
-                    text_field.setText(String.format("%s %s", getString(R.string.pets), getString(R.string.allowed)));
-                }
-            }).setNegativeButton("No", new DialogInterface.OnClickListener() {
-                public void onClick(DialogInterface dialog, int id) {
-                    dialog.dismiss();
-                    // Setting up a PUT request
-                    RequestBody formBody = new FormBody.Builder()
-                            .add(attribute, "false")
-                            .build();
-                    Request request = new Request.Builder()
-                            .url(Constants.baseServerURL + Constants.listingByListingIdEndpoint + listing_id)
-                            .put(formBody) // PUT
-                            .build();
-                    client.newCall(request).enqueue(new Callback() {
-                        @Override
-                        public void onFailure(@NonNull Call call, @NonNull IOException e) {
-                            Log.d(TAG, e.getMessage());
-                        }
-
-                        @Override
-                        public void onResponse(@NonNull Call call, @NonNull Response response) {
-                        }
-                    });
-                    text_field.setText(String.format("%s %s", getString(R.string.pets), getString(R.string.not_allowed)));
-                }
-            });
             AlertDialog alertDialog = alertDialogBuilder.create();
             alertDialog.show();
         });
@@ -159,13 +165,13 @@ public class ViewListingActivity extends AppCompatActivity {
         button.setVisibility(View.INVISIBLE);
     }
 
-    public void updateEditableText(OkHttpClient client, View view, Activity act, String field, String listing_id, TextView textview_to_update, String new_text) throws JSONException {
+    public void updateEditableText(OkHttpClient client, View view, Activity act, String field, String listingId, TextView textview_to_update, String new_text) throws JSONException {
         // Setting up the request
         RequestBody formBody = new FormBody.Builder()
                 .add(field, new_text)
                 .build();
         Request request = new Request.Builder()
-                .url(Constants.baseServerURL + Constants.listingByListingIdEndpoint + listing_id)
+                .url(Constants.baseServerURL + Constants.listingByListingIdEndpoint + listingId)
                 .put(formBody) // PUT
                 .build();
         client.newCall(request).enqueue(new Callback() {
@@ -187,8 +193,8 @@ public class ViewListingActivity extends AppCompatActivity {
         return (int)(dp * context.getResources().getDisplayMetrics().density);
     }
 
-    public void getListing(OkHttpClient client, String listing_id){
-        Request request = new Request.Builder().url(Constants.baseServerURL + Constants.listingByListingIdEndpoint + listing_id).build();
+    public void getListing(OkHttpClient client, String listingId, String userId){
+        Request request = new Request.Builder().url(Constants.baseServerURL + Constants.listingByListingIdEndpoint + listingId).build();
         client.newCall(request).enqueue(new Callback() {
             @Override
             public void onFailure(@NonNull Call call, @NonNull IOException e) {
@@ -211,7 +217,7 @@ public class ViewListingActivity extends AppCompatActivity {
                         // Fetching Parameters
                         String photoString = "";
                         List<String> imagesList = result.getImages();
-                        if (imagesList.size() > 0){
+                        if (imagesList.size() > 0 && imagesList.get(0).matches(Constants.base64Regex)){
                             photoString = imagesList.get(0);
                         }
                         String title = result.getTitle();
@@ -230,7 +236,7 @@ public class ViewListingActivity extends AppCompatActivity {
                         TextView move_in_date_textview = findViewById(R.id.move_in_date);
                         TextView pet_textview = findViewById(R.id.pet_friendly);
 
-                        // Setting ImageView
+                        // Setting ImageView. Verification done when setting photoString
                         byte[] decodedString = Base64.decode(photoString, Base64.DEFAULT);
                         Bitmap decodedByte = BitmapFactory.decodeByteArray(decodedString, 0, decodedString.length);
                         listing_image.setImageBitmap(decodedByte);
@@ -263,11 +269,11 @@ public class ViewListingActivity extends AppCompatActivity {
                             // disableButton(editMoveInButton);
                         }
                         else {
-                            enableButton(editTitleButton, "title", title_textview, listing_id);
-                            enableButton(editHousingDescButton, "description", description_textview, listing_id);
-                            enableButton(editHousingTypeButton, "housingType", housing_type_textview, listing_id);
-                            enableToggle(togglePetFriendlyButton, "petFriendly", pet_textview, listing_id);
-                            // enableButton(editMoveInButton, "moveInDate", move_in_date_textview, listing_id);
+                            enableButton(editTitleButton, "title", title_textview, listingId);
+                            enableButton(editHousingDescButton, "description", description_textview, listingId);
+                            enableButton(editHousingTypeButton, "housingType", housing_type_textview, listingId);
+                            enableToggle(togglePetFriendlyButton, "petFriendly", pet_textview, listingId);
+                            // enableButton(editMoveInButton, "moveInDate", move_in_date_textview, listingId);
                         }
                     } catch (IOException e) {
                         e.printStackTrace();

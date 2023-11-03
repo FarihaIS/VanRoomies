@@ -41,7 +41,9 @@ public class ListingsRecyclerViewAdapter extends RecyclerView.Adapter<ListingsRe
         ListingsRecyclerData recyclerData = listingsDataArrayList.get(position);
         holder.listingTV.setText(recyclerData.getTitle());
 
-        byte[] decodedString = Base64.decode(recyclerData.getImageString(), Base64.DEFAULT);
+        String imageString = recyclerData.getImageString().matches(Constants.base64Regex)
+                ? recyclerData.getImageString() : "";
+        byte[] decodedString = Base64.decode(imageString, Base64.DEFAULT);
         Bitmap decodedByte = BitmapFactory.decodeByteArray(decodedString, 0, decodedString.length);
         holder.listingIV.setImageBitmap(decodedByte);
 

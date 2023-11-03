@@ -4,11 +4,14 @@ import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.Bundle;
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
+
+import android.os.StrictMode;
 import android.util.Base64;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -65,8 +68,6 @@ public class ProfileFragment extends Fragment {
 
     private ImageView profilePicture;
     private Button editDescButton;
-    // TODO: Keep track of userId and replace the one below
-    private String userId = "65432c8d6ae83d9fc72e0900";
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
     private static final String ARG_PARAM1 = "param1";
     private static final String ARG_PARAM2 = "param2";
@@ -100,6 +101,8 @@ public class ProfileFragment extends Fragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        StrictMode.ThreadPolicy policy = new StrictMode.ThreadPolicy.Builder().permitAll().build();
+        StrictMode.setThreadPolicy(policy);
         if (getArguments() != null) {
             mParam1 = getArguments().getString(ARG_PARAM1);
             mParam2 = getArguments().getString(ARG_PARAM2);
@@ -111,6 +114,15 @@ public class ProfileFragment extends Fragment {
                              Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_profile, container, false);
         httpClient = HTTPSClientFactory.createClient(getActivity().getApplication());
+
+        // Bundle used for the first time this is loaded in-case the information isn't done saving
+        Bundle b = getActivity().getIntent().getExtras();
+        String userId = b.getString("userId");
+        if (userId == null){
+            SharedPreferences sharedPref = getActivity().getSharedPreferences(Constants.userData, Context.MODE_PRIVATE);
+            userId = sharedPref.getString(Constants.userIdKey, Constants.userDefault);
+        }
+        Log.d(TAG, userId);
 
         // For testing connectivity with backend
         String result = GetHelloWorldTest.testGetHelloWorld(httpClient , getActivity());
@@ -142,34 +154,36 @@ public class ProfileFragment extends Fragment {
 
         // Set up button for editing user bio
         editDescButton = view.findViewById(R.id.edit_desc_button);
+        String finalUserId = userId;
         editDescButton.setOnClickListener(temp -> {
-                    AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(getContext());
-                    // Initialize the edit box
-                    final EditText et = new EditText(getContext());
-                    et.setText(profileDesc.getText());
-                    et.setHeight(pxFromDp(getContext(), 250));
-                    alertDialogBuilder.setView(et);
+            AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(getContext());
+            // Initialize the edit box
+            final EditText et = new EditText(getContext());
+            et.setText(profileDesc.getText());
+            et.setHeight(pxFromDp(getContext(), 250));
+            alertDialogBuilder.setView(et);
 
-                    alertDialogBuilder.setCancelable(true).setPositiveButton("Save", new DialogInterface.OnClickListener() {
-                        public void onClick(DialogInterface dialog, int id) {
-                            dialog.dismiss();
-                            try {
-                                updateUserBio(httpClient, view, getActivity(), userId, et.getText().toString());
-                            } catch (JSONException e) {
-                                throw new RuntimeException(e);
-                            }
-                        }
-                    }).setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
-                        public void onClick(DialogInterface dialog, int id) {
-                            dialog.dismiss();
-                        }
-                    });
-                    AlertDialog alertDialog = alertDialogBuilder.create();
-                    alertDialog.show();
-                });
+            alertDialogBuilder.setCancelable(true).setPositiveButton("Save", new DialogInterface.OnClickListener() {
+                public void onClick(DialogInterface dialog, int id) {
+                    dialog.dismiss();
+                    try {
+                        updateUserBio(httpClient, view, getActivity(), finalUserId, et.getText().toString());
+                    } catch (JSONException e) {
+                        throw new RuntimeException(e);
+                    }
+                }
+            }).setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+                public void onClick(DialogInterface dialog, int id) {
+                    dialog.dismiss();
+                }
+            });
+            AlertDialog alertDialog = alertDialogBuilder.create();
+            alertDialog.show();
+        });
 
         // Set up button for editing user preferences
         editPreferencesButton = view.findViewById(R.id.edit_preferences_button);
+        String finalUserId1 = userId;
         editPreferencesButton.setOnClickListener(temp -> {
             // Setting up Add Listing Prompt
             Context context = view.getContext();
@@ -280,7 +294,7 @@ public class ProfileFragment extends Fragment {
                         Toast.makeText(context, "The lease must be numerical (i.e. '12').", Toast.LENGTH_LONG).show();
                     } else {
                         Log.d(TAG, "Editing/Adding Preferences.");
-                        editOrAddPreferences(httpClient, view, getActivity(), userId, preferenceParams);
+                        editOrAddPreferences(httpClient, view, getActivity(), finalUserId1, preferenceParams);
                     }
                 }
             }).setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
@@ -312,8 +326,12 @@ public class ProfileFragment extends Fragment {
                         Map result = g.fromJson(responseData, Map.class);
                         profileName.setText(String.format("%s %s", result.get("firstName"), result.get("lastName")));
                         profileEmail.setText((CharSequence) result.get("email"));
-                        profileDesc.setText((CharSequence) result.get("bio"));
-
+                        if (result.get("bio") != null){
+                            profileDesc.setText((CharSequence) result.get("bio"));
+                        }
+                        else {
+                            profileDesc.setText("");
+                        }
                         profileBirthday.setVisibility(view.INVISIBLE);
 //                        if (result.get("birthday") != null) {
 //                            String birthday = result.get("birthday").toString();
@@ -325,7 +343,9 @@ public class ProfileFragment extends Fragment {
 //                        }
 
                         if (result.get("profilePicture") != null) {
-                            byte[] decodedString = Base64.decode((String) result.get("profilePicture"), Base64.DEFAULT);
+                            String imageString = result.get("profilePicture").toString().matches(Constants.base64Regex)
+                                    ? result.get("profilePicture").toString() : "";
+                            byte[] decodedString = Base64.decode(imageString, Base64.DEFAULT);
                             Bitmap decodedByte = BitmapFactory.decodeByteArray(decodedString, 0, decodedString.length);
                             profilePicture.setImageBitmap(decodedByte);
                         }
