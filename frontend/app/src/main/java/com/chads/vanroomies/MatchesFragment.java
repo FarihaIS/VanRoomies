@@ -5,6 +5,7 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.os.StrictMode;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -74,6 +75,8 @@ public class MatchesFragment extends Fragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        StrictMode.ThreadPolicy policy = new StrictMode.ThreadPolicy.Builder().permitAll().build();
+        StrictMode.setThreadPolicy(policy);
         if (getArguments() != null) {
             mParam1 = getArguments().getString(ARG_PARAM1);
             mParam2 = getArguments().getString(ARG_PARAM2);
@@ -143,24 +146,33 @@ public class MatchesFragment extends Fragment {
 
             @Override
             public void onResponse(@NonNull Call call, @NonNull Response response) {
-                activity.runOnUiThread(() -> {
-                    try {
-                        String responseData = response.body().string();
-                        Type listType = new TypeToken<ArrayList<UserProfile>>(){}.getType();
-                        ArrayList<UserProfile> allMatches = gson.fromJson(responseData, listType);
+                    activity.runOnUiThread(() -> {
+                        if (response.isSuccessful()) {
+                            try {
+                                String responseData = response.body().string();
+                                if (responseData == null) {
+                                    Log.d(TAG, "Empty response data in getAllMatches...");
+                                } else {
+                                    Type listType = new TypeToken<ArrayList<UserProfile>>(){}.getType();
+                                    ArrayList<UserProfile> allMatches = gson.fromJson(responseData, listType);
+                                    userMatches = allMatches;
+                                }
 
-                        userMatches = allMatches;
-                        if (userMatches.isEmpty()) {
+                                if (userMatches.isEmpty()) {
+                                    Toast.makeText(getActivity(), R.string.no_matches_found, Toast.LENGTH_LONG).show();
+                                }
+                                else {
+                                    Log.d(TAG, "Line 162");
+                                    updateMatchesFragmentLayout(v);
+                                }
+                            }
+                            catch (IOException e) {
+                                e.printStackTrace();
+                            }
+                        } else {
                             Toast.makeText(getActivity(), R.string.no_matches_found, Toast.LENGTH_LONG).show();
                         }
-                        else {
-                            updateMatchesFragmentLayout(v);
-                        }
-                    }
-                    catch (IOException e) {
-                        e.printStackTrace();
-                    }
-                });
+                    });
             }
         });
     }
@@ -187,7 +199,11 @@ public class MatchesFragment extends Fragment {
                 activity.runOnUiThread(() -> {
                     try {
                         String responseData = response.body().string();
-                        Log.d(TAG, "responseData in excludeUserFromFutureMatchesr is " + responseData);
+                        if (responseData == null) {
+                            Log.d(TAG, "responseData in excludeUserFromFutureMatches is null");
+                        } else {
+                            Log.d(TAG, "responseData in excludeUserFromFutureMatches is " + responseData);
+                        }
                     }
                     catch (IOException e) {
                         e.printStackTrace();
@@ -219,7 +235,11 @@ public class MatchesFragment extends Fragment {
                 activity.runOnUiThread(() -> {
                     try {
                         String responseData = response.body().string();
-                        Log.d(TAG, "responseData in startChatWithMatchedUser is " + responseData);
+                        if (responseData == null) {
+                            Log.d(TAG, "responseData in startChatWithMatchedUser is null");
+                        } else {
+                            Log.d(TAG, "responseData in startChatWithMatchedUser is " + responseData);
+                        }
                     }
                     catch (IOException e) {
                         e.printStackTrace();

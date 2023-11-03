@@ -8,6 +8,8 @@ import android.os.Bundle;
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.RecyclerView;
+
+import android.os.StrictMode;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -71,6 +73,8 @@ public class ChatFragment extends Fragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        StrictMode.ThreadPolicy policy = new StrictMode.ThreadPolicy.Builder().permitAll().build();
+        StrictMode.setThreadPolicy(policy);
         if (getArguments() != null) {
             mParam1 = getArguments().getString(ARG_PARAM1);
             mParam2 = getArguments().getString(ARG_PARAM2);
@@ -114,31 +118,35 @@ public class ChatFragment extends Fragment {
                 activity.runOnUiThread(() -> {
                     try {
                         String responseData = response.body().string();
-                        Type listType = new TypeToken<List<ChatConversation>>(){}.getType();
-                        Log.d(TAG, "responseData for Conversations is " + responseData);
-                        List<ChatConversation> allConversations = gson.fromJson(responseData, listType);
+                        if (responseData != null) {
+                            Type listType = new TypeToken<List<ChatConversation>>(){}.getType();
+                            Log.d(TAG, "responseData for Conversations is " + responseData);
+                            List<ChatConversation> allConversations = gson.fromJson(responseData, listType);
 
-                        if (allConversations.isEmpty()) {
-                            Toast.makeText(getActivity(), R.string.no_chats_found, Toast.LENGTH_LONG).show();
-                        }
-
-                        // Iterate through all user conversations
-                        for (ChatConversation conversation : allConversations) {
-                            UserProfile user;
-                            ArrayList<ChatMessage> eachMessageList;
-
-                            // Get userId of both users in a conversation
-                            List<String> userPair = conversation.getUsers();
-                            if (userPair.get(0).equals(thisUserId)) {
-                                user = new UserProfile(userPair.get(1));
-                            }
-                            else {
-                                user = new UserProfile(userPair.get(0));
+                            if (allConversations.isEmpty()) {
+                                Toast.makeText(getActivity(), R.string.no_chats_found, Toast.LENGTH_LONG).show();
                             }
 
-                            eachMessageList = conversation.getMessages();
-                            updateUserProfile(httpClient, getActivity(), user, eachMessageList, v);
-                            Log.d(TAG, "Inside getAllChatMessages: first name is " + user.getFirstName());
+                            // Iterate through all user conversations
+                            for (ChatConversation conversation : allConversations) {
+                                UserProfile user;
+                                ArrayList<ChatMessage> eachMessageList;
+
+                                // Get userId of both users in a conversation
+                                List<String> userPair = conversation.getUsers();
+                                if (userPair.get(0).equals(thisUserId)) {
+                                    user = new UserProfile(userPair.get(1));
+                                }
+                                else {
+                                    user = new UserProfile(userPair.get(0));
+                                }
+
+                                eachMessageList = conversation.getMessages();
+                                updateUserProfile(httpClient, getActivity(), user, eachMessageList, v);
+                                Log.d(TAG, "Inside getAllChatMessages: first name is " + user.getFirstName());
+                            }
+                        } else {
+                            Log.d(TAG, "Inside getAllChatMessages: responseData is null");
                         }
                     }
                     catch (IOException e) {
@@ -163,13 +171,17 @@ public class ChatFragment extends Fragment {
                 activity.runOnUiThread(() -> {
                     try {
                         String responseData = response.body().string();
-                        UserProfile fullUserProfile = gson.fromJson(responseData, UserProfile.class);
+                        if (responseData != null) {
+                            UserProfile fullUserProfile = gson.fromJson(responseData, UserProfile.class);
 
-                        user.setFirstName(fullUserProfile.getFirstName());
-                        user.setLastName(fullUserProfile.getLastName());
-                        user.setProfilePicture(fullUserProfile.getProfilePicture());
-                        Log.d(TAG, "Inside updateUserProfile: first name is " + user.getFirstName());
-                        allChatMessages.put(user, messages);
+                            user.setFirstName(fullUserProfile.getFirstName());
+                            user.setLastName(fullUserProfile.getLastName());
+                            user.setProfilePicture(fullUserProfile.getProfilePicture());
+                            Log.d(TAG, "Inside updateUserProfile: first name is " + user.getFirstName());
+                            allChatMessages.put(user, messages);
+                        } else {
+                            Log.d(TAG, "Inside updateUserProfile: responseData is null");
+                        }
                     }
                     catch (IOException e) {
                         e.printStackTrace();

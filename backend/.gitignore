@@ -1,7 +1,4 @@
-# *.pem -> exists in root directory
 node_modules/
-.env.development
-.env.production
-.env
+.env.*
 .eslintcache
-certs/serviceAccountKey.json
+*.pem

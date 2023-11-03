@@ -63,10 +63,6 @@ public class ChatListAdapter extends RecyclerView.Adapter {
             ((ChatListHolder) holder).imageView.setImageResource(R.drawable.ic_profile);
         }
 
-        ((ChatListHolder) holder).deleteButton.setOnClickListener(v -> {
-            // TODO: Add delete chat functionality
-        });
-
         holder.itemView.setOnClickListener(v -> {
             Intent chatChannelIntent = new Intent(context, ChatChannelActivity.class);
             chatChannelIntent.putExtra("thisUserId", userId);
@@ -79,13 +75,11 @@ public class ChatListAdapter extends RecyclerView.Adapter {
     public static class ChatListHolder extends RecyclerView.ViewHolder {
         CircleImageView imageView;
         TextView nameView;
-        ImageButton deleteButton;
 
         ChatListHolder(@NonNull View itemView) {
             super(itemView);
             imageView = itemView.findViewById(R.id.chat_row_image);
             nameView = itemView.findViewById(R.id.chat_row_name);
-            deleteButton = itemView.findViewById(R.id.chat_row_delete);
         }
     }
 }

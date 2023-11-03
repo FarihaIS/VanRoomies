@@ -1,7 +1,5 @@
 const mongoose = require('mongoose');
 const Message = require('./Message');
-const sendPushNotification = require('./firebase');
-const User = require('../models/userModel');
 
 const conversationSchema = new mongoose.Schema({
     users: { type: [String], required: true },
@@ -22,15 +20,8 @@ class MessageStore {
         try {
             const conversation = await this.getConversationIfAbsent(fromId, toId);
             const message = new Message(fromId, content);
-            const receivingUser = await User.findById(toId);
-            const sendingUser = await User.findById(fromId);
-            if (receivingUser) {
-                const firebaseToken = receivingUser.firebaseToken;
-                sendPushNotification(firebaseToken, sendingUser.firstName, content);
-                conversation.messages.push(message);
-                await conversation.save();
-            } 
- 
+            conversation.messages.push(message);
+            await conversation.save();
         } catch (error) {
             console.error(error);
         }
