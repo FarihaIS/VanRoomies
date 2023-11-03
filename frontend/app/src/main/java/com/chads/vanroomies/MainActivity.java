@@ -133,11 +133,7 @@ public class MainActivity extends AppCompatActivity {
 
         @Override
         protected void onPostExecute(String result) {
-            Intent profileIntent = new Intent(MainActivity.this, HomeActivity.class); // intent for fragments
-            Bundle b = new Bundle();
-            b.putString("userId", result);
-            profileIntent.putExtras(b);
-            startActivity(profileIntent);
+            Log.d(TAG, "TEST");
         }
     }
 
@@ -176,6 +172,12 @@ public class MainActivity extends AppCompatActivity {
                         }
                         editor.putString(Constants.userIdKey, userId);
                         editor.apply();
+
+                        Intent profileIntent = new Intent(MainActivity.this, HomeActivity.class); // intent for fragments
+                        Bundle b = new Bundle();
+                        b.putString("userId", userId);
+                        profileIntent.putExtras(b);
+                        startActivity(profileIntent);
 
                     } catch (IOException e){
                         e.printStackTrace();
