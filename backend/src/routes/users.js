@@ -3,6 +3,8 @@ const User = require('../models/userModel');
 const { default: mongoose } = require('mongoose');
 const Listing = require('../models/listingModel');
 const Preferences = require('../models/preferencesModel');
+const validateGoogleIdToken = require('../authentication/googleAuthentication');
+const { generateAuthenticationToken } = require('../authentication/jwtAuthentication');
 const router = express.Router();
 
 /**
@@ -21,25 +23,44 @@ router.get('/', async (req, res, next) => {
 });
 
 /**
- * Create a new User object and save it to the database. This demands that all fields are provided
- * in the body of the request as shown below.
+ * Login user through Google Sign In. This passes the user through a
+ * middleware to validate their ID token. The login serves a 2-fold purpose
+ * of signing up a new user and creating their record on the database
+ * or simply querying their profile otherwise.
+ * 
+ * TODO: Middleware for Google Sign In + JWT ready, FE integration coming soon
  *
- * Route: POST /api/users
+ * Route: POST /api/users/login
  * Content-Type: application/json
  * Body: {
- *    "firstName": "John",
+ *   "idToken": String
+ *   "firstName": "John",
  *   "lastName": "Doe",
  *   "email": "
  * 	  ...
  * }
+ * Returns:
+ *      status(200): User Object
+ *      status(201): {userToken: String, user: User}
  */
-router.post('/', async (req, res, next) => {
+router.post('/login', async (req, res, next) => {
     try {
-        const user = new User(req.body);
-        const savedUser = await user.save();
-        res.status(201).json(savedUser);
+        const currentUser = await User.findOne({ email: req.body.email });
+        if (currentUser) {
+            // Set status 200 if user user already exists
+            res.status(200).json({ userId: currentUser._id });
+        } else {
+            const user = new User({
+                firstName: req.body.firstName,
+                lastName: req.body.lastName,
+                email: req.body.email,
+            });
+            const savedUser = await user.save();
+            const userToken = generateAuthenticationToken(savedUser);
+            // Set status 201 if a new user was created
+            res.status(201).json({ userId: savedUser._id, userToken: userToken });
+        }
     } catch (err) {
-        res.status(400).json({ error: err.message });
         next(err);
     }
 });
@@ -97,10 +118,11 @@ router.delete('/:userId', async (req, res, next) => {
     const session = await mongoose.startSession();
 
     try {
+        let deletedUser = null;
         session.startTransaction();
 
         const userId = req.params.userId;
-        const deletedUser = await User.findByIdAndDelete(req.params.userId);
+        deletedUser = await User.findByIdAndDelete(req.params.userId);
         await Listing.deleteMany({ userId: userId });
         await Preferences.deleteOne({ userId: userId });
         await session.commitTransaction();

@@ -1,5 +1,6 @@
 const express = require('express');
 const Listing = require('../models/listingModel');
+// const { authenticateJWT } = require('../authentication/jwtAuthentication');
 const router = express.Router();
 
 /**
@@ -16,7 +17,6 @@ router.get('/:listingId', async (req, res, next) => {
             res.status(404).json({ error: 'Listing not found' });
         }
     } catch (error) {
-        res.status(400).json({ error: error.message });
         next(error);
     }
 });
@@ -35,7 +35,6 @@ router.get('/user/:userId', async (req, res, next) => {
             res.status(404).json({ error: 'No listing found for given user ID' });
         }
     } catch (error) {
-        res.status(400).json({ error: error.message });
         next(error);
     }
 });
@@ -55,7 +54,6 @@ router.post('/', async (req, res, next) => {
         res.location(`/api/listing/${listing._id}`);
         res.status(201).json(listing);
     } catch (error) {
-        res.status(400).json({ error: error.message });
         next(error);
     }
 });
@@ -77,7 +75,6 @@ router.put('/:listingId', async (req, res, next) => {
             res.status(404).json({ error: 'Listing not found' });
         }
     } catch (error) {
-        res.status(400).json({ error: error.message });
         next(error);
     }
 });
@@ -96,7 +93,6 @@ router.delete('/:listingId', async (req, res, next) => {
             res.status(404).json({ error: 'Listing not found' });
         }
     } catch (error) {
-        res.status(400).json({ error: error.message });
         next(error);
     }
 });
