@@ -5,8 +5,11 @@ const https = require('https');
 const fs = require('fs');
 const path = require('path');
 const mongoSanitize = require('express-mongo-sanitize');
+const { initializeApp, applicationDefault } = require('firebase-admin/app');
+const serviceAccount = require('../certs/serviceAccountKey.json');
 
 const { logErrors, errorHandler } = require('./middlewares');
+const User = require('./models/userModel');
 
 // Configure environment variable path
 require('dotenv').config({ path: `./.env.${process.env.NODE_ENV}` });
@@ -45,11 +48,40 @@ app.get('/', (req, res) => {
     res.send('Hello World!');
 });
 
+app.post('/api/firebase_token', async (req, res, next) => {
+    try {
+        const { token, userId } = req.body;
+        if (!token || !userId) {
+            res.status(400).json({ error: 'Token or userId is missing' });
+            return;
+        }
+        const user = await User.findById(userId);
+        if (user) {
+            const update = { firebaseToken: token };
+            await user.updateOne(update);
+            res.status(200).json({ message: 'Token saved' });
+        } else {
+            const error = new Error('User not found');
+            res.status(404).json({ error: error.message });
+            next(error);
+        }
+    } catch (error) {
+        res.status(500).json({ error: error.message });
+        next(error);
+    }
+});
+
 app.use(logErrors);
 app.use(errorHandler);
 
 // use socket.io
 require('./sock.js')(httpsServer);
+
+// use firebase admin sdk
+initializeApp({
+    credential: applicationDefault(),
+});
+  
 
 httpsServer.listen(port, () => {
     console.log(`VanRoomies server at https://localhost:${port}`);
