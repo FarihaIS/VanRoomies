@@ -16,6 +16,8 @@ import androidx.fragment.app.Fragment;
 import java.io.IOException;
 import java.lang.reflect.Type;
 import java.util.ArrayList;
+import java.util.Objects;
+
 import com.daprlabs.cardstack.SwipeDeck;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
@@ -113,11 +115,12 @@ public class MatchesFragment extends Fragment {
                         if (response.isSuccessful()) {
                             try {
                                 String responseData = response.body().string();
-                                if (responseData == null) {
+                                if (response.body() == null) {
                                     Log.d(TAG, "Empty response data in getAllMatches...");
                                 } else {
                                     Type listType = new TypeToken<ArrayList<UserProfile>>(){}.getType();
                                     ArrayList<UserProfile> allMatches = gson.fromJson(responseData, listType);
+                                    allMatches.removeIf(Objects::isNull);
                                     userMatches = allMatches;
                                 }
 
@@ -162,7 +165,7 @@ public class MatchesFragment extends Fragment {
                 activity.runOnUiThread(() -> {
                     try {
                         String responseData = response.body().string();
-                        if (responseData == null) {
+                        if (response.body() == null) {
                             Log.d(TAG, "responseData in excludeUserFromFutureMatches is null");
                         } else {
                             Log.d(TAG, "responseData in excludeUserFromFutureMatches is " + responseData);
@@ -198,7 +201,7 @@ public class MatchesFragment extends Fragment {
                 activity.runOnUiThread(() -> {
                     try {
                         String responseData = response.body().string();
-                        if (responseData == null) {
+                        if (response.body() == null) {
                             Log.d(TAG, "responseData in startChatWithMatchedUser is null");
                         } else {
                             Log.d(TAG, "responseData in startChatWithMatchedUser is " + responseData);

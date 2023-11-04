@@ -138,7 +138,7 @@ public class ChatFragment extends Fragment {
                 activity.runOnUiThread(() -> {
                     try {
                         String responseData = response.body().string();
-                        if (responseData != null) {
+                        if (response.body() != null) {
                             UserProfile fullUserProfile = gson.fromJson(responseData, UserProfile.class);
 
                             user.setFirstName(fullUserProfile.getFirstName());
