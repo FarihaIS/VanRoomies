@@ -69,8 +69,8 @@ const calculateMoveInDateScore = (listing, closestListing, farthestListing) => {
 };
 
 const getClosestFarthestMoveDates = (userPreferences, listings) => {
-    let minimalWindow = POSINF,
-        maximalWindow = NEGINF;
+    let minimalWindow = POSINF;
+    let maximalWindow = NEGINF;
     let closestListing;
     let farthestListing;
     listings.forEach((listing) => {

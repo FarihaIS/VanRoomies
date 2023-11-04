@@ -3,7 +3,6 @@ const User = require('../models/userModel');
 const { default: mongoose } = require('mongoose');
 const Listing = require('../models/listingModel');
 const Preferences = require('../models/preferencesModel');
-const validateGoogleIdToken = require('../authentication/googleAuthentication');
 const { generateAuthenticationToken } = require('../authentication/jwtAuthentication');
 const router = express.Router();
 
@@ -58,7 +57,7 @@ router.post('/login', async (req, res, next) => {
             const savedUser = await user.save();
             const userToken = generateAuthenticationToken(savedUser);
             // Set status 201 if a new user was created
-            res.status(201).json({ userId: savedUser._id, userToken: userToken });
+            res.status(201).json({ userId: savedUser._id, userToken });
         }
     } catch (err) {
         next(err);
@@ -123,8 +122,8 @@ router.delete('/:userId', async (req, res, next) => {
 
         const userId = req.params.userId;
         deletedUser = await User.findByIdAndDelete(req.params.userId);
-        await Listing.deleteMany({ userId: userId });
-        await Preferences.deleteOne({ userId: userId });
+        await Listing.deleteMany({ userId });
+        await Preferences.deleteOne({ userId });
         await session.commitTransaction();
         if (deletedUser) {
             res.status(200).json(deletedUser);

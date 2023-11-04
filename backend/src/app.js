@@ -6,7 +6,6 @@ const fs = require('fs');
 const path = require('path');
 const mongoSanitize = require('express-mongo-sanitize');
 const { initializeApp, applicationDefault } = require('firebase-admin/app');
-const serviceAccount = require('../certs/serviceAccountKey.json');
 
 const { logErrors, errorHandler } = require('./middlewares');
 const User = require('./models/userModel');
