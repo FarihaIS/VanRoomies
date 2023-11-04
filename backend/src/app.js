@@ -13,11 +13,9 @@ const User = require('./models/userModel');
 // Configure environment variable path
 require('dotenv').config({ path: `./.env.${process.env.NODE_ENV}` });
 
-const keyDir = path.resolve(process.env.KEY_PATH);
-const certDir = path.resolve(process.env.CERT_PATH);
 const credentials = {
-    key: fs.readFileSync(keyDir),
-    cert: fs.readFileSync(certDir),
+    key: fs.readFileSync(path.resolve(process.env.KEY_PATH)),
+    cert: fs.readFileSync(path.resolve(process.env.CERT_PATH)),
 };
 const app = express();
 const httpsServer = https.createServer(credentials, app);
