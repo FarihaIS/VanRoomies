@@ -216,7 +216,7 @@ public class ListingsFragment extends Fragment implements ListingsItemSelectList
                             }
                         }
                         // added data from arraylist to adapter class.
-                        ListingsRecyclerViewAdapter adapter = new ListingsRecyclerViewAdapter(recyclerDataArrayList, ListingsFragment.this);
+                        ListingsRecyclerViewAdapter adapter = new ListingsRecyclerViewAdapter(recyclerDataArrayList, ListingsFragment.this, view.getContext());
 
                         // setting grid layout manager to implement grid view.
                         // in this method '2' represents number of columns to be displayed in grid view.
@@ -276,7 +276,7 @@ public class ListingsFragment extends Fragment implements ListingsItemSelectList
                         }
 
                         // added data from arraylist to adapter class.
-                        ListingsRecyclerViewAdapter adapter = new ListingsRecyclerViewAdapter(recyclerDataArrayList, ListingsFragment.this);
+                        ListingsRecyclerViewAdapter adapter = new ListingsRecyclerViewAdapter(recyclerDataArrayList, ListingsFragment.this, view.getContext());
 
                         // setting grid layout manager to implement grid view.
                         // in this method '2' represents number of columns to be displayed in grid view.
