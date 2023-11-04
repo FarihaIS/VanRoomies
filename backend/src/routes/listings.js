@@ -23,15 +23,11 @@ router.get('/:listingId', async (req, res, next) => {
  * Route: GET /api/listings/user/:userId where userId is the ID of the user
  */
 router.get('/user/:userId', async (req, res, next) => {
-    try {
-        let listings = await Listing.find({ userId: req.params.userId });
-        if (listings) {
-            res.status(200).json(listings);
-        } else {
-            res.status(404).json({ error: 'No listing found for given user ID' });
-        }
-    } catch (error) {
-        next(error);
+    let listings = await Listing.find({ userId: req.params.userId });
+    if (listings) {
+        res.status(200).json(listings);
+    } else {
+        res.status(404).json({ error: 'No listing found for given user ID' });
     }
 });
 

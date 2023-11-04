@@ -51,16 +51,12 @@ router.post('/:userId/preferences', async (req, res, next) => {
  * Body: {title: String <new_title>, rentalPrice: Number<new_price> ....}
  */
 router.put('/:userId/preferences', async (req, res, next) => {
-    try {
-        const userId = new mongoose.Types.ObjectId(req.params.userId);
-        const updatedPreferences = await Preferences.findOneAndUpdate({ userId }, req.body, { new: true });
-        if (updatedPreferences) {
-            res.status(200).json(updatedPreferences);
-        } else {
-            res.status(404).json({ error: 'Did not match any user!' });
-        }
-    } catch (error) {
-        next(error);
+    const userId = new mongoose.Types.ObjectId(req.params.userId);
+    const updatedPreferences = await Preferences.findOneAndUpdate({ userId }, req.body, { new: true });
+    if (updatedPreferences) {
+        res.status(200).json(updatedPreferences);
+    } else {
+        res.status(404).json({ error: 'Did not match any user!' });
     }
 });
 
@@ -139,8 +135,7 @@ router.get('/:userId/recommendations/listings', async (req, res, next) => {
     try {
         const userPreferences = await Preferences.findOne({ userId: req.params.userId }).lean();
         if (!userPreferences) {
-            let error = 'No preferences found for given user!';
-            return res.status(404).json({ error: error });
+            return res.status(404).json({ error: 'No preferences found for given user!' });
         }
         const tentativeMatchListings = await Listing.find({ userId: { $ne: req.params.userId } }).lean();
         if (tentativeMatchListings) {
@@ -154,8 +149,7 @@ router.get('/:userId/recommendations/listings', async (req, res, next) => {
             }
             res.status(200).json(rankedListings);
         } else {
-            let error = 'No matching listings available!';
-            res.status(404).json({ error: error });
+            res.status(404).json({ error: 'No matching listings available!' });
         }
     } catch (error) {
         next(error);

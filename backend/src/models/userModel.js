@@ -57,7 +57,7 @@ const UserSchema = new mongoose.Schema({
     },
     firebaseToken: {
         type: String,
-    },  
+    },
 });
 
 const User = mongoose.model('User', UserSchema);

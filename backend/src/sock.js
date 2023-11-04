@@ -7,31 +7,27 @@ const { sanitize } = require('./utils/utils');
 module.exports = function (server) {
     const io = new Server(server);
     io.use(async (socket, next) => {
-        try {
-            let userId = socket.handshake.auth.userId;
-            if (!userId) {
-                return next(new Error('No userId'));
-            }
-            if (!(userId instanceof mongoose.Types.ObjectId)) {
-                userId = new mongoose.mongo.ObjectId(userId);
-            }
-
-            const user = await User.findById(userId);
-            if (!user) {
-                return next(new Error('Invalid userId'));
-            }
-            socket.emit('user connected', `Welcome ${user.firstName} ${user.lastName}!`);
-            socket.userId = socket.handshake.auth.userId;
-            next();
-        } catch (error) {
-            return next(error);
+        let userId = socket.handshake.auth.userId;
+        if (!userId) {
+            return next(new Error('No userId'));
         }
+        if (!(userId instanceof mongoose.Types.ObjectId)) {
+            userId = new mongoose.mongo.ObjectId(userId);
+        }
+
+        const user = await User.findById(userId);
+        if (!user) {
+            return next(new Error('Invalid userId'));
+        }
+        socket.emit('user connected', `Welcome ${user.firstName} ${user.lastName}!`);
+        socket.userId = socket.handshake.auth.userId;
+        next();
     });
 
     io.on('connection', async (socket) => {
         socket.join(socket.userId);
 
-        socket.on('private message', async ({ content, to }, callback) => {
+        socket.on('private message', async ({ content, to }, fn) => {
             try {
                 const user = await User.findById(to);
                 if (!user) {
@@ -51,11 +47,11 @@ module.exports = function (server) {
                             to,
                         },
                         () => {
-                            callback({ status: 'success' });
+                            fn({ status: 'success' });
                         },
                     );
             } catch (error) {
-                callback({ status: 'error', message: 'User not found' });
+                fn({ status: 'error', message: 'User not found' });
             }
         });
     });
