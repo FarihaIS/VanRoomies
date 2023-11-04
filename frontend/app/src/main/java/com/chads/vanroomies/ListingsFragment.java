@@ -142,7 +142,7 @@ public class ListingsFragment extends Fragment implements ListingsItemSelectList
                             Log.d(TAG, "Creating Listing.");
                             createListing(httpClient, view, getActivity(), listingParams, userId);
                         } catch (JSONException e) {
-                            throw new RuntimeException(e);
+                            Log.d(TAG, Log.getStackTraceString(e));
                         }
                     }
                 }

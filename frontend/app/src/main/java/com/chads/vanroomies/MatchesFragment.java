@@ -30,7 +30,6 @@ import okhttp3.Response;
 public class MatchesFragment extends Fragment {
     final static String TAG = "MatchesFragment";
     private ArrayList<UserProfile> userMatches;
-    private MatchDeckAdapter matchDeckAdapter;
     private SwipeDeck cardStack;
     private String thisUserId;
     private OkHttpClient httpClient;
@@ -66,7 +65,7 @@ public class MatchesFragment extends Fragment {
     }
 
     private void updateMatchesFragmentLayout(View v) {
-        matchDeckAdapter = new MatchDeckAdapter(v.getContext(), userMatches);
+        MatchDeckAdapter matchDeckAdapter = new MatchDeckAdapter(v.getContext(), userMatches);
         cardStack.setAdapter(matchDeckAdapter);
 
         cardStack.setEventCallback(new SwipeDeck.SwipeEventCallback() {
@@ -78,7 +77,7 @@ public class MatchesFragment extends Fragment {
             @Override
             public void cardSwipedRight(int position) {
                 Log.d(TAG, "Match accepted");
-                excludeUserFromFutureMatches(httpClient, getActivity(), v, userMatches.get(position).get_id());
+                excludeUserFromFutureMatches(httpClient, getActivity(), userMatches.get(position).get_id());
                 startChatWithMatchedUser(httpClient, getActivity(), userMatches.get(position).get_id());
             }
 
@@ -141,7 +140,7 @@ public class MatchesFragment extends Fragment {
         });
     }
 
-    private void excludeUserFromFutureMatches(OkHttpClient client, Activity activity, View v, String matchUserId) {
+    private void excludeUserFromFutureMatches(OkHttpClient client, Activity activity, String matchUserId) {
         String url = Constants.baseServerURL + Constants.userEndpoint + thisUserId + Constants.matchesByUserIdEndpoint;
         Log.d(TAG, "Exclude userId " + matchUserId);
         RequestBody requestBody = new FormBody.Builder()

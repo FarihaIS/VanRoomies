@@ -52,8 +52,8 @@ public class ChatListAdapter extends RecyclerView.Adapter {
 
         String otherUserImage = otherUserProfile.getProfilePicture();
         if (otherUserImage != null) {
-            String imageString = otherUserImage.toString().matches(Constants.base64Regex)
-                    ? otherUserImage.toString() : "";
+            String imageString = otherUserImage.matches(Constants.base64Regex)
+                    ? otherUserImage : "";
             byte[] decodedString = Base64.decode(imageString, Base64.DEFAULT);
             Bitmap decodedByte = BitmapFactory.decodeByteArray(decodedString, 0, decodedString.length);
             ((ChatListHolder) holder).imageView.setImageBitmap(decodedByte);
