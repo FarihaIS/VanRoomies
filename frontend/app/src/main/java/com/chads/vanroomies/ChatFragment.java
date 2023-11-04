@@ -32,7 +32,6 @@ import okhttp3.Response;
 public class ChatFragment extends Fragment {
     final static String TAG = "ChatFragment";
     private RecyclerView chatListRecycler;
-    private ChatListAdapter chatListAdapter;
     private String thisUserId;
     private OkHttpClient httpClient;
     private Gson gson;
@@ -68,7 +67,7 @@ public class ChatFragment extends Fragment {
     }
 
     private void updateChatFragment(View v) {
-        chatListAdapter = new ChatListAdapter(v.getContext(), allChatMessages, thisUserId);
+        ChatListAdapter chatListAdapter = new ChatListAdapter(v.getContext(), allChatMessages, thisUserId);
         chatListRecycler.setAdapter((chatListAdapter));
     }
 
