@@ -83,8 +83,8 @@ const housingTypeScore = (currentUser, possibleMatch) => {
  */
 const roommateCountScore = (currentUser, possibleMatch, minMaxRanges) => {
     // Min-max normalization to score the roommate such that the difference between the match is minimized
-    const minRange = minMaxRanges.minRoomMateCountRange,
-        maxRange = minMaxRanges.maxRoomMateCountRange;
+    const minRange = minMaxRanges.minRoomMateCountRange;
+    const maxRange = minMaxRanges.maxRoomMateCountRange;
     const headcountDiff = Math.abs(currentUser.roommateCount - possibleMatch.roommateCount);
     const normalizedDiff = (headcountDiff - minRange) / (maxRange - minRange);
 
@@ -101,8 +101,8 @@ const roommateCountScore = (currentUser, possibleMatch, minMaxRanges) => {
  */
 const leaseLengthScore = (currentUser, possibleMatch, minMaxRanges) => {
     // This needs max-min normalization across all differences
-    const minRange = minMaxRanges.minLeaseLengthRange,
-        maxRange = minMaxRanges.maxLeaseLengthRange;
+    const minRange = minMaxRanges.minLeaseLengthRange;
+    const maxRange = minMaxRanges.maxLeaseLengthRange;
     const leaseLengthDiff = Math.abs(currentUser.leaseLength - possibleMatch.leaseLength);
     const normalizedDiff = (leaseLengthDiff - minRange) / (maxRange - minRange);
 
@@ -129,8 +129,8 @@ const priceRangeScore = (currentUser, possibleMatch, minMaxRanges) => {
         return 0;
     }
 
-    const minRange = minMaxRanges.minPriceOverlapRange,
-        maxRange = minMaxRanges.maxPriceOverlapRange;
+    const minRange = minMaxRanges.minPriceOverlapRange;
+    const maxRange = minMaxRanges.maxPriceOverlapRange;
     const normalizedOverlap = (overlapPriceRange - minRange) / (maxRange - minRange);
 
     // Need to maximize overlap
@@ -145,12 +145,12 @@ const priceRangeScore = (currentUser, possibleMatch, minMaxRanges) => {
  * @param {User Object} potentialMatchesPreferences - preferences of potential roommates
  */
 const calculateMinMaxRanges = (currentUser, potentialMatches) => {
-    let minRoomMateCountRange = POSINF,
-        maxRoomMateCountRange = NEGINF;
-    let minLeaseLengthRange = POSINF,
-        maxLeaseLengthRange = NEGINF;
-    let minPriceOverlapRange = POSINF,
-        maxPriceOverlapRange = NEGINF;
+    let minRoomMateCountRange = POSINF;
+    let maxRoomMateCountRange = NEGINF;
+    let minLeaseLengthRange = POSINF;
+    let maxLeaseLengthRange = NEGINF;
+    let minPriceOverlapRange = POSINF;
+    let maxPriceOverlapRange = NEGINF;
 
     potentialMatches.forEach((potentialMatch) => {
         // Roommate Count Range
@@ -184,12 +184,12 @@ const calculateMinMaxRanges = (currentUser, potentialMatches) => {
         }
     });
     return {
-        minRoomMateCountRange: minRoomMateCountRange,
-        maxRoomMateCountRange: maxRoomMateCountRange,
-        minLeaseLengthRange: minLeaseLengthRange,
-        maxLeaseLengthRange: maxLeaseLengthRange,
-        minPriceOverlapRange: minPriceOverlapRange,
-        maxPriceOverlapRange: maxPriceOverlapRange,
+        minRoomMateCountRange,
+        maxRoomMateCountRange,
+        minLeaseLengthRange,
+        maxLeaseLengthRange,
+        minPriceOverlapRange,
+        maxPriceOverlapRange
     };
 };
 

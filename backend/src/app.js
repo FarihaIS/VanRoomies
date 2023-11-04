@@ -6,7 +6,6 @@ const fs = require('fs');
 const path = require('path');
 const mongoSanitize = require('express-mongo-sanitize');
 const { initializeApp, applicationDefault } = require('firebase-admin/app');
-const serviceAccount = require('../certs/serviceAccountKey.json');
 
 const { logErrors, errorHandler } = require('./middlewares');
 const User = require('./models/userModel');
@@ -14,9 +13,11 @@ const User = require('./models/userModel');
 // Configure environment variable path
 require('dotenv').config({ path: `./.env.${process.env.NODE_ENV}` });
 
+const keyDir = path.resolve(process.env.KEY_PATH);
+const certDir = path.resolve(process.env.CERT_PATH);
 const credentials = {
-    key: fs.readFileSync(path.resolve(process.env.KEY_PATH)),
-    cert: fs.readFileSync(path.resolve(process.env.CERT_PATH)),
+    key: fs.readFileSync(keyDir),
+    cert: fs.readFileSync(certDir),
 };
 const app = express();
 const httpsServer = https.createServer(credentials, app);

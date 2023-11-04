@@ -9,15 +9,11 @@ const router = express.Router();
  * Route: GET /api/listings/:listingId where listingId is the ID of the listing in the database
  */
 router.get('/:listingId', async (req, res, next) => {
-    try {
-        const listing = await Listing.findById(req.params.listingId);
-        if (listing) {
-            res.status(200).json(listing);
-        } else {
-            res.status(404).json({ error: 'Listing not found' });
-        }
-    } catch (error) {
-        next(error);
+    const listing = await Listing.findById(req.params.listingId);
+    if (listing) {
+        res.status(200).json(listing);
+    } else {
+        res.status(404).json({ error: 'Listing not found' });
     }
 });
 
