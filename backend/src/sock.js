@@ -31,7 +31,7 @@ module.exports = function (server) {
             try {
                 const user = await User.findById(to);
                 if (!user) {
-                    return callback({ status: 'error', message: 'User not supplied' });
+                    return fn({ status: 'error', message: 'User not supplied' });
                 }
                 const sanitizedMessage = sanitize(content);
                 await messageStore.sendMessage(sanitizedMessage, socket.userId, to);

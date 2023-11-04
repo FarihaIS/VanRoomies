@@ -47,8 +47,9 @@ app.get('/', (req, res) => {
     res.send('Hello World!');
 });
 
-app.post('/api/firebase_token', async (req, res, next) => {
-    const { token, userId } = req.body;
+app.post('/api/firebase_token', async (req, res) => {
+    const token = req.body.token;
+    const userId = req.body.userId;
     if (!token || !userId) {
         res.status(400).json({ error: 'Token or userId is missing' });
         return;
