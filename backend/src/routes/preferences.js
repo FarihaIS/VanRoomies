@@ -15,15 +15,11 @@ const { generateRecommendations } = require('../utils/utils');
  * Route: GET /api/users/:userId/preferences where userId is the ID of user
  */
 router.get('/:userId/preferences', async (req, res, next) => {
-    try {
-        const preferences = await Preferences.findOne({ userId: req.params.userId });
-        if (preferences) {
-            res.status(200).json(preferences);
-        } else {
-            res.status(404).json({ error: 'Did not match any user!' });
-        }
-    } catch (error) {
-        next(error);
+    const preferences = await Preferences.findOne({ userId: req.params.userId });
+    if (preferences) {
+        res.status(200).json(preferences);
+    } else {
+        res.status(404).json({ error: 'Did not match any user!' });
     }
 });
 
@@ -57,7 +53,7 @@ router.post('/:userId/preferences', async (req, res, next) => {
 router.put('/:userId/preferences', async (req, res, next) => {
     try {
         const userId = new mongoose.Types.ObjectId(req.params.userId);
-        const updatedPreferences = await Preferences.findOneAndUpdate({ userId: userId }, req.body, { new: true });
+        const updatedPreferences = await Preferences.findOneAndUpdate({ userId }, req.body, { new: true });
         if (updatedPreferences) {
             res.status(200).json(updatedPreferences);
         } else {
@@ -81,7 +77,7 @@ router.get('/:userId/recommendations/users', async (req, res, next) => {
         const userPreferences = await Preferences.findOne({ userId: req.params.userId }).lean();
         if (!userPreferences) {
             let error = 'No preferences found for given user!';
-            return res.status(404).json({ error: error });
+            return res.status(404).json({ error });
         }
         const currUser = await User.findById(req.params.userId);
         const excluded = [req.params.userId, ...currUser.notRecommended];
@@ -98,7 +94,7 @@ router.get('/:userId/recommendations/users', async (req, res, next) => {
             res.status(200).json(rankedUsers);
         } else {
             let error = 'No preferences found for given user!';
-            res.status(404).json({ error: error });
+            res.status(404).json({ error });
         }
     } catch (error) {
         next(error);
