@@ -37,10 +37,6 @@ public class MatchesFragment extends Fragment {
     private OkHttpClient httpClient;
     private Gson gson;
 
-    public MatchesFragment() {
-        // Required empty public constructor
-    }
-
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);

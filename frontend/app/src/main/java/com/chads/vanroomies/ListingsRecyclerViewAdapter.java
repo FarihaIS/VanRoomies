@@ -19,12 +19,9 @@ public class ListingsRecyclerViewAdapter extends RecyclerView.Adapter<ListingsRe
     private ArrayList<ListingsRecyclerData> listingsDataArrayList;
     private ListingsItemSelectListener listener;
 
-    private Context mcontext;
-
-    public ListingsRecyclerViewAdapter(ArrayList<ListingsRecyclerData> recyclerDataArrayList, ListingsItemSelectListener listener, Context mcontext) {
+    public ListingsRecyclerViewAdapter(ArrayList<ListingsRecyclerData> recyclerDataArrayList, ListingsItemSelectListener listener) {
         this.listingsDataArrayList = recyclerDataArrayList;
         this.listener = listener;
-        this.mcontext = mcontext;
     }
 
     @NonNull

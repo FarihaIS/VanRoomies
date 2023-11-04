@@ -59,15 +59,7 @@ public class ProfileFragment extends Fragment {
     private TextView preferencesGender;
     private TextView preferencesLeaseLength;
     private Button editPreferencesButton;
-
-
     private ImageView profilePicture;
-    private Button editDescButton;
-    // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
-
-    public ProfileFragment() {
-        // Required empty public constructor
-    }
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -120,7 +112,7 @@ public class ProfileFragment extends Fragment {
         getUserPreferences(httpClient, view, getActivity(), userId);
 
         // Set up button for editing user bio
-        editDescButton = view.findViewById(R.id.edit_desc_button);
+        Button editDescButton = view.findViewById(R.id.edit_desc_button);
         String finalUserId = userId;
         editDescButton.setOnClickListener(temp -> {
             AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(getContext());

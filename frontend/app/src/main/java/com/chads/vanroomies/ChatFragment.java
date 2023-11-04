@@ -37,10 +37,6 @@ public class ChatFragment extends Fragment {
     private Gson gson;
     private Map<UserProfile, ArrayList<ChatMessage>> allChatMessages;
 
-    public ChatFragment() {
-        // Required empty public constructor
-    }
-
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);

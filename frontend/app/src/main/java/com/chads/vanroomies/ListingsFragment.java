@@ -56,10 +56,6 @@ public class ListingsFragment extends Fragment implements ListingsItemSelectList
     private RecyclerView recyclerView;
     private ArrayList<ListingsRecyclerData> recyclerDataArrayList;
 
-    public ListingsFragment() {
-        // Required empty public constructor
-    }
-
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -220,7 +216,7 @@ public class ListingsFragment extends Fragment implements ListingsItemSelectList
                             }
                         }
                         // added data from arraylist to adapter class.
-                        ListingsRecyclerViewAdapter adapter = new ListingsRecyclerViewAdapter(recyclerDataArrayList, ListingsFragment.this, view.getContext());
+                        ListingsRecyclerViewAdapter adapter = new ListingsRecyclerViewAdapter(recyclerDataArrayList, ListingsFragment.this);
 
                         // setting grid layout manager to implement grid view.
                         // in this method '2' represents number of columns to be displayed in grid view.
@@ -280,7 +276,7 @@ public class ListingsFragment extends Fragment implements ListingsItemSelectList
                         }
 
                         // added data from arraylist to adapter class.
-                        ListingsRecyclerViewAdapter adapter = new ListingsRecyclerViewAdapter(recyclerDataArrayList, ListingsFragment.this, view.getContext());
+                        ListingsRecyclerViewAdapter adapter = new ListingsRecyclerViewAdapter(recyclerDataArrayList, ListingsFragment.this);
 
                         // setting grid layout manager to implement grid view.
                         // in this method '2' represents number of columns to be displayed in grid view.

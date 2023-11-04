@@ -126,6 +126,7 @@ public class ViewListingActivity extends AppCompatActivity {
 
                                 @Override
                                 public void onResponse(@NonNull Call call, @NonNull Response response) {
+                                    Log.d(TAG, "Listing successfully updated!");
                                 }
                             });
                             // Change to allowed
