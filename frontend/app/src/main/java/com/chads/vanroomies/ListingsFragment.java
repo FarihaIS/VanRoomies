@@ -45,11 +45,6 @@ import okhttp3.RequestBody;
 import okhttp3.Response;
 import okhttp3.ResponseBody;
 
-/**
- * A simple {@link Fragment} subclass.
- * Use the {@link ListingsFragment#newInstance} factory method to
- * create an instance of this fragment.
- */
 public class ListingsFragment extends Fragment implements ListingsItemSelectListener{
     final static String TAG = "ListingsFragment";
     private OkHttpClient httpClient;
@@ -61,35 +56,8 @@ public class ListingsFragment extends Fragment implements ListingsItemSelectList
     private RecyclerView recyclerView;
     private ArrayList<ListingsRecyclerData> recyclerDataArrayList;
 
-    // TODO: Rename parameter arguments, choose names that match
-    // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
-    private static final String ARG_PARAM1 = "param1";
-    private static final String ARG_PARAM2 = "param2";
-
-    // TODO: Rename and change types of parameters
-    private String mParam1;
-    private String mParam2;
-
     public ListingsFragment() {
         // Required empty public constructor
-    }
-
-    /**
-     * Use this factory method to create a new instance of
-     * this fragment using the provided parameters.
-     *
-     * @param param1 Parameter 1.
-     * @param param2 Parameter 2.
-     * @return A new instance of fragment ListingsFragment.
-     */
-    // TODO: Rename and change types and number of parameters
-    public static ListingsFragment newInstance(String param1, String param2) {
-        ListingsFragment fragment = new ListingsFragment();
-        Bundle args = new Bundle();
-        args.putString(ARG_PARAM1, param1);
-        args.putString(ARG_PARAM2, param2);
-        fragment.setArguments(args);
-        return fragment;
     }
 
     @Override
@@ -97,10 +65,6 @@ public class ListingsFragment extends Fragment implements ListingsItemSelectList
         super.onCreate(savedInstanceState);
         StrictMode.ThreadPolicy policy = new StrictMode.ThreadPolicy.Builder().permitAll().build();
         StrictMode.setThreadPolicy(policy);
-        if (getArguments() != null) {
-            mParam1 = getArguments().getString(ARG_PARAM1);
-            mParam2 = getArguments().getString(ARG_PARAM2);
-        }
     }
 
     @Override
@@ -178,7 +142,7 @@ public class ListingsFragment extends Fragment implements ListingsItemSelectList
                             Log.d(TAG, "Creating Listing.");
                             createListing(httpClient, view, getActivity(), listingParams, userId);
                         } catch (JSONException e) {
-                            throw new RuntimeException(e);
+                            Log.d(TAG, Log.getStackTraceString(e));
                         }
                     }
                 }
@@ -268,7 +232,7 @@ public class ListingsFragment extends Fragment implements ListingsItemSelectList
                     } catch (IOException e){
                         e.printStackTrace();
                     } catch (JSONException e) {
-                        throw new RuntimeException(e);
+                        Log.d(TAG, Log.getStackTraceString(e));
                     }
                 });
             }

@@ -84,7 +84,7 @@ public class ViewListingActivity extends AppCompatActivity {
                     try {
                         updateEditableText(client, view, ViewListingActivity.this, attribute, listingId, text_field, et.getText().toString());
                     } catch (JSONException e) {
-                        throw new RuntimeException(e);
+                        Log.d(TAG, Log.getStackTraceString(e));
                     }
                 }
             }).setNegativeButton("Cancel", new DialogInterface.OnClickListener() {

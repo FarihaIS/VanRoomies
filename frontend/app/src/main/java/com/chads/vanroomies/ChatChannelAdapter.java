@@ -64,7 +64,9 @@ public class ChatChannelAdapter extends RecyclerView.Adapter {
     }
 
     private static class MessageHolder extends RecyclerView.ViewHolder {
-        TextView messageText, dateText, timeText;
+        TextView messageText;
+        TextView dateText;
+        TextView timeText;
 
         MessageHolder(View itemView, boolean isSent) {
             super(itemView);
