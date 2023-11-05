@@ -59,15 +59,7 @@ public class ProfileFragment extends Fragment {
     private TextView preferencesGender;
     private TextView preferencesLeaseLength;
     private Button editPreferencesButton;
-
-
     private ImageView profilePicture;
-    private Button editDescButton;
-    // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
-
-    public ProfileFragment() {
-        // Required empty public constructor
-    }
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -120,7 +112,7 @@ public class ProfileFragment extends Fragment {
         getUserPreferences(httpClient, view, getActivity(), userId);
 
         // Set up button for editing user bio
-        editDescButton = view.findViewById(R.id.edit_desc_button);
+        Button editDescButton = view.findViewById(R.id.edit_desc_button);
         String finalUserId = userId;
         editDescButton.setOnClickListener(temp -> {
             AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(getContext());
@@ -227,41 +219,14 @@ public class ProfileFragment extends Fragment {
                     preferenceParams.add(gender.getText().toString());
                     preferenceParams.add(leaseLength.getText().toString());
 
+                    String error = validatePreferences(preferenceParams);
                     // Ensuring all fields are filled out + valid
-                    if (preferenceParams.contains("")) {
-                        Toast.makeText(context, "Please fill in all fields.", Toast.LENGTH_LONG).show();
-                    } else if (!isNumeric(preferenceParams.get(0))) {
-                        Toast.makeText(context, "The min price must be numerical (i.e. '1500').", Toast.LENGTH_LONG).show();
-                    } else if (!isNumeric(preferenceParams.get(1))) {
-                        Toast.makeText(context, "The max price must be numerical (i.e. '1500').", Toast.LENGTH_LONG).show();
-                    } else if (!preferenceParams.get(2).equals("studio") && !preferenceParams.get(2).equals("1-bedroom")
-                            && !preferenceParams.get(2).equals("2-bedroom") && !preferenceParams.get(2).equals("other")) {
-                        Toast.makeText(context, "Housing Type must be one of: 'studio', " +
-                                "'1-bedroom', '2-bedroom', or 'other'", Toast.LENGTH_LONG).show();
-                    } else if (!isNumeric(preferenceParams.get(3))){ //
-                        Toast.makeText(context, "The preferred roommates must be numerical (i.e. '3').", Toast.LENGTH_LONG).show();
-                    } else if (!preferenceParams.get(4).equals("Y") && !preferenceParams.get(4).equals("N")) {
-                        Toast.makeText(context, "Pet Friendly must be 'Y' or 'N'", Toast.LENGTH_LONG).show();
-                    } else if (!preferenceParams.get(5).equals("no-smoking") && !preferenceParams.get(5).equals("neutral")
-                    && !preferenceParams.get(5).equals("regular")) {
-                        Toast.makeText(context, "Smoking must be 'no-smoking', 'neutral', or 'regular'", Toast.LENGTH_LONG).show();
-                    } else if (!preferenceParams.get(6).equals("no-partying") && !preferenceParams.get(6).equals("neutral")
-                            && !preferenceParams.get(6).equals("regular")) {
-                        Toast.makeText(context, "Partying must be 'no-partying', 'neutral', or 'regular'", Toast.LENGTH_LONG).show();
-                    } else if (!preferenceParams.get(7).equals("no-drinking") && !preferenceParams.get(7).equals("neutral")
-                            && !preferenceParams.get(7).equals("regular")) {
-                        Toast.makeText(context, "Drinking must be 'no-drinking', 'neutral', or 'regular'", Toast.LENGTH_LONG).show();
-                    } else if (!preferenceParams.get(8).equals("no-noise") && !preferenceParams.get(8).equals("neutral")
-                            && !preferenceParams.get(8).equals("regular")) {
-                        Toast.makeText(context, "Noise must be 'no-noise', 'neutral', or 'regular'", Toast.LENGTH_LONG).show();
-                    } else if (!preferenceParams.get(9).equals("male") && !preferenceParams.get(9).equals("female")
-                            && !preferenceParams.get(9).equals("neutral")) {
-                        Toast.makeText(context, "Gender must be 'male', 'female', or 'neutral'", Toast.LENGTH_LONG).show();
-                    } else if (!isNumeric(preferenceParams.get(0))) {
-                        Toast.makeText(context, "The lease must be numerical (i.e. '12').", Toast.LENGTH_LONG).show();
-                    } else {
+                    if (error == null){
                         Log.d(TAG, "Editing/Adding Preferences.");
                         editOrAddPreferences(httpClient, view, getActivity(), finalUserId1, preferenceParams);
+                    }
+                    else {
+                        Toast.makeText(context, error, Toast.LENGTH_LONG).show();
                     }
                 }
             }).setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
@@ -275,6 +240,42 @@ public class ProfileFragment extends Fragment {
 
         // Inflate the layout for this fragment
         return view;
+    }
+
+    public String validatePreferences(List<String> preferenceParams){
+        if (preferenceParams.contains("")) {
+            return "Please fill in all fields.";
+        } else if (!isNumeric(preferenceParams.get(0))) {
+            return "The min price must be numerical (i.e. '1500').";
+        } else if (!isNumeric(preferenceParams.get(1))) {
+            return "The max price must be numerical (i.e. '1500').";
+        } else if (!preferenceParams.get(2).equals("studio") && !preferenceParams.get(2).equals("1-bedroom")
+                && !preferenceParams.get(2).equals("2-bedroom") && !preferenceParams.get(2).equals("other")) {
+            return "Housing Type must be one of: 'studio', " +
+                    "'1-bedroom', '2-bedroom', or 'other'";
+        } else if (!isNumeric(preferenceParams.get(3))){ //
+            return "The preferred roommates must be numerical (i.e. '3').";
+        } else if (!preferenceParams.get(4).equals("Y") && !preferenceParams.get(4).equals("N")) {
+            return "Pet Friendly must be 'Y' or 'N'";
+        } else if (!preferenceParams.get(5).equals("no-smoking") && !preferenceParams.get(5).equals("neutral")
+                && !preferenceParams.get(5).equals("regular")) {
+            return "Smoking must be 'no-smoking', 'neutral', or 'regular'";
+        } else if (!preferenceParams.get(6).equals("no-partying") && !preferenceParams.get(6).equals("neutral")
+                && !preferenceParams.get(6).equals("regular")) {
+            return "Partying must be 'no-partying', 'neutral', or 'regular'";
+        } else if (!preferenceParams.get(7).equals("no-drinking") && !preferenceParams.get(7).equals("neutral")
+                && !preferenceParams.get(7).equals("regular")) {
+            return "Drinking must be 'no-drinking', 'neutral', or 'regular'";
+        } else if (!preferenceParams.get(8).equals("no-noise") && !preferenceParams.get(8).equals("neutral")
+                && !preferenceParams.get(8).equals("regular")) {
+            return "Noise must be 'no-noise', 'neutral', or 'regular'";
+        } else if (!preferenceParams.get(9).equals("male") && !preferenceParams.get(9).equals("female")
+                && !preferenceParams.get(9).equals("neutral")) {
+            return "Gender must be 'male', 'female', or 'neutral'";
+        } else if (!isNumeric(preferenceParams.get(0))) {
+            return "The lease must be numerical (i.e. '12').";
+        }
+        return null;
     }
 
     public void getProfile(OkHttpClient client, View view, Activity act, String user_id){

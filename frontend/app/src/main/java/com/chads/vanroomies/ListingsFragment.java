@@ -56,10 +56,6 @@ public class ListingsFragment extends Fragment implements ListingsItemSelectList
     private RecyclerView recyclerView;
     private ArrayList<ListingsRecyclerData> recyclerDataArrayList;
 
-    public ListingsFragment() {
-        // Required empty public constructor
-    }
-
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -292,7 +288,7 @@ public class ListingsFragment extends Fragment implements ListingsItemSelectList
                     } catch (IOException e){
                         e.printStackTrace();
                     } catch (JSONException e) {
-                        throw new RuntimeException(e);
+                        Log.d(TAG, Log.getStackTraceString(e));
                     }
                 });
             }
