@@ -1,7 +1,5 @@
 package com.chads.vanroomies;
 
-import android.util.Log;
-
 public class UserPreferencesResponseResult {
     final static String TAG = "UserPreferencesResponseResult";
 
