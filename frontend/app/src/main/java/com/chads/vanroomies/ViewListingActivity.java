@@ -151,6 +151,7 @@ public class ViewListingActivity extends AppCompatActivity {
 
                                 @Override
                                 public void onResponse(@NonNull Call call, @NonNull Response response) {
+                                    Log.d(TAG, "Inside onResponse of seNegativeButton for enableToggle");
                                 }
                             });
                             text_field.setText(String.format("%s %s", getString(R.string.pets), getString(R.string.not_allowed)));
