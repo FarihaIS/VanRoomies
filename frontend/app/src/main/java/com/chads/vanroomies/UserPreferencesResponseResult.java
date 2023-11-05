@@ -1,6 +1,9 @@
 package com.chads.vanroomies;
 
+import android.util.Log;
+
 public class UserPreferencesResponseResult {
+    final static String TAG = "UserPreferencesResponseResult";
 
     private String userId;
     private String minPrice;
@@ -22,9 +25,7 @@ public class UserPreferencesResponseResult {
 
 
 
-    public String getUserId() {
-        return userId;
-    }
+    public String getUserId() { return userId; }
 
     public void setUserId(String userId) {
         this.userId = userId;
@@ -129,8 +130,14 @@ public class UserPreferencesResponseResult {
     public void setLocation(LocationObj location) {
         this.location = location;
     }
-    public String get_id(String _id) { return _id; }
-    public void set_id (String _id) { this._id = _id; }
+    public String get_id(String _id) {
+        Log.d(TAG, "UserPreferences _id is " + _id);
+        return _id;
+    }
+    public void set_id (String _id) {
+        Log.d(TAG, "Setting UserPreferences _id to " + _id);
+        this._id = _id;
+    }
 
     public int get__v() {
         return __v;

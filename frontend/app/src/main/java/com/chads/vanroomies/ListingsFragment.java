@@ -288,7 +288,7 @@ public class ListingsFragment extends Fragment implements ListingsItemSelectList
                     } catch (IOException e){
                         e.printStackTrace();
                     } catch (JSONException e) {
-                        throw new RuntimeException(e);
+                        Log.d(TAG, Log.getStackTraceString(e));
                     }
                 });
             }
