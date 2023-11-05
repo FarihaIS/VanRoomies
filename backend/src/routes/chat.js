@@ -15,7 +15,7 @@ router.get('/conversations/user/:userId', async (req, res, next) => {
         res.json(conversations);
         next();
     } catch (error) {
-        res.status(404).json({ error: error });
+        res.status(404).json({ error: error.message });
         next(error);
     }
 });
@@ -28,7 +28,7 @@ router.post('/conversations/user/:userId', async (req, res, next) => {
         res.status(201).json(conversation);
         next();
     } catch (error) {
-        res.status(404).json({ error: error });
+        res.status(404).json({ error: error.message });
         next(error);
     }
 });
