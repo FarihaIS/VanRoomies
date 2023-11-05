@@ -130,12 +130,10 @@ public class UserPreferencesResponseResult {
     public void setLocation(LocationObj location) {
         this.location = location;
     }
-    public String get_id(String _id) {
-        Log.d(TAG, "UserPreferences _id is " + _id);
+    public String get_id() {
         return _id;
     }
     public void set_id (String _id) {
-        Log.d(TAG, "Setting UserPreferences _id to " + _id);
         this._id = _id;
     }
 
