@@ -13,12 +13,8 @@ const router = express.Router();
  * Content-Type: application/json
  */
 router.get('/', async (req, res, next) => {
-    try {
-        const users = await User.find({});
-        res.json(users);
-    } catch (err) {
-        next(err);
-    }
+    const users = await User.find({});
+    res.json(users);
 });
 
 /**

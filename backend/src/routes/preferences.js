@@ -69,31 +69,27 @@ router.put('/:userId/preferences', async (req, res, next) => {
  * Body: {....filters???}
  */
 router.get('/:userId/recommendations/users', async (req, res, next) => {
-    try {
-        const userPreferences = await Preferences.findOne({ userId: req.params.userId }).lean();
-        if (!userPreferences) {
-            let error = 'No preferences found for given user!';
-            return res.status(404).json({ error });
-        }
-        const currUser = await User.findById(req.params.userId);
-        const excluded = [req.params.userId, ...currUser.notRecommended];
-        const tentativeMatchPreferences = await Preferences.find({ userId: { $nin: excluded } }).lean();
-        if (tentativeMatchPreferences) {
-            let scores = generateUserScores(userPreferences, tentativeMatchPreferences);
+    const userPreferences = await Preferences.findOne({ userId: req.params.userId }).lean();
+    if (!userPreferences) {
+        let error = 'No preferences found for given user!';
+        return res.status(404).json({ error });
+    }
+    const currUser = await User.findById(req.params.userId);
+    const excluded = [req.params.userId, ...currUser.notRecommended];
+    const tentativeMatchPreferences = await Preferences.find({ userId: { $nin: excluded } }).lean();
+    if (tentativeMatchPreferences) {
+        let scores = generateUserScores(userPreferences, tentativeMatchPreferences);
 
-            // TODO: This REQUIRES optimization for further milestones - too transactionally-heavy
-            let rankedUsers = [];
-            for (const id of generateRecommendations(scores)) {
-                const currUser = await User.findById(id).select('firstName lastName profilePicture bio').lean();
-                rankedUsers.push(currUser);
-            }
-            res.status(200).json(rankedUsers);
-        } else {
-            let error = 'No preferences found for given user!';
-            res.status(404).json({ error });
+        // TODO: This REQUIRES optimization for further milestones - too transactionally-heavy
+        let rankedUsers = [];
+        for (const id of generateRecommendations(scores)) {
+            const currUser = await User.findById(id).select('firstName lastName profilePicture bio').lean();
+            rankedUsers.push(currUser);
         }
-    } catch (error) {
-        next(error);
+        res.status(200).json(rankedUsers);
+    } else {
+        let error = 'No preferences found for given user!';
+        res.status(404).json({ error });
     }
 });
 

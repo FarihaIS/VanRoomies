@@ -59,15 +59,11 @@ router.post('/', async (req, res, next) => {
  * Body: {title: String <new_title>, rentalPrice: Number<new_price> ....}
  */
 router.put('/:listingId', async (req, res, next) => {
-    try {
-        const updatedListing = await Listing.findByIdAndUpdate(req.params.listingId, req.body, { new: true });
-        if (updatedListing) {
-            res.status(200).json(updatedListing);
-        } else {
-            res.status(404).json({ error: 'Listing not found' });
-        }
-    } catch (error) {
-        next(error);
+    const updatedListing = await Listing.findByIdAndUpdate(req.params.listingId, req.body, { new: true });
+    if (updatedListing) {
+        res.status(200).json(updatedListing);
+    } else {
+        res.status(404).json({ error: 'Listing not found' });
     }
 });
 
