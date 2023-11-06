@@ -13,8 +13,8 @@ const User = require('./models/userModel');
 require('dotenv').config({ path: `./.env.${process.env.NODE_ENV}` });
 
 const credentials = {
-    key: fs.readFileSync('../certs/key.pem'),
-    cert: fs.readFileSync('../certs/cert.pem'),
+    key: fs.readFileSync('certs/key.pem'),
+    cert: fs.readFileSync('certs/cert.pem'),
 };
 
 const app = express();

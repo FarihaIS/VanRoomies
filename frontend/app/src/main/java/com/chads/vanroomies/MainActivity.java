@@ -1,5 +1,9 @@
 package com.chads.vanroomies;
 
+import androidx.activity.result.ActivityResult;
+import androidx.activity.result.ActivityResultCallback;
+import androidx.activity.result.ActivityResultLauncher;
+import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import android.app.Activity;
@@ -32,6 +36,7 @@ public class MainActivity extends AppCompatActivity {
     final static String TAG = "MainActivity";
     private int RC_SIGN_IN = 1;
     private OkHttpClient httpClient;
+    private ActivityResultLauncher<Intent> launcher;
     final static Gson g = new Gson();
 
     private GoogleSignInClient mGoogleSignInClient;
@@ -43,6 +48,25 @@ public class MainActivity extends AppCompatActivity {
         setLoginButton();
     }
     private void setLoginButton() {
+        signIn();
+        findViewById(R.id.login_button).setOnClickListener(view -> {
+            Intent signInIntent = mGoogleSignInClient.getSignInIntent();
+            launcher.launch(signInIntent);
+        });
+    }
+
+    private void signIn() {
+        launcher = registerForActivityResult(new ActivityResultContracts.StartActivityForResult(), new ActivityResultCallback<ActivityResult>() {
+            @Override
+            public void onActivityResult(ActivityResult result) {
+                if (result.getResultCode() == RESULT_OK) {
+                    Intent data = result.getData();
+                    Task<GoogleSignInAccount> task = GoogleSignIn.getSignedInAccountFromIntent(data);
+                    handleSignInResult(task);
+                }
+            }
+        });
+
         // Configure sign-in to request the user's ID, email address, and basic
         // profile. ID and basic profile are included in DEFAULT_SIGN_IN.
         GoogleSignInOptions gso = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
@@ -50,14 +74,6 @@ public class MainActivity extends AppCompatActivity {
                 .requestEmail()
                 .build();
         mGoogleSignInClient = GoogleSignIn.getClient(this, gso);
-        findViewById(R.id.login_button).setOnClickListener(view -> {
-            signIn();
-        });
-    }
-
-    private void signIn() {
-        Intent signInIntent = mGoogleSignInClient.getSignInIntent();
-        startActivityForResult(signInIntent, RC_SIGN_IN);
     }
 
     @Override
