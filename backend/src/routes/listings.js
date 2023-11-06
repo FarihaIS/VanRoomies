@@ -41,13 +41,9 @@ router.get('/user/:userId', async (req, res, next) => {
  */
 router.post('/', async (req, res, next) => {
     const listing = new Listing(req.body);
-    try {
-        await listing.save();
-        res.location(`/api/listing/${listing._id}`);
-        res.status(201).json(listing);
-    } catch (error) {
-        next(error);
-    }
+    await listing.save();
+    res.location(`/api/listing/${listing._id}`);
+    res.status(201).json(listing);
 });
 
 /**
@@ -73,15 +69,11 @@ router.put('/:listingId', async (req, res, next) => {
  * Route: DELETE /api/listings/:listingId where listingId is the ID of the listing in the database
  */
 router.delete('/:listingId', async (req, res, next) => {
-    try {
-        const deletedListing = await Listing.findByIdAndDelete(req.params.listingId);
-        if (deletedListing) {
-            res.status(200).json(deletedListing);
-        } else {
-            res.status(404).json({ error: 'Listing not found' });
-        }
-    } catch (error) {
-        next(error);
+    const deletedListing = await Listing.findByIdAndDelete(req.params.listingId);
+    if (deletedListing) {
+        res.status(200).json(deletedListing);
+    } else {
+        res.status(404).json({ error: 'Listing not found' });
     }
 });
 
