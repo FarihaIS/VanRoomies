@@ -189,7 +189,7 @@ const calculateMinMaxRanges = (currentUser, potentialMatches) => {
         minLeaseLengthRange,
         maxLeaseLengthRange,
         minPriceOverlapRange,
-        maxPriceOverlapRange
+        maxPriceOverlapRange,
     };
 };
 

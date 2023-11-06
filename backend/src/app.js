@@ -47,26 +47,21 @@ app.get('/', (req, res) => {
     res.send('Hello World!');
 });
 
-app.post('/api/firebase_token', async (req, res, next) => {
-    try {
-        const { token, userId } = req.body;
-        if (!token || !userId) {
-            res.status(400).json({ error: 'Token or userId is missing' });
-            return;
-        }
-        const user = await User.findById(userId);
-        if (user) {
-            const update = { firebaseToken: token };
-            await user.updateOne(update);
-            res.status(200).json({ message: 'Token saved' });
-        } else {
-            const error = new Error('User not found');
-            res.status(404).json({ error: error.message });
-            next(error);
-        }
-    } catch (error) {
-        res.status(500).json({ error: error.message });
-        next(error);
+app.post('/api/firebase_token', async (req, res) => {
+    const token = req.body.token;
+    const userId = req.body.userId;
+    if (!token || !userId) {
+        res.status(400).json({ error: 'Token or userId is missing' });
+        return;
+    }
+    const user = await User.findById(userId);
+    if (user) {
+        const update = { firebaseToken: token };
+        await user.updateOne(update);
+        res.status(200).json({ message: 'Token saved' });
+    } else {
+        const error = new Error('User not found');
+        res.status(404).json({ error: error.message });
     }
 });
 
@@ -80,7 +75,6 @@ require('./sock.js')(httpsServer);
 initializeApp({
     credential: applicationDefault(),
 });
-  
 
 httpsServer.listen(port, () => {
     console.log(`VanRoomies server at https://localhost:${port}`);

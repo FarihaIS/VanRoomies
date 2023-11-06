@@ -19,20 +19,15 @@ class MessageStore {
     }
 
     async sendMessage(content, fromId, toId) {
-        try {
-            const conversation = await this.getConversationIfAbsent(fromId, toId);
-            const message = new Message(fromId, content);
-            const receivingUser = await User.findById(toId);
-            const sendingUser = await User.findById(fromId);
-            if (receivingUser) {
-                const firebaseToken = receivingUser.firebaseToken;
-                sendPushNotification(firebaseToken, sendingUser.firstName, content);
-                conversation.messages.push(message);
-                await conversation.save();
-            } 
- 
-        } catch (error) {
-            console.error(error);
+        const conversation = await this.getConversationIfAbsent(fromId, toId);
+        const message = new Message(fromId, content);
+        const receivingUser = await User.findById(toId);
+        const sendingUser = await User.findById(fromId);
+        if (receivingUser) {
+            const firebaseToken = receivingUser.firebaseToken;
+            sendPushNotification(firebaseToken, sendingUser.firstName, content);
+            conversation.messages.push(message);
+            await conversation.save();
         }
     }
 

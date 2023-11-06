@@ -26,7 +26,7 @@ router.get('/', async (req, res, next) => {
  * middleware to validate their ID token. The login serves a 2-fold purpose
  * of signing up a new user and creating their record on the database
  * or simply querying their profile otherwise.
- * 
+ *
  * TODO: Middleware for Google Sign In + JWT ready, FE integration coming soon
  *
  * Route: POST /api/users/login

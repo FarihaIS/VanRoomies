@@ -6,7 +6,7 @@
   "scripts": {
     "start": "cross-env NODE_ENV=production node src/app.js",
     "dev": "cross-env NODE_ENV=development nodemon src/app.js",
-    "lint": "concurrently -c 'auto' 'npm:eslint' 'npm:prettier'",
+    "lint": "npm run prettier",
     "prettier": "prettier --write './src/**/*.js'",
     "eslint": "eslint --cache --ext .js ./src/"
   },
