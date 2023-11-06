@@ -174,7 +174,6 @@ public class ListingsFragment extends Fragment implements ListingsItemSelectList
     }
     public void getRecommendedListings(OkHttpClient client, View view, Activity act, String userId){
         Request request = new Request.Builder().url(Constants.baseServerURL + Constants.listingByRecommendationsEndpoint(userId)).build();
-        Log.d(String.format("%s: RECOMMENDED", TAG), Constants.baseServerURL + Constants.listingByRecommendationsEndpoint(userId));
         client.newCall(request).enqueue(new Callback() {
             @Override
             public void onFailure(@NonNull Call call, @NonNull IOException e) {
@@ -236,7 +235,6 @@ public class ListingsFragment extends Fragment implements ListingsItemSelectList
     }
     public void getOwnedListings(OkHttpClient client, View view, Activity act, String userId){
         Request request = new Request.Builder().url(Constants.baseServerURL + Constants.listingByUserIdEndpoint + userId).build();
-        Log.d(String.format("%s: OWNED", TAG), Constants.baseServerURL + Constants.listingByUserIdEndpoint + userId);
         client.newCall(request).enqueue(new Callback() {
             @Override
             public void onFailure(@NonNull Call call, @NonNull IOException e) {

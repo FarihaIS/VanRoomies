@@ -112,7 +112,7 @@ public class MatchesFragment extends Fragment {
                             try {
                                 String responseData = response.body().string();
                                 if (response.body() == null) {
-                                    Log.d(TAG, "Empty response data in getAllMatches...");
+                                    Log.d(TAG, "Empty response data in getAllMatches.");
                                 } else {
                                     Type listType = new TypeToken<ArrayList<UserProfile>>(){}.getType();
                                     ArrayList<UserProfile> allMatches = gson.fromJson(responseData, listType);
@@ -124,7 +124,6 @@ public class MatchesFragment extends Fragment {
                                     Toast.makeText(getActivity(), R.string.no_matches_found, Toast.LENGTH_LONG).show();
                                 }
                                 else {
-                                    Log.d(TAG, "Line 162");
                                     updateMatchesFragmentLayout(v);
                                 }
                             }
