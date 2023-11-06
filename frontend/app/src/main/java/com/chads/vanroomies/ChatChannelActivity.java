@@ -116,8 +116,6 @@ public class ChatChannelActivity extends AppCompatActivity {
                 ChatMessage newMessage = new ChatMessage(thisUserId, message, System.currentTimeMillis());
                 chatMessages.add(newMessage);
                 chatSocketEmitEvent(message);
-                Log.d(TAG, "Adding new message");
-
 
                 chatChannelAdapter = new ChatChannelAdapter(ChatChannelActivity.this, chatMessages, thisUserId);
                 chatChannelRecycler.setAdapter(chatChannelAdapter);
