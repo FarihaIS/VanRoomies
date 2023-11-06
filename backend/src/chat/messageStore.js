@@ -44,12 +44,8 @@ class MessageStore {
     }
 
     async getConversationsByUser(userId) {
-        try {
-            const conversations = await Conversation.find({ users: userId });
-            return conversations;
-        } catch (error) {
-            console.error(error);
-        }
+        const conversations = await Conversation.find({ users: userId });
+        return conversations;
     }
 }
 

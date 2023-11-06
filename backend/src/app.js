@@ -3,7 +3,6 @@ const mongoose = require('mongoose');
 const bodyParser = require('body-parser');
 const https = require('https');
 const fs = require('fs');
-const path = require('path');
 const mongoSanitize = require('express-mongo-sanitize');
 const { initializeApp, applicationDefault } = require('firebase-admin/app');
 
@@ -13,12 +12,9 @@ const User = require('./models/userModel');
 // Configure environment variable path
 require('dotenv').config({ path: `./.env.${process.env.NODE_ENV}` });
 
-const resolvedKeyPath = path.resolve(__dirname, process.env.KEY_PATH);
-const resolvedCertPath = path.resolve(__dirname, process.env.CERT_PATH);
-
 const credentials = {
-    key: fs.readFileSync(resolvedKeyPath),
-    cert: fs.readFileSync(resolvedCertPath),
+    key: fs.readFileSync('../certs/key.pem'),
+    cert: fs.readFileSync('../certs/cert.pem'),
 };
 
 const app = express();
