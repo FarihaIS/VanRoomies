@@ -13,16 +13,20 @@ const User = require('./models/userModel');
 // Configure environment variable path
 require('dotenv').config({ path: `./.env.${process.env.NODE_ENV}` });
 
+const resolvedKeyPath = path.resolve(__dirname, process.env.KEY_PATH);
+const resolvedCertPath = path.resolve(__dirname, process.env.CERT_PATH);
+
 const credentials = {
-    key: fs.readFileSync(path.resolve(process.env.KEY_PATH)),
-    cert: fs.readFileSync(path.resolve(process.env.CERT_PATH)),
+    key: fs.readFileSync(resolvedKeyPath),
+    cert: fs.readFileSync(resolvedCertPath),
 };
+
 const app = express();
 const httpsServer = https.createServer(credentials, app);
 const port = process.env.PORT || 3000;
 
 // Connect to MongoDB server through URI from environment variable
-mongoose.connect(process.env.MONGODB_TEST_URI || 'mongodb://localhost:27017/vanroomies');
+mongoose.connect(process.env.MONGODB_TEST_URI);
 
 const db = mongoose.connection;
 db.on('error', console.error.bind(console, 'Connection error! Make sure MongoDB server is running! '));

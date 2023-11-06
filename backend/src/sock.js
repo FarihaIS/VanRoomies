@@ -28,31 +28,27 @@ module.exports = function (server) {
         socket.join(socket.userId);
 
         socket.on('private message', async ({ content, to }, fn) => {
-            try {
-                const user = await User.findById(to);
-                if (!user) {
-                    return fn({ status: 'error', message: 'User not supplied' });
-                }
-                const sanitizedMessage = sanitize(content);
-                await messageStore.sendMessage(sanitizedMessage, socket.userId, to);
-                socket
-                    .timeout(5000)
-                    .to(to)
-                    .to(socket.userId)
-                    .emit(
-                        'private message',
-                        {
-                            content: sanitizedMessage,
-                            from: socket.userId,
-                            to,
-                        },
-                        () => {
-                            fn({ status: 'success' });
-                        },
-                    );
-            } catch (error) {
-                fn({ status: 'error', message: 'User not found' });
+            const user = await User.findById(to);
+            if (!user) {
+                return fn({ status: 'error', message: 'User not supplied' });
             }
+            const sanitizedMessage = sanitize(content);
+            await messageStore.sendMessage(sanitizedMessage, socket.userId, to);
+            socket
+                .timeout(5000)
+                .to(to)
+                .to(socket.userId)
+                .emit(
+                    'private message',
+                    {
+                        content: sanitizedMessage,
+                        from: socket.userId,
+                        to,
+                    },
+                    () => {
+                        fn({ status: 'success' });
+                    },
+                );
         });
     });
 };

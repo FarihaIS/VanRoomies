@@ -32,21 +32,15 @@ class MessageStore {
     }
 
     async getConversationIfAbsent(userId1, userId2) {
-        try {
-            const conversation = await Conversation.findOne({
-                users: { $all: [userId1, userId2] },
-            });
-            if (conversation) {
-                return conversation;
-            }
-
-            const newConversation = new Conversation({ users: [userId1, userId2] });
-            const result = await newConversation.save();
-
-            return result;
-        } catch (error) {
-            console.error(error);
+        const conversation = await Conversation.findOne({
+            users: { $all: [userId1, userId2] },
+        });
+        if (conversation) {
+            return conversation;
         }
+
+        const newConversation = new Conversation({ users: [userId1, userId2] });
+        return await newConversation.save();
     }
 
     async getConversationsByUser(userId) {
