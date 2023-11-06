@@ -3,7 +3,7 @@ const readline = require("readline");
 const socket = io("https://localhost:3000", { autoConnect: false, rejectUnauthorized: false });
 
 async function sendPrivateMessage(message, to) {
-	const response = await socket.emitWithAck('private message', { content: message, to: to });
+	const response = await socket.emitWithAck('private message', { content: message, to });
 	console.log(response);
 }
 

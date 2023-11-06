@@ -19,11 +19,11 @@ const UserSchema = new mongoose.Schema({
         type: String,
         required: true,
         trim: true,
-        match: /.+@.+\..+/,
+        match: /.[^\n\r@\u2028\u2029]*@.+\..+/,
         unique: true,
         validate: {
             validator: async function (email) {
-                const user = await User.findOne({ email: email });
+                const user = await User.findOne({ email });
                 if (user) {
                     return false;
                 }
@@ -57,7 +57,7 @@ const UserSchema = new mongoose.Schema({
     },
     firebaseToken: {
         type: String,
-    },  
+    },
 });
 
 const User = mongoose.model('User', UserSchema);

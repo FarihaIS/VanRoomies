@@ -3,7 +3,6 @@ const User = require('../models/userModel');
 const { default: mongoose } = require('mongoose');
 const Listing = require('../models/listingModel');
 const Preferences = require('../models/preferencesModel');
-const validateGoogleIdToken = require('../authentication/googleAuthentication');
 const { generateAuthenticationToken } = require('../authentication/jwtAuthentication');
 const router = express.Router();
 
@@ -14,12 +13,8 @@ const router = express.Router();
  * Content-Type: application/json
  */
 router.get('/', async (req, res, next) => {
-    try {
-        const users = await User.find({});
-        res.json(users);
-    } catch (err) {
-        next(err);
-    }
+    const users = await User.find({});
+    res.json(users);
 });
 
 /**
@@ -27,7 +22,7 @@ router.get('/', async (req, res, next) => {
  * middleware to validate their ID token. The login serves a 2-fold purpose
  * of signing up a new user and creating their record on the database
  * or simply querying their profile otherwise.
- * 
+ *
  * TODO: Middleware for Google Sign In + JWT ready, FE integration coming soon
  *
  * Route: POST /api/users/login
@@ -44,24 +39,20 @@ router.get('/', async (req, res, next) => {
  *      status(201): {userToken: String, user: User}
  */
 router.post('/login', async (req, res, next) => {
-    try {
-        const currentUser = await User.findOne({ email: req.body.email });
-        if (currentUser) {
-            // Set status 200 if user user already exists
-            res.status(200).json({ userId: currentUser._id });
-        } else {
-            const user = new User({
-                firstName: req.body.firstName,
-                lastName: req.body.lastName,
-                email: req.body.email,
-            });
-            const savedUser = await user.save();
-            const userToken = generateAuthenticationToken(savedUser);
-            // Set status 201 if a new user was created
-            res.status(201).json({ userId: savedUser._id, userToken: userToken });
-        }
-    } catch (err) {
-        next(err);
+    const currentUser = await User.findOne({ email: req.body.email });
+    if (currentUser) {
+        // Set status 200 if user user already exists
+        res.status(200).json({ userId: currentUser._id });
+    } else {
+        const user = new User({
+            firstName: req.body.firstName,
+            lastName: req.body.lastName,
+            email: req.body.email,
+        });
+        const savedUser = await user.save();
+        const userToken = generateAuthenticationToken(savedUser);
+        // Set status 201 if a new user was created
+        res.status(201).json({ userId: savedUser._id, userToken });
     }
 });
 
@@ -72,15 +63,11 @@ router.post('/login', async (req, res, next) => {
  * Content-Type: application/json
  */
 router.get('/:userId', async (req, res, next) => {
-    try {
-        const user = await User.findById(req.params.userId);
-        if (user) {
-            res.status(200).json(user);
-        } else {
-            res.status(404).json({ error: 'User not found' });
-        }
-    } catch (err) {
-        next(err);
+    const user = await User.findById(req.params.userId);
+    if (user) {
+        res.status(200).json(user);
+    } else {
+        res.status(404).json({ error: 'User not found' });
     }
 });
 
@@ -97,15 +84,11 @@ router.get('/:userId', async (req, res, next) => {
  * 		...
  */
 router.put('/:userId', async (req, res, next) => {
-    try {
-        const updatedUser = await User.findByIdAndUpdate(req.params.userId, req.body, { new: true });
-        if (updatedUser) {
-            res.status(200).json(updatedUser);
-        } else {
-            res.status(404).json({ error: 'User not found' });
-        }
-    } catch (err) {
-        next(err);
+    const updatedUser = await User.findByIdAndUpdate(req.params.userId, req.body, { new: true });
+    if (updatedUser) {
+        res.status(200).json(updatedUser);
+    } else {
+        res.status(404).json({ error: 'User not found' });
     }
 });
 
@@ -117,25 +100,18 @@ router.put('/:userId', async (req, res, next) => {
 router.delete('/:userId', async (req, res, next) => {
     const session = await mongoose.startSession();
 
-    try {
-        let deletedUser = null;
-        session.startTransaction();
+    let deletedUser = null;
+    session.startTransaction();
 
-        const userId = req.params.userId;
-        deletedUser = await User.findByIdAndDelete(req.params.userId);
-        await Listing.deleteMany({ userId: userId });
-        await Preferences.deleteOne({ userId: userId });
-        await session.commitTransaction();
-        if (deletedUser) {
-            res.status(200).json(deletedUser);
-        } else {
-            res.status(404).json({ error: 'User not found' });
-        }
-    } catch (err) {
-        await session.abortTransaction();
-        next(err);
-    } finally {
-        session.endSession();
+    const userId = req.params.userId;
+    deletedUser = await User.findByIdAndDelete(req.params.userId);
+    await Listing.deleteMany({ userId });
+    await Preferences.deleteOne({ userId });
+    await session.commitTransaction();
+    if (deletedUser) {
+        res.status(200).json(deletedUser);
+    } else {
+        res.status(404).json({ error: 'User not found' });
     }
 });
 
