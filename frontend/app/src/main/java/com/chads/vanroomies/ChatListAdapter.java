@@ -8,7 +8,6 @@ import android.util.Base64;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ImageButton;
 import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
@@ -53,8 +52,8 @@ public class ChatListAdapter extends RecyclerView.Adapter {
 
         String otherUserImage = otherUserProfile.getProfilePicture();
         if (otherUserImage != null) {
-            String imageString = otherUserImage.toString().matches(Constants.base64Regex)
-                    ? otherUserImage.toString() : "";
+            String imageString = otherUserImage.matches(Constants.base64Regex)
+                    ? otherUserImage : "";
             byte[] decodedString = Base64.decode(imageString, Base64.DEFAULT);
             Bitmap decodedByte = BitmapFactory.decodeByteArray(decodedString, 0, decodedString.length);
             ((ChatListHolder) holder).imageView.setImageBitmap(decodedByte);

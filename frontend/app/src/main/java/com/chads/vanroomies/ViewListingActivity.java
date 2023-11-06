@@ -84,7 +84,7 @@ public class ViewListingActivity extends AppCompatActivity {
                     try {
                         updateEditableText(client, view, ViewListingActivity.this, attribute, listingId, text_field, et.getText().toString());
                     } catch (JSONException e) {
-                        throw new RuntimeException(e);
+                        Log.d(TAG, Log.getStackTraceString(e));
                     }
                 }
             }).setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
@@ -126,6 +126,7 @@ public class ViewListingActivity extends AppCompatActivity {
 
                                 @Override
                                 public void onResponse(@NonNull Call call, @NonNull Response response) {
+                                    Log.d(TAG, "Listing successfully updated!");
                                 }
                             });
                             // Change to allowed
@@ -150,6 +151,7 @@ public class ViewListingActivity extends AppCompatActivity {
 
                                 @Override
                                 public void onResponse(@NonNull Call call, @NonNull Response response) {
+                                    Log.d(TAG, "Inside onResponse of seNegativeButton for enableToggle");
                                 }
                             });
                             text_field.setText(String.format("%s %s", getString(R.string.pets), getString(R.string.not_allowed)));

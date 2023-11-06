@@ -1,7 +1,5 @@
 package com.chads.vanroomies;
 
-import android.location.Location;
-
 import java.util.List;
 
 public class SingleListingResponseResult {

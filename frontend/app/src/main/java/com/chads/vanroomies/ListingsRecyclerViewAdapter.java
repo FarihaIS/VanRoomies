@@ -18,7 +18,6 @@ public class ListingsRecyclerViewAdapter extends RecyclerView.Adapter<ListingsRe
 
     private ArrayList<ListingsRecyclerData> listingsDataArrayList;
     private ListingsItemSelectListener listener;
-
     private Context mcontext;
 
     public ListingsRecyclerViewAdapter(ArrayList<ListingsRecyclerData> recyclerDataArrayList, ListingsItemSelectListener listener, Context mcontext) {
@@ -31,7 +30,7 @@ public class ListingsRecyclerViewAdapter extends RecyclerView.Adapter<ListingsRe
     @Override
     public RecyclerViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         // Inflate Layout
-        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.listings_layout, parent, false);
+        View view = LayoutInflater.from(mcontext).inflate(R.layout.listings_layout, parent, false);
         return new RecyclerViewHolder(view);
     }
 
@@ -73,6 +72,5 @@ public class ListingsRecyclerViewAdapter extends RecyclerView.Adapter<ListingsRe
             listingIV = itemView.findViewById(R.id.idIVListing);
             listingCard = itemView.findViewById(R.id.listingCard);
         }
-
     }
 }

@@ -45,6 +45,9 @@ public class MatchDeckAdapter extends BaseAdapter {
             v = LayoutInflater.from(context).inflate(R.layout.matches_layout, parent, false);
         }
         Log.d("HELLO", "Line 47 match deck " + position);
+        if (users.get(position) == null) {
+            Log.d("MatchDeckAdapter", "NULL USERS NUL USERS");
+        }
         String fullName = users.get(position).getFirstName() + " " + users.get(position).getLastName();
         ((TextView) v.findViewById(R.id.matches_name)).setText(fullName);
         ((TextView) v.findViewById(R.id.matches_bio)).setText(users.get(position).getBio());

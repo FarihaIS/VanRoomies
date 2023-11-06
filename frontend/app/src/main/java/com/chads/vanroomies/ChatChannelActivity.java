@@ -33,10 +33,7 @@ public class ChatChannelActivity extends AppCompatActivity {
     private UserProfile chatUser;
     private ArrayList<ChatMessage> chatMessages;
     private RecyclerView chatChannelRecycler;
-    private CircleImageView chatChannelImage;
-    private TextView chatChannelName;
     private TextView chatChannelText;
-    private Button chatChannelButton;
     private Socket chatSocket;
 
     @Override
@@ -94,7 +91,7 @@ public class ChatChannelActivity extends AppCompatActivity {
             messageObj.put("content", message);
             messageObj.put("to", chatUser.get_id());
         } catch (JSONException e) {
-            throw new RuntimeException(e);
+            Log.d(TAG, Log.getStackTraceString(e));
         }
         chatSocket.emit(Constants.privateMessageEvent, messageObj, (Ack) args -> {
             JSONObject response = (JSONObject) args[0];
@@ -102,12 +99,13 @@ public class ChatChannelActivity extends AppCompatActivity {
                 Log.d(TAG, "Emit event response code is " + response.getString("status"));
             }
             catch (JSONException e) {
-                throw new RuntimeException(e);
+                Log.d(TAG, Log.getStackTraceString(e));
             }
         });
     }
 
     private void setUpChatChannelButton() {
+        Button chatChannelButton;
         chatChannelButton = findViewById(R.id.chat_send_button);
         chatChannelButton.setOnClickListener(v -> {
             String message = chatChannelText.getText().toString().trim();
@@ -130,6 +128,8 @@ public class ChatChannelActivity extends AppCompatActivity {
     }
 
     private void setUpChatChannelLayout() {
+        CircleImageView chatChannelImage;
+        TextView chatChannelName;
         chatChannelRecycler = findViewById(R.id.recycler_chat);
         chatChannelRecycler.setLayoutManager(new LinearLayoutManager(this));
 
