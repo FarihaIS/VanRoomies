@@ -103,18 +103,20 @@ router.get('/:userId/recommendations/users', async (req, res, next) => {
  */
 router.put('/:userId/recommendations/users', async (req, res, next) => {
     // Wrap inside transaction, either both occur or only one does - atomicity
+    let currentUser;
+    let matchUser;
     const session = await mongoose.startSession();
     session.startTransaction();
 
     // Update list for first user
-    const currentUser = await User.updateOne(
+    currentUser = await User.updateOne(
         { _id: req.params.userId },
         { $push: { notRecommended: req.body.excludedId } },
         { new: true },
     );
     
     // Update list for second user
-    const matchUser = await User.updateOne(
+    matchUser = await User.updateOne(
         { _id: req.body.excludedId },
         { $push: { notRecommended: req.params.userId } },
         { new: true },
