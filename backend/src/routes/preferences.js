@@ -102,14 +102,26 @@ router.get('/:userId/recommendations/users', async (req, res, next) => {
  * Body: {excludedId: ""}
  */
 router.put('/:userId/recommendations/users', async (req, res, next) => {
-    const excludedUser = new mongoose.Types.ObjectId(req.body.excludedId);
-    const updatedUser = await User.updateOne(
+    // Wrap inside transaction, either both occur or only one does - atomicity
+    const session = await mongoose.startSession();
+    session.startTransaction();
+
+    // Update list for first user
+    const currentUser = await User.updateOne(
         { _id: req.params.userId },
-        { $push: { notRecommended: excludedUser } },
+        { $push: { notRecommended: req.body.excludedId } },
         { new: true },
     );
-    if (updatedUser) {
-        res.status(200).json(updatedUser);
+    
+    // Update list for second user
+    const matchUser = await User.updateOne(
+        { _id: req.body.excludedId },
+        { $push: { notRecommended: req.params.userId } },
+        { new: true },
+    );
+    await session.commitTransaction();
+    if (currentUser && matchUser) {
+        res.status(200).json(currentUser);
     } else {
         res.status(404).json({ error: 'Cannot update, user not found' });
     }
