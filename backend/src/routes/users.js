@@ -4,6 +4,7 @@ const { default: mongoose } = require('mongoose');
 const Listing = require('../models/listingModel');
 const Preferences = require('../models/preferencesModel');
 const { generateAuthenticationToken } = require('../authentication/jwtAuthentication');
+const { BLOCK_THRESHOLD } = require('../utils/constants');
 const router = express.Router();
 
 /**
@@ -89,6 +90,53 @@ router.put('/:userId', async (req, res, next) => {
         res.status(200).json(updatedUser);
     } else {
         res.status(404).json({ error: 'User not found' });
+    }
+});
+
+/**
+ * Block a specified user and remove it from the list of possible recommendations of the user who
+ * requested the block. As a side effect, if a user is blocked by more than BLOCK_THRESHOLD number
+ * of users, then the user account and all relevant information for this user will be deleted.
+ * 
+ * Route: POST /api/users/:userId/block
+ *
+ * Body: {blockedId: ""}
+ */
+router.post('/:userId/block', async (req, res, next) => {
+    // Wrap inside transaction, either all occur or neither one does - atomicity
+    let currentUser;
+    let matchUser;
+    const session = await mongoose.startSession();
+    session.startTransaction();
+
+    // Update list for first user
+    currentUser = await User.updateOne(
+        { _id: req.params.userId },
+        { $push: { notRecommended: req.body.excludedId } },
+        { new: true },
+    );
+    
+    // Update list for second user and increment blocked count
+    matchUser = await User.updateOne(
+        { _id: req.body.blockedId },
+        { $push: { notRecommended: req.params.userId }, $inc: { blockedCount: 1 } },
+        { new: true },
+    );
+    
+    // Delete and cascade for the user if blocked count meets threshold
+    if (matchUser && matchUser.blockedCount >= BLOCK_THRESHOLD){
+        // Error handling should not happen here considering that we already know the user exists
+        const deleteUserId = matchUser.userId;
+        await User.findByIdAndDelete(deleteUserId);
+        await Listing.deleteMany({ deleteUserId });
+        await Preferences.deleteOne({ deleteUserId });
+    }
+
+    await session.commitTransaction();
+    if (currentUser && matchUser) {
+        res.status(200).json(currentUser);
+    } else {
+        res.status(404).json({ error: 'Cannot update, user not found' });
     }
 });
 

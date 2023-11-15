@@ -10,4 +10,7 @@ const NEGINF = Number.NEGATIVE_INFINITY;
 const HABITS = ['smoking', 'partying', 'drinking', 'noise'];
 const NEUTRAL = 'neutral';
 
-module.exports = { NONSHAREABLE, TWOBEDROOM, POSINF, NEGINF, HABITS, NEUTRAL };
+// Blocking behavior
+const BLOCK_THRESHOLD = 5;
+
+module.exports = { NONSHAREABLE, TWOBEDROOM, POSINF, NEGINF, HABITS, NEUTRAL, BLOCK_THRESHOLD };

@@ -102,7 +102,7 @@ router.get('/:userId/recommendations/users', async (req, res, next) => {
  * Body: {excludedId: ""}
  */
 router.put('/:userId/recommendations/users', async (req, res, next) => {
-    // Wrap inside transaction, either both occur or only one does - atomicity
+    // Wrap inside transaction, either both occur or neither one does - atomicity
     let currentUser;
     let matchUser;
     const session = await mongoose.startSession();
