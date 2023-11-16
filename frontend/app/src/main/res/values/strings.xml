@@ -57,6 +57,7 @@
     <string name="not_allowed">Not Allowed</string>
     <string name="datetime_regex">T</string>
     <string name="add_listing_button_text">+</string>
+    <string name="report_scam_text">Report Listing</string>
 
     <!-- Content Descriptions -->
     <string name="home_screen_logo">App Logo</string>
