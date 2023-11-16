@@ -20,6 +20,7 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.google.gson.Gson;
 
@@ -216,7 +217,26 @@ public class ViewListingActivity extends AppCompatActivity {
             }
         });
     }
-
+    public void setupReportButton(String listingId, String userId){
+        reportButton.setOnClickListener(view -> {
+            AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(view.getContext());
+            alertDialogBuilder.setTitle("Report this listing as a scam?");
+            alertDialogBuilder.setCancelable(true).setPositiveButton("Report", new DialogInterface.OnClickListener() {
+                public void onClick(DialogInterface dialog, int id) {
+                    dialog.dismiss();
+                    reportListing(client, listingId, userId);
+                    disableButton(reportButton);
+                    Toast.makeText(ViewListingActivity.this, "Listing reported! This listing will no longer be recommended to you.", Toast.LENGTH_LONG).show();
+                }
+            }).setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+                public void onClick(DialogInterface dialog, int id) {
+                    dialog.dismiss();
+                }
+            });
+            AlertDialog alertDialog = alertDialogBuilder.create();
+            alertDialog.show();
+        });
+    }
     public void getListing(OkHttpClient client, String listingId, String userId){
         Request request = new Request.Builder().url(Constants.baseServerURL + Constants.listingByListingIdEndpoint + listingId).build();
         client.newCall(request).enqueue(new Callback() {
@@ -292,32 +312,16 @@ public class ViewListingActivity extends AppCompatActivity {
                             disableButton(togglePetFriendlyButton);
                             // TODO: In future milestones, implement a way to change Move-In Date and Image
                             // disableButton(editMoveInButton);
+                            setupReportButton(listingId, userId);
                         }
                         else {
                             enableButton(editTitleButton, "title", title_textview, listingId);
                             enableButton(editHousingDescButton, "description", description_textview, listingId);
                             enableButton(editHousingTypeButton, "housingType", housing_type_textview, listingId);
                             enableToggle(togglePetFriendlyButton, "petFriendly", pet_textview, listingId);
+                            disableButton(reportButton);
                             // enableButton(editMoveInButton, "moveInDate", move_in_date_textview, listingId);
                         }
-
-                        reportButton.setOnClickListener(view -> {
-                            AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(view.getContext());
-                            alertDialogBuilder.setTitle("Report this listing as a scam?");
-                            alertDialogBuilder.setCancelable(true).setPositiveButton("Report", new DialogInterface.OnClickListener() {
-                                public void onClick(DialogInterface dialog, int id) {
-                                    dialog.dismiss();
-                                    reportListing(client, listingId, userId);
-                                    finish();
-                                }
-                            }).setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
-                                public void onClick(DialogInterface dialog, int id) {
-                                    dialog.dismiss();
-                                }
-                            });
-                            AlertDialog alertDialog = alertDialogBuilder.create();
-                            alertDialog.show();
-                        });
 
                     } catch (IOException e) {
                         e.printStackTrace();
