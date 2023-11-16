@@ -2,7 +2,6 @@ package com.chads.vanroomies;
 
 import android.app.AlertDialog;
 import android.content.Context;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -80,6 +79,7 @@ public class ChatListAdapter extends RecyclerView.Adapter {
             ((ChatListHolder) holder).imageView.setImageResource(R.drawable.ic_profile);
         }
         
+        ((ChatListHolder) holder).deleteView.setOnClickListener(v -> showDeleteChatAlert(entry));
         ((ChatListHolder) holder).blockView.setOnClickListener(v -> showBlockUserAlert(entry));
 
         holder.itemView.setOnClickListener(v -> {
@@ -91,22 +91,70 @@ public class ChatListAdapter extends RecyclerView.Adapter {
         });
     }
 
+    private void showDeleteChatAlert(Map.Entry<UserProfile, ArrayList<ChatMessage>> entry) {
+        AlertDialog.Builder builder = new AlertDialog.Builder(context);
+        builder.setMessage("Are you sure you want to delete your chat with " + entry.getKey().getFirstName() + " " + entry.getKey().getLastName() + " permanently?")
+                .setPositiveButton("Yes", (dialog, which) -> {
+                    Log.d(TAG, "Sending delete chat request");
+                    sendDeleteChatRequest(httpClient, fragmentActivity, entry);
+                })
+                .setNegativeButton("No", (dialog, which) -> {
+                    Log.d(TAG, "Dismissing dialog for delete chat");
+                    dialog.dismiss();
+                });
+
+        AlertDialog alertDialog = builder.create();
+        alertDialog.show();
+    }
+
+    private void sendDeleteChatRequest(OkHttpClient httpClient, FragmentActivity fragmentActivity, Map.Entry<UserProfile, ArrayList<ChatMessage>> entry) {
+        String url = Constants.baseServerURL + Constants.chatsByUserIdEndpoint + userId;
+        Log.d(TAG, "Delete chat for userId " + entry.getKey().get_id());
+        RequestBody requestBody = new FormBody.Builder()
+                .add("to", entry.getKey().get_id())
+                .add("inactive", String.valueOf(true))
+                .build();
+        Request request = new Request.Builder()
+                .url(url)
+                .put(requestBody)
+                .build();
+        httpClient.newCall(request).enqueue(new Callback() {
+            @Override
+            public void onFailure(@NonNull Call call, @NonNull IOException e) {
+                Log.d(TAG, e.getMessage());
+            }
+
+            @Override
+            public void onResponse(@NonNull Call call, @NonNull Response response) {
+                fragmentActivity.runOnUiThread(() -> {
+                    try {
+                        String responseData = response.body().string();
+                        if (response.body() == null) {
+                            Log.d(TAG, "responseData in sendDeleteChatRequest is null");
+                        } else {
+                            Log.d(TAG, "responseData in sendDeleteChatRequest is " + responseData);
+                            chats.remove(entry);
+                            notifyDataSetChanged();
+                        }
+                    }
+                    catch (IOException e) {
+                        e.printStackTrace();
+                    }
+                });
+            }
+        });
+    }
+
     private void showBlockUserAlert(Map.Entry<UserProfile, ArrayList<ChatMessage>> entry) {
         AlertDialog.Builder builder = new AlertDialog.Builder(context);
         builder.setMessage("Are you sure you want to block " + entry.getKey().getFirstName() + " " + entry.getKey().getLastName() + " permanently?")
-                .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        Log.d(TAG, "Sending block user request");
-                        sendBlockUserRequest(httpClient, fragmentActivity, entry);
-                    }
+                .setPositiveButton("Yes", (dialog, which) -> {
+                    Log.d(TAG, "Sending block user request");
+                    sendBlockUserRequest(httpClient, fragmentActivity, entry);
                 })
-                .setNegativeButton("No", new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        Log.d(TAG, "Dismissing dialog for block user");
-                        dialog.dismiss();
-                    }
+                .setNegativeButton("No", (dialog, which) -> {
+                    Log.d(TAG, "Dismissing dialog for block user");
+                    dialog.dismiss();
                 });
 
         AlertDialog alertDialog = builder.create();
@@ -154,12 +202,14 @@ public class ChatListAdapter extends RecyclerView.Adapter {
     public static class ChatListHolder extends RecyclerView.ViewHolder {
         CircleImageView imageView;
         TextView nameView;
+        ImageButton deleteView;
         ImageButton blockView;
 
         ChatListHolder(@NonNull View itemView) {
             super(itemView);
             imageView = itemView.findViewById(R.id.chat_row_image);
             nameView = itemView.findViewById(R.id.chat_row_name);
+            deleteView = itemView.findViewById(R.id.chat_row_delete);
             blockView = itemView.findViewById(R.id.chat_row_block);
         }
     }
