@@ -1,5 +1,7 @@
 const express = require('express');
+const { default: mongoose } = require('mongoose');
 const Listing = require('../models/listingModel');
+const User = require('../models/userModel');
 // const { authenticateJWT } = require('../authentication/jwtAuthentication');
 const { SCAM_THRESHOLD } = require('../utils/constants');
 const router = express.Router();

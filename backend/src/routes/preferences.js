@@ -125,6 +125,7 @@ router.put('/:userId/recommendations/users', async (req, res, next) => {
     if (currentUser && matchUser) {
         res.status(200).json(currentUser);
     } else {
+        await session.abortTransaction();
         res.status(404).json({ error: 'Cannot update, user not found' });
     }
 });
