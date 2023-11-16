@@ -103,37 +103,28 @@ router.put('/:userId', async (req, res, next) => {
  * Body: {blockedId: ""}
  */
 router.post('/:userId/block', async (req, res, next) => {
-    // Wrap inside transaction, either all occur or neither one does - atomicity
-    let currentUser;
-    let blockedUser;
-    const session = await mongoose.startSession();
-    session.startTransaction();
+    // Either both updates should occur or neither should so first try to get both documents
+    let currentUser = await User.findById(req.params.userId);
+    let blockedUser = await User.findById(req.body.blockedId);
 
-    // Update list for first user
-    currentUser = await User.updateOne(
-        { _id: req.params.userId },
-        { $push: { notRecommended: req.body.excludedId } },
-        { new: true },
-    );
-    
-    // Update list for second user and increment blocked count
-    blockedUser = await User.updateOne(
-        { _id: req.body.blockedId },
-        { $push: { notRecommended: req.params.userId }, $inc: { blockedCount: 1 } },
-        { new: true },
-    );
-    
-    // Delete and cascade for the user if blocked count meets threshold
-    if (blockedUser && blockedUser.blockedCount >= BLOCK_THRESHOLD){
-        // Error handling should not happen here considering that we already know the user exists
-        const deleteUserId = blockedUser.userId;
-        await User.findByIdAndDelete(deleteUserId);
-        await Listing.deleteMany({ deleteUserId });
-        await Preferences.deleteOne({ deleteUserId });
-    }
+    if(currentUser && blockedUser){
+        let updatedReported = await User.findByIdAndUpdate(
+            req.params.userId,
+            { $push: { notRecommended: req.body.blockedId } },
+            { new: true },
+        );
 
-    await session.commitTransaction();
-    if (currentUser && blockedUser) {
+        let updatedBlocked = await User.findByIdAndUpdate(
+            req.body.blockedId,
+            { $push: { notRecommended: req.params.userId }, $inc: { blockedCount: 1 } },
+            { new: true },
+        );
+        if(updatedBlocked.blockedCount >= BLOCK_THRESHOLD){
+            const deleteUserId = req.body.blockedId;
+            await User.findByIdAndDelete(deleteUserId);
+            await Listing.deleteMany({ deleteUserId });
+            await Preferences.deleteOne({ deleteUserId });
+        }
         res.status(200).json({ message: 'User blocked successfully!' });
     } else {
         res.status(404).json({ error: 'User blocking failed!' });
