@@ -8,6 +8,7 @@ public class Constants {
     final static String listingByListingIdEndpoint = "/api/listings/"; // GET/PUT, needs listing_id appended. POST does not.
     final static String userEndpoint = "/api/users/"; // GET/PUT/DELETE needs user_id appended. POST does not.
     final static String chatsByUserIdEndpoint = "/api/chat/conversations/user/"; // GET needs user_id appended.
+    final static String blockByUserIdEndpoint = "/block"; // POST needs user_id appended beforehand and request body.
     final static String matchesByUserIdEndpoint = "/recommendations/users"; // GET needs user_id appended beforehand. POST needs request body.
     final static String loginEndpoint = "/api/users/login"; // POST
     final static String firebaseTokenEndpoint = "/api/firebase_token";
