@@ -13,4 +13,7 @@ const NEUTRAL = 'neutral';
 // Blocking behavior
 const BLOCK_THRESHOLD = 5;
 
-module.exports = { NONSHAREABLE, TWOBEDROOM, POSINF, NEGINF, HABITS, NEUTRAL, BLOCK_THRESHOLD };
+// Scam reporing behavior
+const SCAM_THRESHOLD = 5;
+
+module.exports = { NONSHAREABLE, TWOBEDROOM, POSINF, NEGINF, HABITS, NEUTRAL, BLOCK_THRESHOLD, SCAM_THRESHOLD };

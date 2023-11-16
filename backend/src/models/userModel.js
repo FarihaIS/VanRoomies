@@ -55,6 +55,10 @@ const UserSchema = new mongoose.Schema({
         type: [{ type: mongoose.Types.ObjectId }],
         default: [],
     },
+    reportedScam: {
+        type: [{ type: mongoose.Types.ObjectId }],
+        default: [],
+    },
     firebaseToken: {
         type: String,
     },

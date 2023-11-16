@@ -105,7 +105,7 @@ router.put('/:userId', async (req, res, next) => {
 router.post('/:userId/block', async (req, res, next) => {
     // Wrap inside transaction, either all occur or neither one does - atomicity
     let currentUser;
-    let matchUser;
+    let blockedUser;
     const session = await mongoose.startSession();
     session.startTransaction();
 
@@ -117,26 +117,26 @@ router.post('/:userId/block', async (req, res, next) => {
     );
     
     // Update list for second user and increment blocked count
-    matchUser = await User.updateOne(
+    blockedUser = await User.updateOne(
         { _id: req.body.blockedId },
         { $push: { notRecommended: req.params.userId }, $inc: { blockedCount: 1 } },
         { new: true },
     );
     
     // Delete and cascade for the user if blocked count meets threshold
-    if (matchUser && matchUser.blockedCount >= BLOCK_THRESHOLD){
+    if (blockedUser && blockedUser.blockedCount >= BLOCK_THRESHOLD){
         // Error handling should not happen here considering that we already know the user exists
-        const deleteUserId = matchUser.userId;
+        const deleteUserId = blockedUser.userId;
         await User.findByIdAndDelete(deleteUserId);
         await Listing.deleteMany({ deleteUserId });
         await Preferences.deleteOne({ deleteUserId });
     }
 
     await session.commitTransaction();
-    if (currentUser && matchUser) {
-        res.status(200).json(currentUser);
+    if (currentUser && blockedUser) {
+        res.status(200).json({ message: 'User blocked successfully!' });
     } else {
-        res.status(404).json({ error: 'Cannot update, user not found' });
+        res.status(404).json({ error: 'User blocking failed!' });
     }
 });
 

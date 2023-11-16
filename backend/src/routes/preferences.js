@@ -142,7 +142,8 @@ router.get('/:userId/recommendations/listings', async (req, res, next) => {
     if (!userPreferences) {
         return res.status(404).json({ error: 'No preferences found for given user!' });
     }
-    const tentativeMatchListings = await Listing.find({ userId: { $ne: req.params.userId } }).lean();
+    const loggedInUser = await User.findById(req.params.userId);
+    const tentativeMatchListings = await Listing.find({ userId: { $ne: req.params.userId }, _id: { $nin: loggedInUser.reportedScam } }).lean();
     if (tentativeMatchListings) {
         let scores = generateListingScores(userPreferences, tentativeMatchListings);
 
