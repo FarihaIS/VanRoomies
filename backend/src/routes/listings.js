@@ -75,35 +75,26 @@ router.put('/:listingId', async (req, res, next) => {
  * Body: {reporterId: ""}
  */
 router.post('/:listingId/report', async (req, res, next) => {
-    // Wrap inside transaction, either all occur or neither one does - atomicity
-    let currentUser;
-    let reportedListing;
-    const session = await mongoose.startSession();
-    session.startTransaction();
+    // Either both updates should occur or neither should so first try to get both documents
+    let currentUser = await User.findById(req.body.reporterId);
+    let reportedListing = await Listing.findById(req.params.listingId);
 
-    // Add list to the set of reported listings for given user
-    currentUser = await User.updateOne(
-        { _id: req.body.reporterId },
-        { $push: { reportedScam: req.params.listingId } },
-        { new: true },
-    );
-    
-    // Update listing counter for blocking
-    reportedListing = await Listing.updateOne(
-        { _id: req.body.listingId },
-        { $inc: { scamReportCount: 1 } },
-        { new: true },
-    );
-    
-    // Delete listing if its count of scam reports exceeds the threshold
-    if (reportedListing && reportedListing.scamReportCount >= SCAM_THRESHOLD){
-        // Error handling should not happen here considering we already know the listing exists
-        await Listing.findByIdAndDelete(req.params.listingId);
-    }
-
-    await session.commitTransaction();
-    if (currentUser && reportedListing) {
-        res.status(200).json({ message: 'Listing reported successfully!' });
+    if(currentUser && reportedListing){
+        // If both objects are non-null can update both safely
+        let updatedUser = await User.findByIdAndUpdate(
+          req.body.reporterId,
+          { $push: { reportedScam: req.params.listingId } },
+          { new: true }
+        );
+        let updatedListing = await Listing.findByIdAndUpdate(
+            req.params.listingId,
+            { $inc: { scamReportCount: 1 } },
+            { new: true }
+        );
+        if(updatedListing.scamReportCount >= SCAM_THRESHOLD){
+            await Listing.findByIdAndDelete(req.params.listingId);
+        }
+        res.status(200).json({ message: 'Listing reported successfully!' }); 
     } else {
         res.status(404).json({ error: 'Listing reporting failed!' });
     }
