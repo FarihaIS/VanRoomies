@@ -19,16 +19,18 @@ class MessageStore {
     }
 
     async sendMessage(content, fromId, toId) {
-        const conversation = await this.getConversationIfAbsent(fromId, toId);
-        const message = new Message(fromId, content);
         const receivingUser = await User.findById(toId);
         const sendingUser = await User.findById(fromId);
-        if (receivingUser) {
-            const firebaseToken = receivingUser.firebaseToken;
-            sendPushNotification(firebaseToken, sendingUser.firstName, content);
-            conversation.messages.push(message);
-            await conversation.save();
+        if (!receivingUser || !sendingUser) {
+            return false;
         }
+        const conversation = await this.getConversationIfAbsent(fromId, toId);
+        const message = new Message(fromId, content);
+        const firebaseToken = receivingUser.firebaseToken;
+        sendPushNotification(firebaseToken, sendingUser.firstName, content);
+        conversation.messages.push(message);
+        await conversation.save();
+        return true;
     }
 
     async getConversationIfAbsent(userId1, userId2) {
