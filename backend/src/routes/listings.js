@@ -1,5 +1,4 @@
 const express = require('express');
-const { default: mongoose } = require('mongoose');
 const Listing = require('../models/listingModel');
 const User = require('../models/userModel');
 // const { authenticateJWT } = require('../authentication/jwtAuthentication');
@@ -81,7 +80,7 @@ router.post('/:listingId/report', async (req, res, next) => {
 
     if(currentUser && reportedListing){
         // If both objects are non-null can update both safely
-        let updatedUser = await User.findByIdAndUpdate(
+        await User.findByIdAndUpdate(
           req.body.reporterId,
           { $push: { reportedScam: req.params.listingId } },
           { new: true }

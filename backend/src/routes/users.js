@@ -108,7 +108,7 @@ router.post('/:userId/block', async (req, res, next) => {
     let blockedUser = await User.findById(req.body.blockedId);
 
     if(currentUser && blockedUser){
-        let updatedReported = await User.findByIdAndUpdate(
+        await User.findByIdAndUpdate(
             req.params.userId,
             { $push: { notRecommended: req.body.blockedId } },
             { new: true },
