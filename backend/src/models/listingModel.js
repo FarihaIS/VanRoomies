@@ -48,9 +48,9 @@ const ListingSchema = new mongoose.Schema({
         },
     },
     images: [{ type: String }],
-    scamReportCount : {
+    scamReportCount: {
         type: Number,
-        default: 0
+        default: 0,
     },
 });
 

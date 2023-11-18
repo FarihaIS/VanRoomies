@@ -68,7 +68,7 @@ router.put('/:listingId', async (req, res, next) => {
 /**
  * Report a specific listing as scam. As a side effect, if a listing is reported by more than BLOCK_THRESHOLD number
  * of users, then the user account and all relevant information for this user will be deleted.
- * 
+ *
  * Route: POST /api/listings/:listingId/report
  *
  * Body: {reporterId: ""}
@@ -78,22 +78,22 @@ router.post('/:listingId/report', async (req, res, next) => {
     let currentUser = await User.findById(req.body.reporterId);
     let reportedListing = await Listing.findById(req.params.listingId);
 
-    if(currentUser && reportedListing){
+    if (currentUser && reportedListing) {
         // If both objects are non-null can update both safely
         await User.findByIdAndUpdate(
-          req.body.reporterId,
-          { $push: { reportedScam: req.params.listingId } },
-          { new: true }
+            req.body.reporterId,
+            { $push: { reportedScam: req.params.listingId } },
+            { new: true },
         );
         let updatedListing = await Listing.findByIdAndUpdate(
             req.params.listingId,
             { $inc: { scamReportCount: 1 } },
-            { new: true }
+            { new: true },
         );
-        if(updatedListing.scamReportCount >= SCAM_THRESHOLD){
+        if (updatedListing.scamReportCount >= SCAM_THRESHOLD) {
             await Listing.findByIdAndDelete(req.params.listingId);
         }
-        res.status(200).json({ message: 'Listing reported successfully!' }); 
+        res.status(200).json({ message: 'Listing reported successfully!' });
     } else {
         res.status(404).json({ error: 'Listing reporting failed!' });
     }

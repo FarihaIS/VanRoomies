@@ -86,7 +86,7 @@ router.put('/:userId', async (req, res, next) => {
  * Block a specified user and remove it from the list of possible recommendations of the user who
  * requested the block. As a side effect, if a user is blocked by more than BLOCK_THRESHOLD number
  * of users, then the user account and all relevant information for this user will be deleted.
- * 
+ *
  * Route: POST /api/users/:userId/block
  *
  * Body: {blockedId: ""}
@@ -96,7 +96,7 @@ router.post('/:userId/block', async (req, res, next) => {
     let currentUser = await User.findById(req.params.userId);
     let blockedUser = await User.findById(req.body.blockedId);
 
-    if(currentUser && blockedUser){
+    if (currentUser && blockedUser) {
         await User.findByIdAndUpdate(
             req.params.userId,
             { $push: { notRecommended: req.body.blockedId } },
@@ -108,7 +108,7 @@ router.post('/:userId/block', async (req, res, next) => {
             { $push: { notRecommended: req.params.userId }, $inc: { blockedCount: 1 } },
             { new: true },
         );
-        if(updatedBlocked.blockedCount >= BLOCK_THRESHOLD){
+        if (updatedBlocked.blockedCount >= BLOCK_THRESHOLD) {
             const deleteUserId = req.body.blockedId;
             await User.findByIdAndDelete(deleteUserId);
             await Listing.deleteMany({ deleteUserId });

@@ -114,7 +114,7 @@ router.put('/:userId/recommendations/users', async (req, res, next) => {
         { $push: { notRecommended: req.body.excludedId } },
         { new: true },
     );
-    
+
     // Update list for second user
     matchUser = await User.updateOne(
         { _id: req.body.excludedId },
@@ -144,7 +144,10 @@ router.get('/:userId/recommendations/listings', async (req, res, next) => {
         return res.status(404).json({ error: 'No preferences found for given user!' });
     }
     const loggedInUser = await User.findById(req.params.userId);
-    const tentativeMatchListings = await Listing.find({ userId: { $ne: req.params.userId }, _id: { $nin: loggedInUser.reportedScam } }).lean();
+    const tentativeMatchListings = await Listing.find({
+        userId: { $ne: req.params.userId },
+        _id: { $nin: loggedInUser.reportedScam },
+    }).lean();
     if (tentativeMatchListings) {
         let scores = generateListingScores(userPreferences, tentativeMatchListings);
 

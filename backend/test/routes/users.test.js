@@ -182,3 +182,64 @@ describe('DELETE user by id', () => {
         expect(res.body).toStrictEqual({ error: 'User not found' });
     });
 });
+
+// Interface POST /api/users/:userId/block
+describe('POST block user by id from another user', () => {
+    afterEach(() => {
+        jest.restoreAllMocks();
+    });
+
+    // Input: userId and blockedId are valid ids
+    // Expected status code: 200
+    // Expected behavior: update User object that matches the userId and blockedId
+    // Expected output: { message: "User blocked successfully!" }
+    test('Valid userId and blockedId', async () => {
+        const id = 'someUserId';
+        const blockedId = 'someBlockedId';
+        User.findById.mockResolvedValueOnce({ _id: id });
+        User.findById.mockResolvedValueOnce({ _id: blockedId, blockedCount: 0 });
+
+        User.findByIdAndUpdate.mockResolvedValueOnce(null);
+        User.findByIdAndUpdate.mockResolvedValueOnce({ _id: blockedId, blockedCount: 1 });
+
+        const res = await request(app).post(`/api/users/${id}/block`).send({ blockedId });
+        expect(res.statusCode).toStrictEqual(200);
+        expect(res.body).toStrictEqual({ message: 'User blocked successfully!' });
+    });
+
+    // Input: userId or blockeId are not a valid ids
+    // Expected status code: 404
+    // Expected behavior: return an error message
+    // Expected output: { error: "User blocking failed!" }
+    test('Invalid userId or blockedId', async () => {
+        const id = 'invalid';
+        const blockedId = 'invalid';
+        User.findById.mockResolvedValueOnce(null);
+        User.findById.mockResolvedValueOnce(null);
+
+        const res = await request(app).post(`/api/users/${id}/block`).send({ blockedId });
+        expect(res.statusCode).toStrictEqual(404);
+        expect(res.body).toStrictEqual({ error: 'User blocking failed!' });
+    });
+
+    // Input: valid ids and blockedUser will have been blocked by >= BLOCK_THRESHOLD users
+    // Expected status code: 200
+    // Expected behavior: delete User object that matches the blockedId
+    // Expected output: { message: "User blocked successfully!" }
+    test('User blocked by >= BLOCK_THRESHOLD users', async () => {
+        const id = 'someUserId';
+        const blockedId = 'someBlockedId';
+        User.findById.mockResolvedValueOnce({ _id: id });
+        User.findById.mockResolvedValueOnce({ _id: blockedId, blockedCount: 4 });
+
+        User.findByIdAndUpdate.mockResolvedValueOnce(null);
+        User.findByIdAndUpdate.mockResolvedValueOnce({ _id: blockedId, blockedCount: 5 });
+
+        const res = await request(app).post(`/api/users/${id}/block`).send({ blockedId });
+        expect(res.statusCode).toStrictEqual(200);
+        expect(res.body).toStrictEqual({ message: 'User blocked successfully!' });
+        expect(User.findByIdAndDelete).toHaveBeenCalledWith(blockedId);
+        expect(Listing.deleteMany).toHaveBeenCalledWith({ deleteUserId: blockedId });
+        expect(Preferences.deleteOne).toHaveBeenCalledWith({ deleteUserId: blockedId });
+    });
+});
