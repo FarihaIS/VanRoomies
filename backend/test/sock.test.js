@@ -11,6 +11,10 @@ jest.mock('firebase-admin/messaging', () => ({
     getMessaging: jest.fn(),
 }));
 
+const mockMessaging = {
+    send: jest.fn(),
+};
+
 const port = 12345;
 const firstName = 'John';
 const lastName = 'Doe';
@@ -67,8 +71,8 @@ describe('Socket.io connection', () => {
     });
 });
 
-describe('WebSocket routines', () => {
-    let io, serverSocket, clientSocket;
+describe('Socket.io routines', () => {
+    let io, clientSocket;
 
     beforeAll((done) => {
         const httpServer = createServer();
@@ -83,9 +87,6 @@ describe('WebSocket routines', () => {
             clientSocket = ioc(`http://localhost:${port}`);
             clientSocket.auth = { userId: 12345 };
             clientSocket.on('connect', async () => done());
-            io.on('connection', async (socket) => {
-                serverSocket = socket;
-            });
         });
     });
 
@@ -108,9 +109,7 @@ describe('WebSocket routines', () => {
             messages: [],
             save: jest.fn(),
         });
-        const mockMessaging = {
-            send: jest.fn(),
-        };
+
         getMessaging.mockReturnValueOnce(mockMessaging);
         const message = 'hola';
 
@@ -128,6 +127,9 @@ describe('WebSocket routines', () => {
         });
     });
 
+    // Input: everything is valid except the firebaseToken
+    // Expected behavior: send a message to the user with userId = to; do not send a push notification
+    // Expected output: { status: "success" }
     test('ON private message invalid firebase token', async () => {
         User.findById.mockResolvedValue({ firstName: 'John', lastName: 'Doe', firebaseToken: null });
         Conversation.findOne.mockResolvedValue({
@@ -143,8 +145,12 @@ describe('WebSocket routines', () => {
             to: 23456,
         });
         expect(response).toEqual({ status: 'success' });
+        expect(mockMessaging.send).not.toHaveBeenCalled();
     });
 
+    // Input: socket has an invalid userId
+    // Expected behavior: return an error
+    // Expected output: { message: "User not supplied", status: "error" }
     test('ON private message invalid id', async () => {
         User.findById.mockResolvedValue(null);
         const response = await clientSocket.emitWithAck('private message', {
@@ -152,10 +158,4 @@ describe('WebSocket routines', () => {
         });
         expect(response).toEqual({ message: 'User not supplied', status: 'error' });
     });
-
-    // test("should work with waitFor()", () => {
-    //   clientSocket.emit("baz");
-
-    //   return waitFor(serverSocket, "baz");
-    // });
 });

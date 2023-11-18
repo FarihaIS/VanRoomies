@@ -63,18 +63,6 @@ describe('POST user login', () => {
         expect(res.statusCode).toStrictEqual(201);
         expect(res.body).toStrictEqual({ userId: 'someUserId', userToken: 'someToken' });
     });
-
-    // Input: invalid email format
-    // Expected status code: 400
-    // Expected behavior: return an error message
-    // Expected output: { error: "Invalid email format" }
-    // test('Invalid email format', async () => {
-    // 	const email = 'invalid';
-    // 	User.findOne.mockImplementationOnce(() => Promise.resolve(null));
-    // 	const res = await request(app).post(`/api/users/login`).send({ email });
-    // 	expect(res.statusCode).toStrictEqual(400);
-    // 	expect(res.body).toStrictEqual({ error: 'Invalid email format' });
-    // });
 });
 
 // Interface GET /api/users/:userId
