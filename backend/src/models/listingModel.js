@@ -48,6 +48,10 @@ const ListingSchema = new mongoose.Schema({
         },
     },
     images: [{ type: String }],
+    scamReportCount : {
+        type: Number,
+        default: 0
+    },
 });
 
 const Listing = mongoose.model('Listing', ListingSchema);
