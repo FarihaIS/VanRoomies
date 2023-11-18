@@ -25,7 +25,7 @@ const mockMessaging = {
     send: jest.fn(),
 };
 
-// Interface GET /api/conversations/user/:userId
+// Interface GET /api/chat/conversations/user/:userId
 describe('GET conversations from user', () => {
     afterEach(() => {
         jest.clearAllMocks();
@@ -56,7 +56,7 @@ describe('GET conversations from user', () => {
     });
 });
 
-// Interface POST /api/conversations/user/:userId
+// Interface POST /api/chat/conversations/user/:userId
 describe('POST a new conversation between users ', () => {
     const user = { firstName: 'John', lastName: 'Doe', firebaseToken: 'someToken', _id: 'someUserId' };
     afterEach(() => {
