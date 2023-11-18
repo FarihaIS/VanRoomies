@@ -98,7 +98,7 @@ router.put('/:userId', async (req, res, next) => {
  * Block a specified user and remove it from the list of possible recommendations of the user who
  * requested the block. As a side effect, if a user is blocked by more than BLOCK_THRESHOLD number
  * of users, then the user account and all relevant information for this user will be deleted.
- * 
+ *
  * Route: POST /api/users/:userId/block
  *
  * Body: {blockedId: ""}
@@ -108,7 +108,7 @@ router.post('/:userId/block', async (req, res, next) => {
     let currentUser = await User.findById(req.params.userId);
     let blockedUser = await User.findById(req.body.blockedId);
 
-    if(currentUser && blockedUser){
+    if (currentUser && blockedUser) {
         await User.findByIdAndUpdate(
             req.params.userId,
             { $push: { notRecommended: req.body.blockedId } },
@@ -121,7 +121,7 @@ router.post('/:userId/block', async (req, res, next) => {
             { new: true },
         );
 
-        if(updatedBlocked.blockedCount >= BLOCK_THRESHOLD){
+        if (updatedBlocked.blockedCount >= BLOCK_THRESHOLD) {
             const deleteUserId = req.body.blockedId;
             await User.findByIdAndDelete(deleteUserId);
             await Listing.deleteMany({ deleteUserId });
@@ -138,10 +138,10 @@ router.post('/:userId/block', async (req, res, next) => {
 });
 
 /**
- * Unmatch two currently matched users. This will delete the conversation between the users 
- * and will also remove users from their excluded lists so that users can now appear on each others 
+ * Unmatch two currently matched users. This will delete the conversation between the users
+ * and will also remove users from their excluded lists so that users can now appear on each others
  * recommendations again.
- * 
+ *
  * Route: POST /api/users/:userId/unmatch
  *
  * Body: {unmatchedId: ""}
@@ -150,7 +150,7 @@ router.post('/:userId/unmatch', async (req, res, next) => {
     let firstUser = await User.findById(req.params.userId);
     let secondUser = await User.findById(req.body.unmatchedId);
 
-    if(firstUser && secondUser){
+    if (firstUser && secondUser) {
         await User.findByIdAndUpdate(
             req.params.userId,
             { $pull: { notRecommended: req.body.unmatchedId } },
@@ -165,7 +165,7 @@ router.post('/:userId/unmatch', async (req, res, next) => {
 
         // If there exists a conversation between users it will be deleted
         await messageStore.deleteConversation(req.params.userId, req.body.unmatchedId);
-        
+
         res.status(200).json({ message: 'Unmatched with user successfully!' });
     } else {
         res.status(404).json({ error: 'User blocking failed!' });

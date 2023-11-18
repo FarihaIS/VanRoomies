@@ -47,7 +47,6 @@ class MessageStore {
         const conversations = await Conversation.find({ users: userId });
         return conversations;
     }
-    
 
     async deleteConversation(userId1, userId2) {
         return await Conversation.findOneAndDelete({

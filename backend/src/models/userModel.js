@@ -64,7 +64,7 @@ const UserSchema = new mongoose.Schema({
     },
     blockedCount: {
         type: Number,
-        default: 0
+        default: 0,
     },
 });
 
