@@ -3,6 +3,7 @@ const User = require('../models/userModel');
 const { default: mongoose } = require('mongoose');
 const Listing = require('../models/listingModel');
 const Preferences = require('../models/preferencesModel');
+const messageStore = require('../chat/messageStore');
 const { generateAuthenticationToken } = require('../authentication/jwtAuthentication');
 const { BLOCK_THRESHOLD } = require('../utils/constants');
 const router = express.Router();
@@ -119,13 +120,53 @@ router.post('/:userId/block', async (req, res, next) => {
             { $push: { notRecommended: req.params.userId }, $inc: { blockedCount: 1 } },
             { new: true },
         );
+
         if(updatedBlocked.blockedCount >= BLOCK_THRESHOLD){
             const deleteUserId = req.body.blockedId;
             await User.findByIdAndDelete(deleteUserId);
             await Listing.deleteMany({ deleteUserId });
             await Preferences.deleteOne({ deleteUserId });
         }
+
+        // If there exists a conversation between users it will be deleted
+        await messageStore.deleteConversation(req.params.userId, req.body.blockedId);
+
         res.status(200).json({ message: 'User blocked successfully!' });
+    } else {
+        res.status(404).json({ error: 'User blocking failed!' });
+    }
+});
+
+/**
+ * Unmatch two currently matched users. This will delete the conversation between the users 
+ * and will also remove users from their excluded lists so that users can now appear on each others 
+ * recommendations again.
+ * 
+ * Route: POST /api/users/:userId/unmatch
+ *
+ * Body: {unmatchedId: ""}
+ */
+router.post('/:userId/unmatch', async (req, res, next) => {
+    let firstUser = await User.findById(req.params.userId);
+    let secondUser = await User.findById(req.body.unmatchedId);
+
+    if(firstUser && secondUser){
+        await User.findByIdAndUpdate(
+            req.params.userId,
+            { $pull: { notRecommended: req.body.unmatchedId } },
+            { new: true },
+        );
+
+        await User.findByIdAndUpdate(
+            req.body.unmatchedId,
+            { $pull: { notRecommended: req.params.userId } },
+            { new: true },
+        );
+
+        // If there exists a conversation between users it will be deleted
+        await messageStore.deleteConversation(req.params.userId, req.body.unmatchedId);
+        
+        res.status(200).json({ message: 'Unmatched with user successfully!' });
     } else {
         res.status(404).json({ error: 'User blocking failed!' });
     }
