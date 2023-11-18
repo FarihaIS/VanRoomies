@@ -12,14 +12,7 @@ const sendPushNotification = async (token, senderName, message) => {
         },
         token,
     };
-    getMessaging()
-        .send(messageObj)
-        .then((response) => {
-            console.log('Successfully sent push notification message:', response);
-        })
-        .catch((error) => {
-            console.log('Error sending push notification message:', error);
-        });
+    await getMessaging().send(messageObj);
 };
 
 module.exports = sendPushNotification;

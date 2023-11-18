@@ -7,7 +7,7 @@
     "start": "cross-env NODE_ENV=production node src/server.js",
     "dev": "cross-env NODE_ENV=development nodemon src/server.js",
     "lint": "npm run prettier",
-    "prettier": "prettier --write './src/**/*.js'",
+    "prettier": "prettier --write './{src,test}/**/*.js'",
     "test": "jest --maxWorkers=50% --coverage=true"
   },
   "author": "",
@@ -21,6 +21,7 @@
     "jsonwebtoken": "^9.0.2",
     "mongoose": "^7.6.0",
     "socket.io": "^4.7.2",
+    "socket.io-client": "^4.7.2",
     "validator": "^13.11.0"
   },
   "devDependencies": {

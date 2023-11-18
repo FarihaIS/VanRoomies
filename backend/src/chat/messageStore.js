@@ -2,22 +2,8 @@ const mongoose = require('mongoose');
 const Message = require('./Message');
 const sendPushNotification = require('./firebase');
 const User = require('../models/userModel');
-
-const conversationSchema = new mongoose.Schema({
-    users: { type: [String], required: true },
-    messages: { type: [Object], default: [] },
-});
-
-const Conversation = mongoose.model('Conversation', conversationSchema);
-
+const Conversation = require('../models/conversationModel');
 class MessageStore {
-    constructor() {
-        if (!MessageStore.instance) {
-            MessageStore.instance = this;
-        }
-        return MessageStore.instance;
-    }
-
     async sendMessage(content, fromId, toId) {
         const receivingUser = await User.findById(toId);
         const sendingUser = await User.findById(fromId);
@@ -40,7 +26,6 @@ class MessageStore {
         if (conversation) {
             return conversation;
         }
-
         const newConversation = new Conversation({ users: [userId1, userId2] });
         return await newConversation.save();
     }
