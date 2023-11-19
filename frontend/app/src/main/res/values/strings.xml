@@ -13,6 +13,7 @@
     <string name="matches_bio_string">Bio</string>
     <string name="matches_instruction_string">Swipe right to match, and left to reject</string>
     <string name="no_matches_found">Sorry, no matches found!</string>
+    <string name="reshow_matches">Fetching you more matches!</string>
 
     <!-- Chat Channel Activity -->
     <string name="chat_send_button_text">Send</string>
@@ -28,6 +29,7 @@
 
     <!-- Chat Row -->
     <string name="chat_row_name_text">Their Name</string>
+    <string name="chat_row_unmatch_text">Unmatch with User</string>
     <string name="chat_row_block_text">Block User</string>
 
     <!-- Profile Fragment -->

@@ -81,7 +81,9 @@ public class MatchesFragment extends Fragment {
 
             @Override
             public void cardsDepleted() {
-                Log.d(TAG, "No more matches");
+                Log.d(TAG, "Fetching more matches");
+                Toast.makeText(getActivity(), R.string.reshow_matches, Toast.LENGTH_SHORT).show();
+                getAllMatches(httpClient, getActivity(), v);
             }
 
             @Override
