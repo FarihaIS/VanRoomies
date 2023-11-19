@@ -98,7 +98,7 @@ router.post('/:listingId/report', async (req, res, next) => {
         if (updatedListing.scamReportCount >= SCAM_THRESHOLD) {
             await Listing.findByIdAndDelete(req.params.listingId);
         }
-        res.status(200).json({ message: 'Listing reported successfully!' });
+        res.status(200).json(reportedListing);
     } else {
         res.status(404).json({ error: 'Listing reporting failed!' });
     }
