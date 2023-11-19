@@ -1,4 +1,3 @@
-const mongoose = require('mongoose');
 const Message = require('./Message');
 const sendPushNotification = require('./firebase');
 const User = require('../models/userModel');

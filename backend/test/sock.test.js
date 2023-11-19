@@ -21,15 +21,12 @@ const lastName = 'Doe';
 const firebaseToken = 'someToken';
 
 describe('Socket.io connection', () => {
-    let io, serverSocket, clientSocket;
+    let io, clientSocket;
     const port = 12345;
     beforeAll((done) => {
         const httpServer = createServer();
         io = mysocket(httpServer);
         httpServer.listen(port, () => {
-            io.on('connection', async (socket) => {
-                serverSocket = socket;
-            });
             done();
         });
     });
@@ -78,9 +75,9 @@ describe('Socket.io routines', () => {
         const httpServer = createServer();
         io = mysocket(httpServer);
         User.findById.mockResolvedValue({
-            firstName: firstName,
-            lastName: lastName,
-            firebaseToken: firebaseToken,
+            firstName,
+            lastName,
+            firebaseToken,
         });
 
         httpServer.listen(port, () => {
