@@ -79,7 +79,7 @@ public class ChatListAdapter extends RecyclerView.Adapter {
             ((ChatListHolder) holder).imageView.setImageResource(R.drawable.ic_profile);
         }
         
-        ((ChatListHolder) holder).deleteView.setOnClickListener(v -> showDeleteChatAlert(entry));
+        ((ChatListHolder) holder).unmatchView.setOnClickListener(v -> showUnmatchUserAlert(entry));
         ((ChatListHolder) holder).blockView.setOnClickListener(v -> showBlockUserAlert(entry));
 
         holder.itemView.setOnClickListener(v -> {
@@ -91,15 +91,15 @@ public class ChatListAdapter extends RecyclerView.Adapter {
         });
     }
 
-    private void showDeleteChatAlert(Map.Entry<UserProfile, ArrayList<ChatMessage>> entry) {
+    private void showUnmatchUserAlert(Map.Entry<UserProfile, ArrayList<ChatMessage>> entry) {
         AlertDialog.Builder builder = new AlertDialog.Builder(context);
-        builder.setMessage("Are you sure you want to delete your chat with " + entry.getKey().getFirstName() + " " + entry.getKey().getLastName() + " permanently?")
+        builder.setMessage("Are you sure you want to unmatch with " + entry.getKey().getFirstName() + " " + entry.getKey().getLastName() + "? You will lose your chat with them permanently.")
                 .setPositiveButton("Yes", (dialog, which) -> {
-                    Log.d(TAG, "Sending delete chat request");
-                    sendDeleteChatRequest(httpClient, fragmentActivity, entry);
+                    Log.d(TAG, "Sending unmatch user request");
+                    sendUnmatchUserRequest(httpClient, fragmentActivity, entry);
                 })
                 .setNegativeButton("No", (dialog, which) -> {
-                    Log.d(TAG, "Dismissing dialog for delete chat");
+                    Log.d(TAG, "Dismissing dialog for unmatch user");
                     dialog.dismiss();
                 });
 
@@ -107,12 +107,11 @@ public class ChatListAdapter extends RecyclerView.Adapter {
         alertDialog.show();
     }
 
-    private void sendDeleteChatRequest(OkHttpClient httpClient, FragmentActivity fragmentActivity, Map.Entry<UserProfile, ArrayList<ChatMessage>> entry) {
-        String url = Constants.baseServerURL + Constants.chatsByUserIdEndpoint + userId;
-        Log.d(TAG, "Delete chat for userId " + entry.getKey().get_id());
+    private void sendUnmatchUserRequest(OkHttpClient httpClient, FragmentActivity fragmentActivity, Map.Entry<UserProfile, ArrayList<ChatMessage>> entry) {
+        String url = Constants.baseServerURL + Constants.userEndpoint + userId + Constants.unmatchByUserIdEndpoint;
+        Log.d(TAG, "Unmatch with userId " + entry.getKey().get_id());
         RequestBody requestBody = new FormBody.Builder()
-                .add("to", entry.getKey().get_id())
-                .add("inactive", String.valueOf(true))
+                .add("unmatchedId", entry.getKey().get_id())
                 .build();
         Request request = new Request.Builder()
                 .url(url)
@@ -130,9 +129,9 @@ public class ChatListAdapter extends RecyclerView.Adapter {
                     try {
                         String responseData = response.body().string();
                         if (response.body() == null) {
-                            Log.d(TAG, "responseData in sendDeleteChatRequest is null");
+                            Log.d(TAG, "responseData in sendUnmatchUserRequest is null");
                         } else {
-                            Log.d(TAG, "responseData in sendDeleteChatRequest is " + responseData);
+                            Log.d(TAG, "responseData in sendUnmatchUserRequest is " + responseData);
                             chats.remove(entry);
                             notifyDataSetChanged();
                         }
@@ -202,14 +201,14 @@ public class ChatListAdapter extends RecyclerView.Adapter {
     public static class ChatListHolder extends RecyclerView.ViewHolder {
         CircleImageView imageView;
         TextView nameView;
-        ImageButton deleteView;
+        ImageButton unmatchView;
         ImageButton blockView;
 
         ChatListHolder(@NonNull View itemView) {
             super(itemView);
             imageView = itemView.findViewById(R.id.chat_row_image);
             nameView = itemView.findViewById(R.id.chat_row_name);
-            deleteView = itemView.findViewById(R.id.chat_row_delete);
+            unmatchView = itemView.findViewById(R.id.chat_row_unmatch);
             blockView = itemView.findViewById(R.id.chat_row_block);
         }
     }
