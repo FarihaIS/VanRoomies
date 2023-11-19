@@ -244,4 +244,24 @@
         app:layout_constraintTop_toTopOf="@+id/move_in_date"
         app:layout_constraintVertical_bias="0.5" />
 
+    <Button
+        android:id="@+id/report_button"
+        android:layout_width="169dp"
+        android:layout_height="38dp"
+        android:layout_alignParentTop="true"
+        android:layout_alignParentEnd="true"
+        android:layout_alignParentBottom="true"
+        android:background="@android:color/transparent"
+        android:scaleX="1"
+        android:scaleY="1"
+        android:text="@string/report_scam_text"
+        android:textColor="@color/black"
+        app:icon="@android:drawable/ic_dialog_alert"
+        app:iconTint="#F44336"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/listing_date"
+        app:layout_constraintVertical_bias="0.0" />
+
 </androidx.constraintlayout.widget.ConstraintLayout>
