@@ -70,7 +70,7 @@ router.put('/:userId/preferences', async (req, res, next) => {
  */
 router.get('/:userId/recommendations/users', async (req, res, next) => {
     const currUser = await User.findById(req.params.userId);
-    if(currUser){
+    if (currUser) {
         const userPreferences = await Preferences.findOne({ userId: req.params.userId }).lean();
         if (!userPreferences) {
             const allUsers = await User.find({});
@@ -81,7 +81,7 @@ router.get('/:userId/recommendations/users', async (req, res, next) => {
         let rankedUsers = [];
         if (tentativeMatchPreferences.length != 0) {
             let scores = generateUserScores(userPreferences, tentativeMatchPreferences);
-    
+
             // TODO: This REQUIRES optimization for further milestones - too transactionally-heavy
             for (const id of generateRecommendations(scores)) {
                 const currUser = await User.findById(id).select('firstName lastName profilePicture bio').lean();
@@ -89,7 +89,7 @@ router.get('/:userId/recommendations/users', async (req, res, next) => {
             }
         }
         res.status(200).json(rankedUsers);
-    }else{
+    } else {
         res.status(404).json({ error: 'Did not match any user!' });
     }
 });
@@ -135,7 +135,7 @@ router.put('/:userId/recommendations/users', async (req, res, next) => {
  */
 router.get('/:userId/recommendations/listings', async (req, res, next) => {
     const loggedInUser = await User.findById(req.params.userId);
-    if(loggedInUser){
+    if (loggedInUser) {
         const userPreferences = await Preferences.findOne({ userId: req.params.userId }).lean();
         if (!userPreferences) {
             const allListings = await Listing.find({});
@@ -149,7 +149,7 @@ router.get('/:userId/recommendations/listings', async (req, res, next) => {
 
         if (tentativeMatchListings.length != 0) {
             let scores = generateListingScores(userPreferences, tentativeMatchListings);
-    
+
             // TODO: This REQUIRES optimization for further milestones - too transactionally-heavy
             for (const id of generateRecommendations(scores)) {
                 const currListing = await Listing.findById(id).lean();
@@ -157,7 +157,7 @@ router.get('/:userId/recommendations/listings', async (req, res, next) => {
             }
         }
         res.status(200).json(rankedListings);
-    }else{
+    } else {
         res.status(404).json({ error: 'Did not match any user!' });
     }
 });

@@ -44,20 +44,20 @@ const generateAuthenticationToken = (user) => {
  * @param {Function} next - Callback to pass control to next middleware
  * @returns
  */
-const authenticateJWT = (req, res, next) => {
-    const authHeader = req.headers['authorization'];
-    const token = authHeader && authHeader.split(' ')[1];
+// const authenticateJWT = (req, res, next) => {
+//     const authHeader = req.headers['authorization'];
+//     const token = authHeader && authHeader.split(' ')[1];
 
-    if (!token) return res.sendStatus(401);
+//     if (!token) return res.sendStatus(401);
 
-    jwt.verify(token, process.env.JWT_SIGNING_KEY, (err, user) => {
-        if (err) {
-            return res.sendStatus(403);
-        }
+//     jwt.verify(token, process.env.JWT_SIGNING_KEY, (err, user) => {
+//         if (err) {
+//             return res.sendStatus(403);
+//         }
 
-        req.user = user;
-        next();
-    });
-};
+//         req.user = user;
+//         next();
+//     });
+// };
 
-module.exports = { generateAuthenticationToken, authenticateJWT };
+module.exports = { generateAuthenticationToken };

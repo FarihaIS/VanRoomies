@@ -237,7 +237,6 @@ describe('GET other user recommendations for a user', () => {
         expect(res.body).toStrictEqual({ error: 'Did not match any user!' });
     });
 
-
     // Input: userId is the ID of the user whose matches we retrieve
     // Expected status code: 200
     // Expected behavior: return users without any specific order
@@ -360,7 +359,6 @@ describe('GET listing recommendations for a user', () => {
         expect(res.body).toStrictEqual({ error: 'Did not match any user!' });
     });
 
-
     // Input: userId is the ID of the user whose matches we retrieve
     // Expected status code: 200
     // Expected behavior: return users without any specific order
@@ -408,44 +406,41 @@ describe('GET listing recommendations for a user', () => {
                 housingType: 'studio',
                 rentalPrice: 2000,
                 moveInDate: '2023-11-01',
-                petFriendly: true
+                petFriendly: true,
             }),
             createDummyListing('userid3', {
                 housingType: '1-bedroom',
                 rentalPrice: 2500,
                 moveInDate: '2024-01-01',
-                petFriendly: true
+                petFriendly: true,
             }),
             createDummyListing('userid4', {
                 housingType: '2-bedroom',
                 rentalPrice: 1500,
                 moveInDate: '2023-12-01',
-                petFriendly: false
+                petFriendly: false,
             }),
             createDummyListing('userid5', {
                 housingType: 'other',
                 rentalPrice: 800,
                 moveInDate: '2024-11-01',
-                petFriendly: false
+                petFriendly: false,
             }),
         ];
         User.findById.mockResolvedValueOnce(createDummyUser(id));
         Preferences.findOne.mockImplementation(() => ({
             lean: jest
                 .fn()
-                .mockResolvedValue(
-                    createDummyPreferences(id, { housingType: '1-bedroom', roommateCount: 0 }),
-                ),
+                .mockResolvedValue(createDummyPreferences(id, { housingType: '1-bedroom', roommateCount: 0 })),
         }));
         Listing.find.mockImplementation(() => ({
             lean: jest.fn().mockResolvedValue(tentativeMatchListings),
         }));
         Listing.findById.mockImplementation((id) => ({
-            lean: jest.fn().mockResolvedValue({id})
+            lean: jest.fn().mockResolvedValue({ id }),
         }));
         const res = await request(app).get(`/api/users/${id}/recommendations/listings`);
         expect(res.statusCode).toStrictEqual(200);
         expect(res.body.length).toStrictEqual(4);
     });
-
 });
