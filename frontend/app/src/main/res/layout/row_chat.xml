@@ -31,5 +31,15 @@
             android:textColor="@color/black"
             android:textSize="18sp" />
 
+        <ImageButton
+            android:id="@+id/chat_row_block"
+            android:layout_width="60dp"
+            android:layout_height="60dp"
+            android:layout_alignParentEnd="true"
+            android:layout_gravity="center_vertical"
+            android:layout_marginEnd="4dp"
+            android:contentDescription="@string/chat_row_block_text"
+            android:src="@drawable/ic_block" />
+
     </RelativeLayout>
 </androidx.cardview.widget.CardView>

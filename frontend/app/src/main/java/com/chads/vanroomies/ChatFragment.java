@@ -63,7 +63,7 @@ public class ChatFragment extends Fragment {
     }
 
     private void updateChatFragment(View v) {
-        ChatListAdapter chatListAdapter = new ChatListAdapter(v.getContext(), allChatMessages, thisUserId);
+        ChatListAdapter chatListAdapter = new ChatListAdapter(v.getContext(), allChatMessages, thisUserId, httpClient, getActivity());
         chatListRecycler.setAdapter((chatListAdapter));
     }
 
