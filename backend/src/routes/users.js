@@ -1,23 +1,12 @@
 const express = require('express');
 const User = require('../models/userModel');
-const { default: mongoose } = require('mongoose');
+const mongoose = require('mongoose');
 const Listing = require('../models/listingModel');
 const Preferences = require('../models/preferencesModel');
 const messageStore = require('../chat/messageStore');
 const { generateAuthenticationToken } = require('../authentication/jwtAuthentication');
 const { BLOCK_THRESHOLD } = require('../utils/constants');
 const router = express.Router();
-
-/**
- * Get all User objects from the database.
- *
- * Route: GET /api/users
- * Content-Type: application/json
- */
-router.get('/', async (req, res, next) => {
-    const users = await User.find({});
-    res.json(users);
-});
 
 /**
  * Login user through Google Sign In. This passes the user through a
@@ -120,7 +109,6 @@ router.post('/:userId/block', async (req, res, next) => {
             { $push: { notRecommended: req.params.userId }, $inc: { blockedCount: 1 } },
             { new: true },
         );
-
         if (updatedBlocked.blockedCount >= BLOCK_THRESHOLD) {
             const deleteUserId = req.body.blockedId;
             await User.findByIdAndDelete(deleteUserId);

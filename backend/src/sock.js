@@ -11,9 +11,7 @@ module.exports = function (server) {
         if (!userId) {
             return next(new Error('No userId'));
         }
-        if (!(userId instanceof mongoose.Types.ObjectId)) {
-            userId = new mongoose.mongo.ObjectId(userId);
-        }
+        userId = new mongoose.mongo.ObjectId(userId);
 
         const user = await User.findById(userId);
         if (!user) {
@@ -28,12 +26,11 @@ module.exports = function (server) {
         socket.join(socket.userId);
 
         socket.on('private message', async ({ content, to }, fn) => {
-            const user = await User.findById(to);
-            if (!user) {
+            const sanitizedMessage = sanitize(content);
+            const sent = await messageStore.sendMessage(sanitizedMessage, socket.userId, to);
+            if (!sent) {
                 return fn({ status: 'error', message: 'User not supplied' });
             }
-            const sanitizedMessage = sanitize(content);
-            await messageStore.sendMessage(sanitizedMessage, socket.userId, to);
             socket
                 .timeout(5000)
                 .to(to)
@@ -51,4 +48,6 @@ module.exports = function (server) {
                 );
         });
     });
+
+    return io;
 };
