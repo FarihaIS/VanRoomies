@@ -79,7 +79,7 @@ router.get('/:userId/recommendations/users', async (req, res, next) => {
         const excluded = [req.params.userId, ...currUser.notRecommended];
         const tentativeMatchPreferences = await Preferences.find({ userId: { $nin: excluded } }).lean();
         let rankedUsers = [];
-        if (tentativeMatchPreferences.length != 0) {
+        if (tentativeMatchPreferences.length !== 0) {
             let scores = generateUserScores(userPreferences, tentativeMatchPreferences);
 
             // TODO: This REQUIRES optimization for further milestones - too transactionally-heavy
@@ -147,7 +147,7 @@ router.get('/:userId/recommendations/listings', async (req, res, next) => {
         }).lean();
         let rankedListings = [];
 
-        if (tentativeMatchListings.length != 0) {
+        if (tentativeMatchListings.length !== 0) {
             let scores = generateListingScores(userPreferences, tentativeMatchListings);
 
             // TODO: This REQUIRES optimization for further milestones - too transactionally-heavy

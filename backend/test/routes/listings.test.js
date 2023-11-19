@@ -8,7 +8,7 @@ jest.mock('../../src/models/listingModel');
 const createDummyListing = (userId, extra) => {
     const listing = {
         _id: 'preferenceObjectId',
-        userId: userId,
+        userId,
         title: 'Dummy listing',
         housingType: 'studio',
         rentalPrice: 1500,
