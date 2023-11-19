@@ -113,7 +113,7 @@ router.post('/:userId/block', async (req, res, next) => {
             const deleteUserId = req.body.blockedId;
             await User.findByIdAndDelete(deleteUserId);
             await Listing.deleteMany({ deleteUserId });
-            await Preferences.deleteOne({ deleteUserId });
+            await Preferences.deleteOne({ userId: deleteUserId });
         }
 
         // If there exists a conversation between users it will be deleted
