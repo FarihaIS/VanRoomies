@@ -32,13 +32,14 @@ router.get('/:userId/preferences', async (req, res, next) => {
  * Body: {userId: ObjectId, minPrice: Number, maxPrice: Number ....}
  */
 router.post('/:userId/preferences', async (req, res, next) => {
-    const preferenceData = { userId: new mongoose.Types.ObjectId(req.params.userId.trim()), ...req.body };
-    const preferences = new Preferences(preferenceData);
-    try {
+    const user = await User.findById(req.params.userId);
+    if(user){
+        const preferenceData = { userId: req.params.userId, ...req.body };
+        const preferences = new Preferences(preferenceData);
         await preferences.save();
         res.status(201).json(preferences);
-    } catch (error) {
-        next(error);
+    }else{
+        res.status(404).json({ error: 'Did not match any user!' });
     }
 });
 
@@ -51,7 +52,7 @@ router.post('/:userId/preferences', async (req, res, next) => {
  * Body: {title: String <new_title>, rentalPrice: Number<new_price> ....}
  */
 router.put('/:userId/preferences', async (req, res, next) => {
-    const userId = new mongoose.Types.ObjectId(req.params.userId);
+    const userId = req.params.userId;
     const updatedPreferences = await Preferences.findOneAndUpdate({ userId }, req.body, { new: true });
     if (updatedPreferences) {
         res.status(200).json(updatedPreferences);

@@ -39,13 +39,18 @@ router.get('/user/:userId', async (req, res, next) => {
  *
  * Route: POST /api/listings
  *
- * Body: {listerID: String, title: String .... images: [String]}
+ * Body: {userID: String, title: String .... images: [String]}
  */
 router.post('/', async (req, res, next) => {
-    const listing = new Listing(req.body);
-    await listing.save();
-    res.location(`/api/listing/${listing._id}`);
-    res.status(201).json(listing);
+    const user = await User.findById(req.body.userId);
+    if(user){
+        const listing = new Listing(req.body);
+        await listing.save();
+        res.location(`/api/listing/${listing._id}`);
+        res.status(201).json(listing);
+    } else {
+        res.status(404).json({ error: 'Incorrect user ID provided' });
+    }
 });
 
 /**
