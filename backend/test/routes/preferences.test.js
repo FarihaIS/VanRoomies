@@ -4,6 +4,8 @@ const User = require('../../src/models/userModel');
 jest.mock('../../src/models/userModel');
 const Preferences = require('../../src/models/preferencesModel');
 jest.mock('../../src/models/preferencesModel');
+const Listing = require('../../src/models/listingModel');
+jest.mock('../../src/models/listingModel');
 
 const createDummyPreferences = (id, extras) => {
     const pref = {
@@ -42,6 +44,27 @@ const createDummyUser = (userId, extras) => {
         return { ...newUser, ...extras };
     } else {
         return newUser;
+    }
+};
+
+const createDummyListing = (userId, extra) => {
+    const listing = {
+        _id: 'preferenceObjectId',
+        userId: userId,
+        title: 'Dummy listing',
+        housingType: 'studio',
+        rentalPrice: 1500,
+        listingDate: '2023-11-01',
+        moveInDate: '2023-11-01',
+        petFriendly: true,
+        status: 'active',
+        scamReportCount: 0,
+    };
+
+    if (extra) {
+        return { ...listing, ...extra };
+    } else {
+        return listing;
     }
 };
 
@@ -202,6 +225,19 @@ describe('GET other user recommendations for a user', () => {
         jest.restoreAllMocks();
     });
 
+    // Input: userId is the invalid
+    // Expected status code: 404
+    // Expected behavior: return an error message
+    // Expected output: { error: 'Did not match any user!' }
+    test('Invalid User ID provided', async () => {
+        const id = 'userId';
+        User.findById.mockResolvedValue(null);
+        const res = await request(app).get(`/api/users/${id}/recommendations/users`);
+        expect(res.statusCode).toStrictEqual(404);
+        expect(res.body).toStrictEqual({ error: 'Did not match any user!' });
+    });
+
+
     // Input: userId is the ID of the user whose matches we retrieve
     // Expected status code: 200
     // Expected behavior: return users without any specific order
@@ -209,6 +245,7 @@ describe('GET other user recommendations for a user', () => {
     test('No set preferences - get all users', async () => {
         const id = 'userId';
         const userList = [createDummyUser('id1'), createDummyUser('id2'), createDummyUser('id3')];
+        User.findById.mockResolvedValue(createDummyUser(id));
         Preferences.findOne.mockImplementation(() => ({
             lean: jest.fn().mockResolvedValue(null),
         }));
@@ -224,10 +261,10 @@ describe('GET other user recommendations for a user', () => {
     // Expected output: []
     test('Preferences set - No tentative matches exist!', async () => {
         const id = 'userId';
+        User.findById.mockResolvedValue(createDummyUser(id));
         Preferences.findOne.mockImplementation(() => ({
             lean: jest.fn().mockResolvedValue(createDummyPreferences(id)),
         }));
-        User.findById.mockResolvedValue(createDummyUser(id));
         Preferences.find.mockImplementation(() => ({
             lean: jest.fn().mockResolvedValue([]),
         }));
@@ -278,6 +315,7 @@ describe('GET other user recommendations for a user', () => {
                 roommateCount: 5,
             }),
         ];
+        User.findById.mockResolvedValueOnce(createDummyUser(id));
         Preferences.findOne.mockImplementation(() => ({
             lean: jest
                 .fn()
@@ -285,14 +323,12 @@ describe('GET other user recommendations for a user', () => {
                     createDummyPreferences(id, { housingType: '2-bedroom', smoking: 'no-smoking', roommateCount: 0 }),
                 ),
         }));
-        User.findById.mockResolvedValueOnce(createDummyUser(id));
         Preferences.find.mockImplementation(() => ({
             lean: jest.fn().mockResolvedValue(tentativeMatches),
         }));
         User.findById.mockImplementation((id) => ({
             select: jest.fn().mockReturnThis(),
             lean: jest.fn().mockResolvedValue({
-                // Your mocked data here
                 id,
                 firstName: 'Test',
                 lastName: 'Test',
@@ -304,4 +340,112 @@ describe('GET other user recommendations for a user', () => {
         expect(res.statusCode).toStrictEqual(200);
         expect(res.body.length).toStrictEqual(4);
     });
+});
+
+// Interface GET /api/users/:userId/recommendations/listings
+describe('GET listing recommendations for a user', () => {
+    afterEach(() => {
+        jest.restoreAllMocks();
+    });
+
+    // Input: userId is the invalid
+    // Expected status code: 404
+    // Expected behavior: return an error message
+    // Expected output: { error: 'Did not match any user!' }
+    test('Invalid User ID provided', async () => {
+        const id = 'userId';
+        User.findById.mockResolvedValue(null);
+        const res = await request(app).get(`/api/users/${id}/recommendations/listings`);
+        expect(res.statusCode).toStrictEqual(404);
+        expect(res.body).toStrictEqual({ error: 'Did not match any user!' });
+    });
+
+
+    // Input: userId is the ID of the user whose matches we retrieve
+    // Expected status code: 200
+    // Expected behavior: return users without any specific order
+    // Expected output: list User objects
+    test('No set preferences - get all users', async () => {
+        const id = 'userId';
+        const listings = [createDummyListing('id1'), createDummyListing('id2'), createDummyListing('id3')];
+        User.findById.mockResolvedValue(createDummyUser(id));
+        Preferences.findOne.mockImplementation(() => ({
+            lean: jest.fn().mockResolvedValue(null),
+        }));
+        Listing.find.mockResolvedValue(listings);
+        const res = await request(app).get(`/api/users/${id}/recommendations/listings`);
+        expect(res.statusCode).toStrictEqual(200);
+        expect(res.body.length).toStrictEqual(3);
+    });
+
+    // Input: userId is the ID of the user whose recommended listings we retrieve
+    // Expected status code: 200
+    // Expected behavior: returns empty list because no tentative listings exist
+    // Expected output: []
+    test('Preferences set - No tentative listings exist!', async () => {
+        const id = 'userId';
+        User.findById.mockResolvedValue(createDummyUser(id));
+        Preferences.findOne.mockImplementation(() => ({
+            lean: jest.fn().mockResolvedValue(createDummyPreferences(id)),
+        }));
+        Listing.find.mockImplementation(() => ({
+            lean: jest.fn().mockResolvedValue([]),
+        }));
+        const res = await request(app).get(`/api/users/${id}/recommendations/listings`);
+        expect(res.statusCode).toStrictEqual(200);
+        expect(res.body.length).toStrictEqual(0);
+        expect(res.body).toStrictEqual([]);
+    });
+
+    // Input: userId is the ID of the user whose recommended listings we retrieve
+    // Expected status code: 200
+    // Expected behavior: returns list of Listings objects sorted in order of best match
+    // Expected output: list Listing objects
+    test('Preferences set - Tentative listings exist!', async () => {
+        const id = 'userId';
+        const tentativeMatchListings = [
+            createDummyListing('userid2', {
+                housingType: 'studio',
+                rentalPrice: 2000,
+                moveInDate: '2023-11-01',
+                petFriendly: true
+            }),
+            createDummyListing('userid3', {
+                housingType: '1-bedroom',
+                rentalPrice: 2500,
+                moveInDate: '2024-01-01',
+                petFriendly: true
+            }),
+            createDummyListing('userid4', {
+                housingType: '2-bedroom',
+                rentalPrice: 1500,
+                moveInDate: '2023-12-01',
+                petFriendly: false
+            }),
+            createDummyListing('userid5', {
+                housingType: 'other',
+                rentalPrice: 800,
+                moveInDate: '2024-11-01',
+                petFriendly: false
+            }),
+        ];
+        User.findById.mockResolvedValueOnce(createDummyUser(id));
+        Preferences.findOne.mockImplementation(() => ({
+            lean: jest
+                .fn()
+                .mockResolvedValue(
+                    createDummyPreferences(id, { housingType: '1-bedroom', roommateCount: 0 }),
+                ),
+        }));
+        Listing.find.mockImplementation(() => ({
+            lean: jest.fn().mockResolvedValue(tentativeMatchListings),
+        }));
+        Listing.findById.mockImplementation((id) => ({
+            lean: jest.fn().mockResolvedValue({id})
+        }));
+        const res = await request(app).get(`/api/users/${id}/recommendations/listings`);
+        expect(res.statusCode).toStrictEqual(200);
+        expect(res.body.length).toStrictEqual(4);
+    });
+
 });

@@ -64,7 +64,10 @@ const calculatePriceScore = (userPreferences, listing) => {
 };
 
 const calculateMoveInDateScore = (listing, closestListing, farthestListing) => {
-    const normalizedTimeWindow = (listing.moveInDate - closestListing) / (farthestListing - closestListing);
+    const closestTime = new Date(closestListing);
+    const farthestTime = new Date(farthestListing);
+    const currentListingTime = new Date(listing.moveInDate);
+    const normalizedTimeWindow = (currentListingTime - closestTime) / (farthestTime - closestTime);
     return 1 - normalizedTimeWindow;
 };
 
@@ -74,7 +77,9 @@ const getClosestFarthestMoveDates = (userPreferences, listings) => {
     let closestListing;
     let farthestListing;
     listings.forEach((listing) => {
-        let timeDifference = Math.abs(userPreferences.moveInDate - listing.moveInDate);
+        let current = new Date(userPreferences.moveInDate);
+        let potential = new Date(listing.moveInDate);
+        let timeDifference = Math.abs(current.getTime() - potential.getTime());
         if (timeDifference > maximalWindow) {
             maximalWindow = timeDifference;
             farthestListing = listing.moveInDate;
