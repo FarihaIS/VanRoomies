@@ -13,6 +13,7 @@
     <string name="matches_bio_string">Bio</string>
     <string name="matches_instruction_string">Swipe right to match, and left to reject</string>
     <string name="no_matches_found">Sorry, no matches found!</string>
+    <string name="reshow_matches">Fetching you more matches!</string>
 
     <!-- Chat Channel Activity -->
     <string name="chat_send_button_text">Send</string>

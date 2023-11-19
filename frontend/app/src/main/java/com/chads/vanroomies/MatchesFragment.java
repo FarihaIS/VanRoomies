@@ -36,6 +36,7 @@ public class MatchesFragment extends Fragment {
     private String thisUserId;
     private OkHttpClient httpClient;
     private Gson gson;
+    private MatchDeckAdapter matchDeckAdapter;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -63,7 +64,7 @@ public class MatchesFragment extends Fragment {
     }
 
     private void updateMatchesFragmentLayout(View v) {
-        MatchDeckAdapter matchDeckAdapter = new MatchDeckAdapter(v.getContext(), userMatches);
+        matchDeckAdapter = new MatchDeckAdapter(v.getContext(), userMatches);
         cardStack.setAdapter(matchDeckAdapter);
 
         cardStack.setEventCallback(new SwipeDeck.SwipeEventCallback() {
@@ -81,7 +82,9 @@ public class MatchesFragment extends Fragment {
 
             @Override
             public void cardsDepleted() {
-                Log.d(TAG, "No more matches");
+                Log.d(TAG, "Fetching more matches");
+                Toast.makeText(getActivity(), R.string.reshow_matches, Toast.LENGTH_SHORT).show();
+                getAllMatches(httpClient, getActivity(), v);
             }
 
             @Override

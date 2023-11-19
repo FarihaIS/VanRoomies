@@ -115,7 +115,7 @@ public class ChatListAdapter extends RecyclerView.Adapter {
                 .build();
         Request request = new Request.Builder()
                 .url(url)
-                .put(requestBody)
+                .post(requestBody)
                 .build();
         httpClient.newCall(request).enqueue(new Callback() {
             @Override
