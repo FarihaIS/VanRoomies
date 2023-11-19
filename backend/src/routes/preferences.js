@@ -1,5 +1,4 @@
 const express = require('express');
-var mongoose = require('mongoose');
 const Preferences = require('../models/preferencesModel');
 const User = require('../models/userModel');
 const Listing = require('../models/listingModel');
@@ -98,36 +97,30 @@ router.get('/:userId/recommendations/users', async (req, res, next) => {
  * This endpoint pushes a new userId on the list of excluded users that are
  * not to be recommended for a given user via the recommendation routes
  *
- * Route: POST /api/users/:userId/recommendations/users
+ * Route: PUT /api/users/:userId/recommendations/users
  *
  * Body: {excludedId: ""}
  */
 router.put('/:userId/recommendations/users', async (req, res, next) => {
-    // Wrap inside transaction, either both occur or neither one does - atomicity
-    let currentUser;
-    let matchUser;
-    const session = await mongoose.startSession();
-    session.startTransaction();
+    // Get both users first, and only proceed if both are found
+    let currentUser = await User.findById(req.params.userId);
+    let matchUser = await User.findById(req.body.excludedId);
+    
+    if (currentUser && matchUser){
+        let updatedUser = await User.findByIdAndUpdate(
+            req.params.userId,
+            { $push: { notRecommended: req.body.excludedId } },
+            { new: true },
+        );
 
-    // Update list for first user
-    currentUser = await User.updateOne(
-        { _id: req.params.userId },
-        { $push: { notRecommended: req.body.excludedId } },
-        { new: true },
-    );
-
-    // Update list for second user
-    matchUser = await User.updateOne(
-        { _id: req.body.excludedId },
-        { $push: { notRecommended: req.params.userId } },
-        { new: true },
-    );
-    await session.commitTransaction();
-    if (currentUser && matchUser) {
-        res.status(200).json(currentUser);
+        await User.findByIdAndUpdate(
+            req.body.excludedId,
+            { $push: { notRecommended: req.params.userId } },
+            { new: true },
+        );
+        res.status(200).json(updatedUser);
     } else {
-        await session.abortTransaction();
-        res.status(404).json({ error: 'Cannot update, user not found' });
+        res.status(404).json({ error: 'Incorrect provided user ID' });
     }
 });
 

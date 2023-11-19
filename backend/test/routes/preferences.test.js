@@ -127,6 +127,60 @@ describe('PUT preferences for a user id', () => {
     });
 });
 
+// Interface PUT /api/users/:userId/recommendations/users
+describe('PUT user match exclusion for pair of users', () => {
+    afterEach(() => {
+        jest.restoreAllMocks();
+    });
+
+    // Input: userId is a valid id of currently logged in user
+    // Body: excludedId is a valid id
+    // Expected status code: 200
+    // Expected behavior: Add excluded user to list of notRecommended
+    // Expected output: User object
+    test('Successful exclusion - both user IDs are correct', async () => {
+        const id = 'validId1';
+        const body = {excludedId: 'validId2'};
+        User.findById.mockResolvedValueOnce({_id: id, notRecommended: []});
+        User.findById.mockResolvedValueOnce({_id: body.excludedId, notRecommended: []});
+        User.findByIdAndUpdate.mockResolvedValueOnce({_id: id, notRecommended: [body.excludedId]});
+        User.findByIdAndUpdate.mockResolvedValueOnce({_id: body.excludedId, notRecommended: [id]});
+        const res = await request(app).put(`/api/users/${id}/recommendations/users`).send(body);
+        expect(res.statusCode).toStrictEqual(200);
+        expect(res.body.notRecommended).toStrictEqual([body.excludedId]);
+    });
+
+    // Input: userId is not a valid id
+    // Body: excludedId is a valid id
+    // Expected status code: 404
+    // Expected behavior: return an error message
+    // Expected output: { error: 'Incorrect provided user ID' }
+    test('Invalid userId for request parameters', async () => {
+        const id = 'invalidId';
+        const body = {excludedId: 'validId2'};
+        User.findById.mockResolvedValueOnce(null);
+        User.findById.mockResolvedValueOnce({_id: body.excludedId, notRecommended: []});
+        const res = await request(app).put(`/api/users/${id}/recommendations/users`).send(body);
+        expect(res.statusCode).toStrictEqual(404);
+        expect(res.body).toStrictEqual({ error: 'Incorrect provided user ID' });
+    });
+
+    // Input: userId is a valid id
+    // Body: excludedId is not a valid id
+    // Expected status code: 404
+    // Expected behavior: return an error message
+    // Expected output: { error: 'Incorrect provided user ID' }
+    test('Invalid userId for request parameters', async () => {
+        const id = 'invalidId';
+        const body = {excludedId: 'validId2'};
+        User.findById.mockResolvedValueOnce({_id: id, notRecommended: []});
+        User.findById.mockResolvedValueOnce(null);
+        const res = await request(app).put(`/api/users/${id}/recommendations/users`).send(body);
+        expect(res.statusCode).toStrictEqual(404);
+        expect(res.body).toStrictEqual({ error: 'Incorrect provided user ID' });
+    });
+});
+
 // Interface GET /api/users/:userId/recommendations/users
 describe('GET other user recommendations for a user', () => {
 
