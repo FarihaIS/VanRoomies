@@ -43,7 +43,7 @@ router.get('/user/:userId', async (req, res, next) => {
  */
 router.post('/', async (req, res, next) => {
     const user = await User.findById(req.body.userId);
-    if(user){
+    if (user) {
         const listing = new Listing(req.body);
         await listing.save();
         res.location(`/api/listing/${listing._id}`);

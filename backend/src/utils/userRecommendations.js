@@ -65,7 +65,7 @@ const aggregateCategorialPreferenceScores = (currentUser, possibleMatch) => {
  * @returns {Number} - matching score
  */
 const housingTypeScore = (currentUser, possibleMatch) => {
-    if (currentUser.housingType in NONSHAREABLE || possibleMatch.housingType in NONSHAREABLE) {
+    if (NONSHAREABLE.includes(currentUser.housingType) || NONSHAREABLE.includes(possibleMatch.housingType)) {
         return 0;
     } else if (currentUser.housingType === TWOBEDROOM && possibleMatch.housingType === TWOBEDROOM) {
         return 1;

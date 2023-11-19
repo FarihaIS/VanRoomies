@@ -41,7 +41,7 @@ const generateListingScores = (userPreferences, listings) => {
 const calculateHousingTypeScore = (userPreferences, listing) => {
     if (userPreferences.housingType === listing.housingType) {
         return 1;
-    } else if (userPreferences.housingType in NONSHAREABLE && listing.housingType in NONSHAREABLE) {
+    } else if (NONSHAREABLE.includes(userPreferences.housingType) && NONSHAREABLE.includes(listing.housingType)) {
         return 0.5;
     }
     return 0;

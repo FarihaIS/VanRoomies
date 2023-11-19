@@ -9,18 +9,18 @@ const createDummyListing = (userId, extra) => {
     const listing = {
         _id: 'preferenceObjectId',
         userId: userId,
-        title: "Dummy listing",
+        title: 'Dummy listing',
         housingType: 'studio',
         rentalPrice: 1500,
         listingDate: '2023-11-01',
         moveInDate: '2023-11-01',
         petFriendly: true,
         status: 'active',
-        scamReportCount: 0
+        scamReportCount: 0,
     };
 
     if (extra) {
-        return {...listing, ...extra};
+        return { ...listing, ...extra };
     } else {
         return listing;
     }
@@ -104,7 +104,7 @@ describe('Post a new listing for a given userID', () => {
     test('Valid lister ID', async () => {
         const id = 'validId';
         const body = createDummyListing(id);
-        User.findById.mockResolvedValue({_id: id});
+        User.findById.mockResolvedValue({ _id: id });
         Listing.prototype.save.mockResolvedValue(createDummyListing(id));
         const res = await request(app).post(`/api/listings/`).send(body);
         expect(res.statusCode).toStrictEqual(201);
@@ -135,12 +135,12 @@ describe('PUT listing based on listing ID', () => {
     // Expected behavior: Update Listing object for the given listing ID
     // Expected output: Listing object
     test('Update Listing for valid listing ID', async () => {
-        const id = "validListingId";
+        const id = 'validListingId';
         const updates = {
             rentalPrice: 500,
-            housingType: '1-bedroom'
+            housingType: '1-bedroom',
         };
-        Listing.findByIdAndUpdate.mockResolvedValue(createDummyListing("userId", updates));
+        Listing.findByIdAndUpdate.mockResolvedValue(createDummyListing('userId', updates));
         const res = await request(app).put(`/api/listings/${id}`).send(updates);
         expect(res.statusCode).toStrictEqual(200);
         expect(res.body.rentalPrice).toBe(500);
@@ -152,10 +152,10 @@ describe('PUT listing based on listing ID', () => {
     // Expected behavior: return an error message
     // Expected output: { error: 'Listing not found' }
     test('Update Preferences for Invalid Listing Id', async () => {
-        const id = "invalidListingId";
+        const id = 'invalidListingId';
         const updates = {
             rentalPrice: 500,
-            housingType: '1-bedroom'
+            housingType: '1-bedroom',
         };
         Listing.findByIdAndUpdate.mockResolvedValue(null);
         const res = await request(app).put(`/api/listings/${id}`).send(updates);
@@ -177,20 +177,20 @@ describe('Report Listing as scam', () => {
     // Expected output: Listing object
     test('Successful report', async () => {
         const id = 'validId';
-        const body = {reporterId: "IAmReporter"};
-        const dummyListing = createDummyListing("I am User", {_id: id})
+        const body = { reporterId: 'IAmReporter' };
+        const dummyListing = createDummyListing('I am User', { _id: id });
 
-        User.findById.mockResolvedValue({_id: body.reporterId});
+        User.findById.mockResolvedValue({ _id: body.reporterId });
         Listing.findById.mockResolvedValue(dummyListing);
 
         dummyListing.scamReportCount += 1;
-        User.findByIdAndUpdate.mockResolvedValue({_id: body.reporterId});
+        User.findByIdAndUpdate.mockResolvedValue({ _id: body.reporterId });
         Listing.findByIdAndUpdate.mockResolvedValue(dummyListing);
 
         const res = await request(app).post(`/api/listings/${id}/report`).send(body);
         expect(res.statusCode).toStrictEqual(200);
         expect(res.body._id).toStrictEqual(id);
-        expect(res.body.userId).toStrictEqual("I am User");
+        expect(res.body.userId).toStrictEqual('I am User');
         expect(res.body.scamReportCount).toStrictEqual(1);
     });
 
@@ -201,20 +201,20 @@ describe('Report Listing as scam', () => {
     // Expected output: Listing object
     test('Successful report - with deletion', async () => {
         const id = 'validId';
-        const body = {reporterId: "IAmReporter"};
-        const dummyListing = createDummyListing("I am User", {_id: id, scamReportCount: 4})
+        const body = { reporterId: 'IAmReporter' };
+        const dummyListing = createDummyListing('I am User', { _id: id, scamReportCount: 4 });
 
-        User.findById.mockResolvedValue({_id: body.reporterId});
+        User.findById.mockResolvedValue({ _id: body.reporterId });
         Listing.findById.mockResolvedValue(dummyListing);
 
         dummyListing.scamReportCount += 1;
-        User.findByIdAndUpdate.mockResolvedValue({_id: body.reporterId});
+        User.findByIdAndUpdate.mockResolvedValue({ _id: body.reporterId });
         Listing.findByIdAndUpdate.mockResolvedValue(dummyListing);
 
         const res = await request(app).post(`/api/listings/${id}/report`).send(body);
         expect(res.statusCode).toStrictEqual(200);
         expect(res.body._id).toStrictEqual(id);
-        expect(res.body.userId).toStrictEqual("I am User");
+        expect(res.body.userId).toStrictEqual('I am User');
         expect(res.body.scamReportCount).toStrictEqual(5);
     });
 
@@ -225,9 +225,9 @@ describe('Report Listing as scam', () => {
     // Expected output: { error: 'Listing reporting failed!' }
     test('Unsuccessful report - invalid listing ID', async () => {
         const id = 'validId';
-        const body = {reporterId: "IAmReporter"};
+        const body = { reporterId: 'IAmReporter' };
 
-        User.findById.mockResolvedValue({_id: body.reporterId});
+        User.findById.mockResolvedValue({ _id: body.reporterId });
         Listing.findById.mockResolvedValue(null);
 
         const res = await request(app).post(`/api/listings/${id}/report`).send(body);
@@ -242,8 +242,8 @@ describe('Report Listing as scam', () => {
     // Expected output: { error: 'Listing reporting failed!' }
     test('Unsuccessful report - invalid listing ID', async () => {
         const id = 'validId';
-        const body = {reporterId: "IAmReporter"};
-        const dummyListing = createDummyListing("I am User", {_id: id, scamReportCount: 4})
+        const body = { reporterId: 'IAmReporter' };
+        const dummyListing = createDummyListing('I am User', { _id: id, scamReportCount: 4 });
 
         User.findById.mockResolvedValue(null);
         Listing.findById.mockResolvedValue(dummyListing);
@@ -252,7 +252,6 @@ describe('Report Listing as scam', () => {
         expect(res.statusCode).toStrictEqual(404);
         expect(res.body).toStrictEqual({ error: 'Listing reporting failed!' });
     });
-
 });
 
 // Interface DELETE /api/listings/:listingId
@@ -266,11 +265,11 @@ describe('DELETE listing based on listing ID', () => {
     // Expected behavior: Delete given listing based on its ID
     // Expected output: Listing object that was deleted
     test('Delete Listing for valid listing ID', async () => {
-        const id = "validListingId";
-        Listing.findByIdAndDelete.mockResolvedValue(createDummyListing("userId"));
+        const id = 'validListingId';
+        Listing.findByIdAndDelete.mockResolvedValue(createDummyListing('userId'));
         const res = await request(app).delete(`/api/listings/${id}`);
         expect(res.statusCode).toStrictEqual(200);
-        expect(res.body.userId).toBe("userId");
+        expect(res.body.userId).toBe('userId');
     });
 
     // Input: listingId is an invalid id
@@ -278,7 +277,7 @@ describe('DELETE listing based on listing ID', () => {
     // Expected behavior: return an error message
     // Expected output: { error: 'Listing not found' }
     test('Delete Listing for Invalid User Id', async () => {
-        const id = "invalidListingId";
+        const id = 'invalidListingId';
         Listing.findByIdAndDelete.mockResolvedValue(null);
         const res = await request(app).delete(`/api/listings/${id}`);
         expect(res.statusCode).toStrictEqual(404);
