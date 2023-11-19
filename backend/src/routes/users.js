@@ -156,7 +156,7 @@ router.post('/:userId/unmatch', async (req, res, next) => {
 
         res.status(200).json({ message: 'Unmatched with user successfully!' });
     } else {
-        res.status(404).json({ error: 'User blocking failed!' });
+        res.status(404).json({ error: 'User unmatching failed!' });
     }
 });
 
