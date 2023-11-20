@@ -6,11 +6,13 @@ import static androidx.test.espresso.action.ViewActions.click;
 import static androidx.test.espresso.action.ViewActions.closeSoftKeyboard;
 import static androidx.test.espresso.action.ViewActions.replaceText;
 import static androidx.test.espresso.action.ViewActions.scrollTo;
+import static androidx.test.espresso.assertion.ViewAssertions.matches;
 import static androidx.test.espresso.contrib.RecyclerViewActions.actionOnItemAtPosition;
 import static androidx.test.espresso.matcher.ViewMatchers.isDisplayed;
 import static androidx.test.espresso.matcher.ViewMatchers.withClassName;
 import static androidx.test.espresso.matcher.ViewMatchers.withContentDescription;
 import static androidx.test.espresso.matcher.ViewMatchers.withId;
+import static androidx.test.espresso.matcher.ViewMatchers.withParent;
 import static androidx.test.espresso.matcher.ViewMatchers.withText;
 import static org.hamcrest.CoreMatchers.allOf;
 import static org.hamcrest.CoreMatchers.is;
@@ -19,14 +21,28 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.ViewParent;
 
+import androidx.test.espresso.ViewAction;
 import androidx.test.espresso.ViewInteraction;
+import androidx.test.espresso.action.CoordinatesProvider;
+import androidx.test.espresso.action.GeneralClickAction;
+import androidx.test.espresso.action.Press;
+import androidx.test.espresso.action.Tap;
 import androidx.test.ext.junit.rules.ActivityScenarioRule;
 import androidx.test.ext.junit.runners.AndroidJUnit4;
 import androidx.test.filters.LargeTest;
+import androidx.test.platform.app.InstrumentationRegistry;
+import androidx.test.uiautomator.By;
+import androidx.test.uiautomator.UiDevice;
+import androidx.test.uiautomator.UiObject;
+import androidx.test.uiautomator.UiObject2;
+import androidx.test.uiautomator.UiSelector;
+import androidx.test.uiautomator.Until;
 
 import org.hamcrest.Description;
 import org.hamcrest.Matcher;
+import org.hamcrest.Matchers;
 import org.hamcrest.TypeSafeMatcher;
+import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -34,13 +50,9 @@ import org.junit.runner.RunWith;
 @LargeTest
 @RunWith(AndroidJUnit4.class)
 public class MainUsecaseTests {
-
-    @Rule
-    public ActivityScenarioRule<MainActivity> mActivityScenarioRule =
-            new ActivityScenarioRule<>(MainActivity.class);
-
-    @Test
-    public void manageListingTest() {
+    private UiDevice mUiDevice;
+    public void loginHelper() throws Exception {
+        // Google Sign-In using UiDevice in conjunction with Espresso for third party popup compatibility
         ViewInteraction id = onView(
                 allOf(withText("Sign in"),
                         childAtPosition(
@@ -52,7 +64,66 @@ public class MainUsecaseTests {
                         isDisplayed()));
         id.perform(click());
 
-        // Add a click on the google account to sign in
+        UiObject addAccount = mUiDevice.findObject(new UiSelector().text("Add another account"));
+
+        // We need to see if there is already an account registered or not
+        if (addAccount.exists()) {
+            UiObject account = mUiDevice.findObject(new UiSelector().textContains("@"));
+            account.click();
+        }
+        else {
+//            mUiDevice.waitForIdle(7000);
+            UiObject loginText = mUiDevice.findObject(new UiSelector().className("android.widget.EditText"));
+            loginText.setText(Constants.testEmail);
+            mUiDevice.waitForIdle(1000);
+            UiObject nextButton = mUiDevice.findObject(new UiSelector().textContains("Next"));
+            nextButton.click();
+            mUiDevice.waitForWindowUpdate(null, 7000);
+            UiObject passwordText = mUiDevice.findObject(new UiSelector().className("android.widget.EditText"));
+            passwordText.setText(Constants.testPassword);
+            mUiDevice.waitForIdle(2000);
+            nextButton = mUiDevice.findObject(new UiSelector().textContains("Next"));
+            nextButton.click();
+
+            mUiDevice.waitForWindowUpdate(null, 3000);
+
+            // Security-related optional prompts
+            UiObject skipButton = mUiDevice.findObject(new UiSelector().textContains("Skip"));
+            if (skipButton.exists()){
+                skipButton.click();
+                mUiDevice.waitForWindowUpdate(null, 4000);
+            }
+
+            UiObject dontTurnOnButton = mUiDevice.findObject(new UiSelector().textContains("DON'T TURN ON"));
+            if (dontTurnOnButton.exists()){
+                dontTurnOnButton.click();
+                mUiDevice.waitForWindowUpdate(null, 4000);
+            }
+
+            UiObject agreeButton = mUiDevice.findObject(new UiSelector().textContains("agree"));
+            if (agreeButton.exists()){
+                agreeButton.click();
+                mUiDevice.waitForWindowUpdate(null, 4000);
+            }
+        }
+    }
+
+    @Rule
+    public ActivityScenarioRule<MainActivity> mActivityScenarioRule =
+            new ActivityScenarioRule<>(MainActivity.class);
+    @Before
+    public void before() throws Exception {
+        mUiDevice = UiDevice.getInstance(InstrumentationRegistry.getInstrumentation());
+    }
+    @Test
+    public void manageListingTest() throws Exception {
+        UiObject login = mUiDevice.findObject(new UiSelector().textContains("Sign In"));
+        if (login.exists()) {
+            loginHelper();
+        }
+
+        UiObject googlePopup = mUiDevice.findObject(new UiSelector().text("Mphi Gamez (MphiGaming)"));
+        googlePopup.click();
 
         ViewInteraction bottomNavigationItemView = onView(
                 allOf(withId(R.id.menu_listings), withContentDescription("Listings"),
@@ -63,6 +134,14 @@ public class MainUsecaseTests {
                                 1),
                         isDisplayed()));
         bottomNavigationItemView.perform(click());
+
+        // We check that the text says "Listings" here so we konw that the bottom navigation bar functions properly
+        ViewInteraction textView = onView(
+                Matchers.allOf(withId(com.google.android.material.R.id.navigation_bar_item_large_label_view), withText("Listings"),
+                        withParent(Matchers.allOf(withId(com.google.android.material.R.id.navigation_bar_item_labels_group),
+                                withParent(Matchers.allOf(withId(R.id.menu_listings), withContentDescription("Listings"))))),
+                        isDisplayed()));
+        textView.check(matches(withText("Listings")));
 
         ViewInteraction switchMaterial = onView(
                 allOf(withId(R.id.listings_toggle),
