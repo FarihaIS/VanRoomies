@@ -8,6 +8,8 @@ const Preferences = require('../../src/models/preferencesModel');
 jest.mock('../../src/models/preferencesModel');
 const Listing = require('../../src/models/listingModel');
 jest.mock('../../src/models/listingModel');
+const messageStore = require('../../src/chat/messageStore');
+jest.mock('../../src/chat/messageStore');
 const mongoose = require('mongoose');
 jest.mock('mongoose', () => {
     const original = jest.requireActual('mongoose');
@@ -190,9 +192,12 @@ describe('POST block user by id from another user', () => {
         User.findByIdAndUpdate.mockResolvedValueOnce(null);
         User.findByIdAndUpdate.mockResolvedValueOnce({ _id: blockedId, blockedCount: 1 });
 
+        messageStore.deleteConversation.mockResolvedValue(null);
+
         const res = await request(app).post(`/api/users/${id}/block`).send({ blockedId });
         expect(res.statusCode).toStrictEqual(200);
         expect(res.body).toStrictEqual({ message: 'User blocked successfully!' });
+        expect(messageStore.deleteConversation).toHaveBeenCalledWith(id, blockedId);
     });
 
     // Input: userId or blockeId are not a valid ids
@@ -223,11 +228,59 @@ describe('POST block user by id from another user', () => {
         User.findByIdAndUpdate.mockResolvedValueOnce(null);
         User.findByIdAndUpdate.mockResolvedValueOnce({ _id: blockedId, blockedCount: 5 });
 
+        messageStore.deleteConversation.mockResolvedValue(null);
+
         const res = await request(app).post(`/api/users/${id}/block`).send({ blockedId });
         expect(res.statusCode).toStrictEqual(200);
         expect(res.body).toStrictEqual({ message: 'User blocked successfully!' });
         expect(User.findByIdAndDelete).toHaveBeenCalledWith(blockedId);
         expect(Listing.deleteMany).toHaveBeenCalledWith({ deleteUserId: blockedId });
         expect(Preferences.deleteOne).toHaveBeenCalledWith({ deleteUserId: blockedId });
+        expect(messageStore.deleteConversation).toHaveBeenCalledWith(id, blockedId);
     });
+
+});
+
+// Interface POST /api/users/:userId/unmatch
+describe('POST block user by id from another user', () => {
+    afterEach(() => {
+        jest.restoreAllMocks();
+    });
+
+    // Input: userId and unmatchedId are valid ids
+    // Expected status code: 200
+    // Expected behavior: update User object that matches the userId and unmatchedId
+    // Expected output: { message: 'Unmatched with user successfully!' }
+    test('Valid userId and unmatchedId', async () => {
+        const id = 'someUserId';
+        const unmatchedId = 'someBlockedId';
+        User.findById.mockResolvedValueOnce({ _id: id });
+        User.findById.mockResolvedValueOnce({ _id: unmatchedId});
+
+        User.findByIdAndUpdate.mockResolvedValueOnce(null);
+        User.findByIdAndUpdate.mockResolvedValueOnce(null);
+
+        messageStore.deleteConversation.mockResolvedValue(null);
+
+        const res = await request(app).post(`/api/users/${id}/unmatch`).send({ unmatchedId });
+        expect(res.statusCode).toStrictEqual(200);
+        expect(res.body).toStrictEqual({ message: 'Unmatched with user successfully!' });
+        expect(messageStore.deleteConversation).toHaveBeenCalledWith(id, unmatchedId);
+    });
+
+    // Input: userId or unmatchedId are not a valid ids
+    // Expected status code: 404
+    // Expected behavior: return an error message
+    // Expected output: { error: 'User unmatching failed!' }
+    test('Invalid userId or unmatchId', async () => {
+        const id = 'invalid';
+        const unmatchedId = 'invalid';
+        User.findById.mockResolvedValueOnce(null);
+        User.findById.mockResolvedValueOnce(null);
+
+        const res = await request(app).post(`/api/users/${id}/unmatch`).send({ unmatchedId });
+        expect(res.statusCode).toStrictEqual(404);
+        expect(res.body).toStrictEqual({ error: 'User unmatching failed!' });
+    });
+
 });

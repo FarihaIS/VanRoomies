@@ -1,5 +1,4 @@
 const express = require('express');
-var mongoose = require('mongoose');
 const Preferences = require('../models/preferencesModel');
 const User = require('../models/userModel');
 const Listing = require('../models/listingModel');
@@ -32,13 +31,14 @@ router.get('/:userId/preferences', async (req, res, next) => {
  * Body: {userId: ObjectId, minPrice: Number, maxPrice: Number ....}
  */
 router.post('/:userId/preferences', async (req, res, next) => {
-    const preferenceData = { userId: new mongoose.Types.ObjectId(req.params.userId.trim()), ...req.body };
-    const preferences = new Preferences(preferenceData);
-    try {
+    const user = await User.findById(req.params.userId);
+    if (user) {
+        const preferenceData = { userId: req.params.userId, ...req.body };
+        const preferences = new Preferences(preferenceData);
         await preferences.save();
         res.status(201).json(preferences);
-    } catch (error) {
-        next(error);
+    } else {
+        res.status(404).json({ error: 'Did not match any user!' });
     }
 });
 
@@ -51,7 +51,7 @@ router.post('/:userId/preferences', async (req, res, next) => {
  * Body: {title: String <new_title>, rentalPrice: Number<new_price> ....}
  */
 router.put('/:userId/preferences', async (req, res, next) => {
-    const userId = new mongoose.Types.ObjectId(req.params.userId);
+    const userId = req.params.userId;
     const updatedPreferences = await Preferences.findOneAndUpdate({ userId }, req.body, { new: true });
     if (updatedPreferences) {
         res.status(200).json(updatedPreferences);
@@ -69,27 +69,28 @@ router.put('/:userId/preferences', async (req, res, next) => {
  * Body: {....filters???}
  */
 router.get('/:userId/recommendations/users', async (req, res, next) => {
-    const userPreferences = await Preferences.findOne({ userId: req.params.userId }).lean();
-    if (!userPreferences) {
-        let error = 'No preferences found for given user!';
-        return res.status(404).json({ error });
-    }
     const currUser = await User.findById(req.params.userId);
-    const excluded = [req.params.userId, ...currUser.notRecommended];
-    const tentativeMatchPreferences = await Preferences.find({ userId: { $nin: excluded } }).lean();
-    if (tentativeMatchPreferences) {
-        let scores = generateUserScores(userPreferences, tentativeMatchPreferences);
-
-        // TODO: This REQUIRES optimization for further milestones - too transactionally-heavy
+    if (currUser) {
+        const userPreferences = await Preferences.findOne({ userId: req.params.userId }).lean();
+        if (!userPreferences) {
+            const allUsers = await User.find({});
+            return res.status(200).json(allUsers);
+        }
+        const excluded = [req.params.userId, ...currUser.notRecommended];
+        const tentativeMatchPreferences = await Preferences.find({ userId: { $nin: excluded } }).lean();
         let rankedUsers = [];
-        for (const id of generateRecommendations(scores)) {
-            const currUser = await User.findById(id).select('firstName lastName profilePicture bio').lean();
-            rankedUsers.push(currUser);
+        if (tentativeMatchPreferences.length !== 0) {
+            let scores = generateUserScores(userPreferences, tentativeMatchPreferences);
+
+            // TODO: This REQUIRES optimization for further milestones - too transactionally-heavy
+            for (const id of generateRecommendations(scores)) {
+                const currUser = await User.findById(id).select('firstName lastName profilePicture bio').lean();
+                rankedUsers.push(currUser);
+            }
         }
         res.status(200).json(rankedUsers);
     } else {
-        let error = 'No preferences found for given user!';
-        res.status(404).json({ error });
+        res.status(404).json({ error: 'Did not match any user!' });
     }
 });
 
@@ -97,36 +98,30 @@ router.get('/:userId/recommendations/users', async (req, res, next) => {
  * This endpoint pushes a new userId on the list of excluded users that are
  * not to be recommended for a given user via the recommendation routes
  *
- * Route: POST /api/users/:userId/recommendations/users
+ * Route: PUT /api/users/:userId/recommendations/users
  *
  * Body: {excludedId: ""}
  */
 router.put('/:userId/recommendations/users', async (req, res, next) => {
-    // Wrap inside transaction, either both occur or neither one does - atomicity
-    let currentUser;
-    let matchUser;
-    const session = await mongoose.startSession();
-    session.startTransaction();
+    // Get both users first, and only proceed if both are found
+    let currentUser = await User.findById(req.params.userId);
+    let matchUser = await User.findById(req.body.excludedId);
 
-    // Update list for first user
-    currentUser = await User.updateOne(
-        { _id: req.params.userId },
-        { $push: { notRecommended: req.body.excludedId } },
-        { new: true },
-    );
-
-    // Update list for second user
-    matchUser = await User.updateOne(
-        { _id: req.body.excludedId },
-        { $push: { notRecommended: req.params.userId } },
-        { new: true },
-    );
-    await session.commitTransaction();
     if (currentUser && matchUser) {
-        res.status(200).json(currentUser);
+        let updatedUser = await User.findByIdAndUpdate(
+            req.params.userId,
+            { $push: { notRecommended: req.body.excludedId } },
+            { new: true },
+        );
+
+        await User.findByIdAndUpdate(
+            req.body.excludedId,
+            { $push: { notRecommended: req.params.userId } },
+            { new: true },
+        );
+        res.status(200).json(updatedUser);
     } else {
-        await session.abortTransaction();
-        res.status(404).json({ error: 'Cannot update, user not found' });
+        res.status(404).json({ error: 'Incorrect provided user ID' });
     }
 });
 
@@ -139,27 +134,31 @@ router.put('/:userId/recommendations/users', async (req, res, next) => {
  * Body: {....filters???}
  */
 router.get('/:userId/recommendations/listings', async (req, res, next) => {
-    const userPreferences = await Preferences.findOne({ userId: req.params.userId }).lean();
-    if (!userPreferences) {
-        return res.status(404).json({ error: 'No preferences found for given user!' });
-    }
     const loggedInUser = await User.findById(req.params.userId);
-    const tentativeMatchListings = await Listing.find({
-        userId: { $ne: req.params.userId },
-        _id: { $nin: loggedInUser.reportedScam },
-    }).lean();
-    if (tentativeMatchListings) {
-        let scores = generateListingScores(userPreferences, tentativeMatchListings);
-
-        // TODO: This REQUIRES optimization for further milestones - too transactionally-heavy
+    if (loggedInUser) {
+        const userPreferences = await Preferences.findOne({ userId: req.params.userId }).lean();
+        if (!userPreferences) {
+            const allListings = await Listing.find({});
+            return res.status(200).json(allListings);
+        }
+        const tentativeMatchListings = await Listing.find({
+            userId: { $ne: req.params.userId },
+            _id: { $nin: loggedInUser.reportedScam },
+        }).lean();
         let rankedListings = [];
-        for (const id of generateRecommendations(scores)) {
-            const currListing = await Listing.findById(id).lean();
-            rankedListings.push(currListing);
+
+        if (tentativeMatchListings.length !== 0) {
+            let scores = generateListingScores(userPreferences, tentativeMatchListings);
+
+            // TODO: This REQUIRES optimization for further milestones - too transactionally-heavy
+            for (const id of generateRecommendations(scores)) {
+                const currListing = await Listing.findById(id).lean();
+                rankedListings.push(currListing);
+            }
         }
         res.status(200).json(rankedListings);
     } else {
-        res.status(404).json({ error: 'No matching listings available!' });
+        res.status(404).json({ error: 'Did not match any user!' });
     }
 });
 
