@@ -17,10 +17,12 @@ import static androidx.test.espresso.matcher.ViewMatchers.withText;
 import static org.hamcrest.CoreMatchers.allOf;
 import static org.hamcrest.CoreMatchers.is;
 
+import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.ViewParent;
 
+import androidx.test.espresso.Espresso;
 import androidx.test.espresso.ViewAction;
 import androidx.test.espresso.ViewInteraction;
 import androidx.test.espresso.action.CoordinatesProvider;
@@ -50,6 +52,7 @@ import org.junit.runner.RunWith;
 @LargeTest
 @RunWith(AndroidJUnit4.class)
 public class MainUsecaseTests {
+    final static String TAG = "MainUsecaseTests";
     private UiDevice mUiDevice;
     public void loginHelper() throws Exception {
         // Google Sign-In using UiDevice in conjunction with Espresso for third party popup compatibility
@@ -64,6 +67,7 @@ public class MainUsecaseTests {
                         isDisplayed()));
         id.perform(click());
 
+        mUiDevice.waitForIdle(3000);
         UiObject addAccount = mUiDevice.findObject(new UiSelector().text("Add another account"));
 
         // We need to see if there is already an account registered or not
@@ -72,39 +76,7 @@ public class MainUsecaseTests {
             account.click();
         }
         else {
-//            mUiDevice.waitForIdle(7000);
-            UiObject loginText = mUiDevice.findObject(new UiSelector().className("android.widget.EditText"));
-            loginText.setText(Constants.testEmail);
-            mUiDevice.waitForIdle(1000);
-            UiObject nextButton = mUiDevice.findObject(new UiSelector().textContains("Next"));
-            nextButton.click();
-            mUiDevice.waitForWindowUpdate(null, 7000);
-            UiObject passwordText = mUiDevice.findObject(new UiSelector().className("android.widget.EditText"));
-            passwordText.setText(Constants.testPassword);
-            mUiDevice.waitForIdle(2000);
-            nextButton = mUiDevice.findObject(new UiSelector().textContains("Next"));
-            nextButton.click();
-
-            mUiDevice.waitForWindowUpdate(null, 3000);
-
-            // Security-related optional prompts
-            UiObject skipButton = mUiDevice.findObject(new UiSelector().textContains("Skip"));
-            if (skipButton.exists()){
-                skipButton.click();
-                mUiDevice.waitForWindowUpdate(null, 4000);
-            }
-
-            UiObject dontTurnOnButton = mUiDevice.findObject(new UiSelector().textContains("DON'T TURN ON"));
-            if (dontTurnOnButton.exists()){
-                dontTurnOnButton.click();
-                mUiDevice.waitForWindowUpdate(null, 4000);
-            }
-
-            UiObject agreeButton = mUiDevice.findObject(new UiSelector().textContains("agree"));
-            if (agreeButton.exists()){
-                agreeButton.click();
-                mUiDevice.waitForWindowUpdate(null, 4000);
-            }
+            Log.d(TAG, "There is no Google account set up! Please refer to M6 testing instructions.");
         }
     }
 
@@ -121,9 +93,6 @@ public class MainUsecaseTests {
         if (login.exists()) {
             loginHelper();
         }
-
-        UiObject googlePopup = mUiDevice.findObject(new UiSelector().text("Mphi Gamez (MphiGaming)"));
-        googlePopup.click();
 
         ViewInteraction bottomNavigationItemView = onView(
                 allOf(withId(R.id.menu_listings), withContentDescription("Listings"),
@@ -153,6 +122,7 @@ public class MainUsecaseTests {
                         isDisplayed()));
         switchMaterial.perform(click());
 
+        // Creating a listing
         ViewInteraction materialButton = onView(
                 allOf(withId(R.id.createListingButton), withText("+"),
                         childAtPosition(
@@ -209,12 +179,7 @@ public class MainUsecaseTests {
         editText5.perform(replaceText("N"), closeSoftKeyboard());
 
         ViewInteraction materialButton2 = onView(
-                allOf(withId(android.R.id.button1), withText("Create"),
-                        childAtPosition(
-                                childAtPosition(
-                                        withClassName(is("android.widget.ScrollView")),
-                                        0),
-                                3)));
+                allOf(withId(android.R.id.button1), withText("Create")));
         materialButton2.perform(scrollTo(), click());
 
         ViewInteraction recyclerView = onView(
@@ -222,16 +187,12 @@ public class MainUsecaseTests {
                         childAtPosition(
                                 withClassName(is("androidx.constraintlayout.widget.ConstraintLayout")),
                                 0)));
-        recyclerView.perform(actionOnItemAtPosition(2, click()));
+        recyclerView.perform(actionOnItemAtPosition(0, click()));
 
-        ViewInteraction materialButton3 = onView(
-                allOf(withId(R.id.edit_housing_type),
-                        childAtPosition(
-                                childAtPosition(
-                                        withId(android.R.id.content),
-                                        0),
-                                9),
-                        isDisplayed()));
+        mUiDevice.waitForIdle(3000);
+
+        // Editing the listing
+        ViewInteraction materialButton3 = onView(withId(R.id.edit_housing_type));
         materialButton3.perform(click());
 
         ViewInteraction editText6 = onView(
