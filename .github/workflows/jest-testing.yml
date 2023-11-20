@@ -1,9 +1,9 @@
-name: jest-testing
+name: backend-jest-testing
 
 on: [push]
 
 jobs:
-    lint:
+    backend-test:
       runs-on: ubuntu-latest
       defaults:
         run:
