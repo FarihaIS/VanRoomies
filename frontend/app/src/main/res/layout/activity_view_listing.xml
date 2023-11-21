@@ -39,10 +39,10 @@
         android:textSize="18sp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.145"
+        app:layout_constraintHorizontal_bias="0.193"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/relativeLayout"
-        app:layout_constraintVertical_bias="0.078" />
+        app:layout_constraintVertical_bias="0.076" />
 
     <TextView
         android:id="@+id/pet_friendly"
@@ -57,7 +57,7 @@
         android:textSize="18sp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.798"
+        app:layout_constraintHorizontal_bias="0.938"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/relativeLayout"
         app:layout_constraintVertical_bias="0.078" />
@@ -74,10 +74,10 @@
         android:textSize="24sp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.186"
+        app:layout_constraintHorizontal_bias="0.267"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/relativeLayout"
-        app:layout_constraintVertical_bias="0.199" />
+        app:layout_constraintVertical_bias="0.202" />
 
     <androidx.cardview.widget.CardView
         android:id="@+id/cardView"
@@ -157,10 +157,10 @@
         app:iconTint="#F44336"
         app:layout_constraintBottom_toTopOf="@+id/edit_housing_desc"
         app:layout_constraintEnd_toStartOf="@+id/listing_name"
-        app:layout_constraintHorizontal_bias="0.75"
+        app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/edit_housing_type"
-        app:layout_constraintVertical_bias="0.555" />
+        app:layout_constraintVertical_bias="0.0" />
 
     <Button
         android:id="@+id/edit_housing_desc"
@@ -178,10 +178,10 @@
         app:iconTint="#F44336"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toStartOf="@+id/cardView"
-        app:layout_constraintHorizontal_bias="0.551"
+        app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/edit_housing_type"
-        app:layout_constraintVertical_bias="0.15" />
+        app:layout_constraintVertical_bias="0.152" />
 
     <Button
         android:id="@+id/edit_housing_type"
@@ -199,10 +199,10 @@
         app:iconTint="#F44336"
         app:layout_constraintBottom_toTopOf="@+id/cardView"
         app:layout_constraintEnd_toStartOf="@+id/housing_type"
-        app:layout_constraintHorizontal_bias="1.0"
+        app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/relativeLayout"
-        app:layout_constraintVertical_bias="0.107" />
+        app:layout_constraintVertical_bias="0.061" />
 
     <Button
         android:id="@+id/edit_pet_friendly"
@@ -239,10 +239,10 @@
         app:iconTint="#F44336"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="@+id/move_in_date"
-        app:layout_constraintHorizontal_bias="1.2"
+        app:layout_constraintHorizontal_bias="1.0"
         app:layout_constraintStart_toStartOf="@+id/move_in_date"
         app:layout_constraintTop_toTopOf="@+id/move_in_date"
-        app:layout_constraintVertical_bias="0.5" />
+        app:layout_constraintVertical_bias="0.722" />
 
     <Button
         android:id="@+id/report_button"
