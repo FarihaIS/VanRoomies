@@ -79,19 +79,20 @@
         app:layout_constraintTop_toBottomOf="@+id/relativeLayout"
         app:layout_constraintVertical_bias="0.202" />
 
+    <!-- Edit Buttons for Owners -->
+
     <androidx.cardview.widget.CardView
         android:id="@+id/cardView"
-        android:layout_width="329dp"
-        android:layout_height="187dp"
+        android:layout_width="327dp"
+        android:layout_height="147dp"
         android:layout_alignParentBottom="true"
         android:layout_centerHorizontal="true"
         app:cardBackgroundColor="#FFFFFF"
         app:layout_constraintBottom_toTopOf="@+id/listing_date"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.495"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/listing_name"
-        app:layout_constraintVertical_bias="0.18">
+        app:layout_constraintVertical_bias="0.571">
 
         <TextView
             android:id="@+id/listing_desc"
@@ -104,8 +105,6 @@
             android:textSize="16sp" />
 
     </androidx.cardview.widget.CardView>
-
-    <!-- Edit Buttons for Owners -->
 
     <TextView
         android:id="@+id/listing_date"
@@ -164,12 +163,11 @@
 
     <Button
         android:id="@+id/edit_housing_desc"
-        android:layout_width="50dp"
-        android:layout_height="43dp"
+        android:layout_width="49dp"
+        android:layout_height="33dp"
         android:layout_alignParentTop="true"
         android:layout_alignParentEnd="true"
         android:layout_alignParentBottom="true"
-        android:layout_marginEnd="4dp"
         android:background="@android:color/transparent"
         android:scaleX="1"
         android:scaleY="1"
@@ -177,11 +175,11 @@
         app:icon="@drawable/ic_edit"
         app:iconTint="#F44336"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toStartOf="@+id/cardView"
-        app:layout_constraintHorizontal_bias="0.0"
-        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="@+id/cardView"
+        app:layout_constraintHorizontal_bias="0.028"
+        app:layout_constraintStart_toStartOf="@+id/cardView"
         app:layout_constraintTop_toBottomOf="@+id/edit_housing_type"
-        app:layout_constraintVertical_bias="0.152" />
+        app:layout_constraintVertical_bias="0.151" />
 
     <Button
         android:id="@+id/edit_housing_type"
