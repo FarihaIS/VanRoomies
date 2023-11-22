@@ -33,6 +33,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -190,7 +191,6 @@ public class ListingsFragment extends Fragment implements ListingsItemSelectList
 
                         if (response.isSuccessful() && responseData.length() > 0){
                             List<Map<String, Object>> responseDataList = g.fromJson(responseData, List.class);
-
                             for (int index = 0; index < responseDataList.size(); index++){
                                 Map<String, Object> listing_json = responseDataList.get(index);
                                 JSONObject listing_obj = new JSONObject(listing_json);
@@ -248,7 +248,9 @@ public class ListingsFragment extends Fragment implements ListingsItemSelectList
                         recyclerDataArrayList = new ArrayList<>();
                         String responseData = response.body().string();
                         List<Map<String, Object>> responseDataList = g.fromJson(responseData, List.class);
-
+                        // We want to sort listings by newest first. The query also sorts similar times in a way opposite
+                        // to which we want it, so the BE sorts by oldest first and we reverse that list.
+                        Collections.reverse(responseDataList);
                         for (int index = 0; index < responseDataList.size(); index++){
                             Map<String, Object> listingJson = responseDataList.get(index);
                             JSONObject listing_obj = new JSONObject(listingJson);
