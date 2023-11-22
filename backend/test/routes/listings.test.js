@@ -70,7 +70,9 @@ describe('GET All Listings for a user ID', () => {
     test('Valid user ID', async () => {
         const id = 'validId';
         const setOfHouses = [createDummyListing(id), createDummyListing(id)];
-        Listing.find.mockResolvedValue(setOfHouses);
+        Listing.find.mockImplementation(() => ({
+            sort: jest.fn().mockResolvedValue(setOfHouses)
+        }));
         const res = await request(app).get(`/api/listings/user/${id}`);
         expect(res.statusCode).toStrictEqual(200);
         expect(res.body.length).toBe(2);
@@ -84,7 +86,9 @@ describe('GET All Listings for a user ID', () => {
     // Expected output: { error: 'No listing found for given user ID' }
     test('Invalid user ID', async () => {
         const id = 'invalidId';
-        Listing.find.mockResolvedValue(null);
+        Listing.find.mockImplementation(() => ({
+            sort: jest.fn().mockResolvedValue(null)
+        }));
         const res = await request(app).get(`/api/listings/user/${id}`);
         expect(res.statusCode).toStrictEqual(404);
         expect(res.body).toStrictEqual({ error: 'No listing found for given user ID' });
