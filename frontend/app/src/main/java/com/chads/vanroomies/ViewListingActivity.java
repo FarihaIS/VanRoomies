@@ -92,9 +92,12 @@ public class ViewListingActivity extends AppCompatActivity {
                                 !text.equals("other")){
                                 Toast.makeText(view.getContext(), "Please enter a valid value for housingType.", Toast.LENGTH_LONG).show();
                             }
+                            else {
+                                updateEditableText(client, view, ViewListingActivity.this, attribute, listingId, text_field, String.valueOf(et.getText()));
+                            }
                         }
                         else {
-                            updateEditableText(client, view, ViewListingActivity.this, attribute, listingId, text_field, et.getText().toString());
+                            updateEditableText(client, view, ViewListingActivity.this, attribute, listingId, text_field, String.valueOf(et.getText()));
                         }
                     } catch (JSONException e) {
                         Log.d(TAG, Log.getStackTraceString(e));

@@ -95,7 +95,7 @@ public class MainUsecaseTests {
                         isDisplayed()));
         bottomNavigationItemView.perform(click());
 
-        // We check that the text says "Listings" here so we konw that the bottom navigation bar functions properly
+        // We check that the text says "Listings" here so we know that the bottom navigation bar functions properly
         ViewInteraction textView = onView(
                 Matchers.allOf(withId(com.google.android.material.R.id.navigation_bar_item_large_label_view), withText("Listings"),
                         withParent(Matchers.allOf(withId(com.google.android.material.R.id.navigation_bar_item_labels_group),
@@ -186,6 +186,7 @@ public class MainUsecaseTests {
         ViewInteraction materialButton3 = onView(withId(R.id.edit_housing_type));
         materialButton3.perform(click());
 
+        // Update Housing Type from Studio -> 1-bedroom
         ViewInteraction editText6 = onView(
                 allOf(withText("studio"),
                         childAtPosition(
@@ -217,6 +218,7 @@ public class MainUsecaseTests {
                                 3)));
         materialButton4.perform(scrollTo(), click());
 
+        // Update Listing Title from Studio in Kits to 1-Bedroom in Kits
         ViewInteraction materialButton5 = onView(
                 allOf(withId(R.id.edit_title),
                         childAtPosition(
@@ -236,10 +238,10 @@ public class MainUsecaseTests {
                                                 0)),
                                 0),
                         isDisplayed()));
-        editText8.perform(replaceText("Studio in Kitsilano"));
+        editText8.perform(replaceText("1-Bedroom in Kits"));
 
         ViewInteraction editText9 = onView(
-                allOf(withText("Studio in Kitsilano"),
+                allOf(withText("1-Bedroom in Kits"),
                         childAtPosition(
                                 allOf(withId(android.R.id.custom),
                                         childAtPosition(
@@ -258,47 +260,90 @@ public class MainUsecaseTests {
                                 3)));
         materialButton6.perform(scrollTo(), click());
 
-        ViewInteraction materialButton7 = onView(
-                allOf(withId(R.id.edit_housing_type),
+        // Update Pet Friendly to Yes
+        ViewInteraction materialButton9 = onView(
+                Matchers.allOf(withId(R.id.edit_pet_friendly),
                         childAtPosition(
                                 childAtPosition(
                                         withId(android.R.id.content),
                                         0),
-                                9),
+                                10),
                         isDisplayed()));
-        materialButton7.perform(click());
+        materialButton9.perform(click());
 
-        ViewInteraction editText10 = onView(
-                allOf(withText("studio"),
-                        childAtPosition(
-                                allOf(withId(android.R.id.custom),
-                                        childAtPosition(
-                                                withClassName(is("android.widget.FrameLayout")),
-                                                0)),
-                                0),
-                        isDisplayed()));
-        editText10.perform(replaceText("invalid"));
-
-        ViewInteraction editText11 = onView(
-                allOf(withText("invalid"),
-                        childAtPosition(
-                                allOf(withId(android.R.id.custom),
-                                        childAtPosition(
-                                                withClassName(is("android.widget.FrameLayout")),
-                                                0)),
-                                0),
-                        isDisplayed()));
-        editText11.perform(closeSoftKeyboard());
-
-        ViewInteraction materialButton8 = onView(
-                allOf(withId(android.R.id.button1), withText("Save"),
+        ViewInteraction materialButton10 = onView(
+                Matchers.allOf(withId(android.R.id.button1), withText("Yes"),
                         childAtPosition(
                                 childAtPosition(
-                                        withClassName(is("android.widget.ScrollView")),
+                                        withClassName(Matchers.is("android.widget.ScrollView")),
                                         0),
                                 3)));
-        materialButton8.perform(scrollTo(), click());
+        materialButton10.perform(scrollTo(), click());
 
+        // Updating Housing Description for 1-bedroom
+        ViewInteraction materialButton11 = onView(
+                Matchers.allOf(withId(R.id.edit_housing_desc),
+                        childAtPosition(
+                                childAtPosition(
+                                        withId(android.R.id.content),
+                                        0),
+                                8),
+                        isDisplayed()));
+        materialButton11.perform(click());
+
+        ViewInteraction editText12 = onView(
+                Matchers.allOf(withText("This is a lovely and affordable studio right by Kits Beach"),
+                        childAtPosition(
+                                Matchers.allOf(withId(android.R.id.custom),
+                                        childAtPosition(
+                                                withClassName(Matchers.is("android.widget.FrameLayout")),
+                                                0)),
+                                0),
+                        isDisplayed()));
+        editText12.perform(click());
+
+        ViewInteraction editText13 = onView(
+                Matchers.allOf(withText("This is a lovely and affordable studio right by Kits Beach"),
+                        childAtPosition(
+                                Matchers.allOf(withId(android.R.id.custom),
+                                        childAtPosition(
+                                                withClassName(Matchers.is("android.widget.FrameLayout")),
+                                                0)),
+                                0),
+                        isDisplayed()));
+        editText13.perform(replaceText("This is a lovely and affordable 1-bedroom right by Kits Beach"));
+
+        ViewInteraction editText14 = onView(
+                Matchers.allOf(withText("This is a lovely and affordable 1-bedroom right by Kits Beach"),
+                        childAtPosition(
+                                Matchers.allOf(withId(android.R.id.custom),
+                                        childAtPosition(
+                                                withClassName(Matchers.is("android.widget.FrameLayout")),
+                                                0)),
+                                0),
+                        isDisplayed()));
+        editText14.perform(closeSoftKeyboard());
+
+        ViewInteraction materialButton12 = onView(
+                Matchers.allOf(withId(android.R.id.button1), withText("Save"),
+                        childAtPosition(
+                                childAtPosition(
+                                        withClassName(Matchers.is("android.widget.ScrollView")),
+                                        0),
+                                3)));
+        materialButton12.perform(scrollTo(), click());
+
+        // Checking if the posting has been updated immediately on the frontend
+        onView(withId(R.id.housing_type))
+                .check(matches(withText("1-bedroom")));
+        onView(withId(R.id.pet_friendly))
+                .check(matches(withText("Pets: Allowed")));
+        onView(withId(R.id.listing_name))
+                .check(matches(withText("1-Bedroom in Kits")));
+        onView(withId(R.id.listing_desc))
+                .check(matches(withText("This is a lovely and affordable 1-bedroom right by Kits Beach")));
+
+        // Return to listings fragment
         pressBack();
     }
 
