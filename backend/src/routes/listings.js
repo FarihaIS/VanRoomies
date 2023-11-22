@@ -25,7 +25,7 @@ router.get('/:listingId', async (req, res, next) => {
  * Route: GET /api/listings/user/:userId where userId is the ID of the user
  */
 router.get('/user/:userId', async (req, res, next) => {
-    let listings = await Listing.find({ userId: req.params.userId }).sort({ listingDate: -1 });
+    let listings = await Listing.find({ userId: req.params.userId }).sort({ listingDate: 1 });
     if (listings) {
         res.status(200).json(listings);
     } else {
