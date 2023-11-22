@@ -24,8 +24,6 @@ public class Constants {
     final static String userIdKey = "userId";
     final static String userTokenKey = "userToken";
     final static String userDefault = "DEFAULT";
-    final static String testEmail = "bayleefshoo";
-    final static String testPassword = "TeamChadsBurner123@";
 
     // Verification
     final static String base64Regex = "^([A-Za-z0-9+/]{4})*([A-Za-z0-9+/]{3}=|[A-Za-z0-9+/]{2}==)?$";
