@@ -92,7 +92,7 @@ public class MainUsecaseTests {
     public ActivityScenarioRule<MainActivity> mActivityScenarioRule =
             new ActivityScenarioRule<>(MainActivity.class);
     @Before
-    public void before() throws Exception {
+    public void before() {
         mUiDevice = UiDevice.getInstance(InstrumentationRegistry.getInstrumentation());
     }
     @Test
