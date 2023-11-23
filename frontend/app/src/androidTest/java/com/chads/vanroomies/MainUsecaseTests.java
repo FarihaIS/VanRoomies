@@ -62,6 +62,10 @@ public class MainUsecaseTests {
     private UiDevice mUiDevice;
     private ArrayList<String> matches = new ArrayList<>(Arrays.asList("John Man", "Mary Jane", "John Doe", "Kevin Zhang"));
 
+    @Rule
+    public ActivityScenarioRule<MainActivity> mActivityScenarioRule =
+            new ActivityScenarioRule<>(MainActivity.class);
+
     public void loginHelper() throws Exception {
         // Google Sign-In using UiDevice in conjunction with Espresso for third party popup compatibility
         ViewInteraction id = onView(
@@ -88,9 +92,6 @@ public class MainUsecaseTests {
         }
     }
 
-    @Rule
-    public ActivityScenarioRule<MainActivity> mActivityScenarioRule =
-            new ActivityScenarioRule<>(MainActivity.class);
     @Before
     public void before() {
         mUiDevice = UiDevice.getInstance(InstrumentationRegistry.getInstrumentation());
