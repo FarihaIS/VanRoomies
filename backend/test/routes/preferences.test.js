@@ -359,18 +359,20 @@ describe('GET listing recommendations for a user', () => {
         expect(res.body).toStrictEqual({ error: 'Did not match any user!' });
     });
 
-    // Input: userId is the ID of the user whose matches we retrieve
+    // Input: userId is the ID of the user whose recommended listings we retrieve
     // Expected status code: 200
     // Expected behavior: return users without any specific order
-    // Expected output: list User objects
-    test('No set preferences - get all users', async () => {
+    // Expected output: list Listing objects
+    test('No set preferences - get all listings', async () => {
         const id = 'userId';
         const listings = [createDummyListing('id1'), createDummyListing('id2'), createDummyListing('id3')];
         User.findById.mockResolvedValue(createDummyUser(id));
         Preferences.findOne.mockImplementation(() => ({
             lean: jest.fn().mockResolvedValue(null),
         }));
-        Listing.find.mockResolvedValue(listings);
+        Listing.find.mockImplementation(() => ({
+            lean: jest.fn().mockResolvedValue(listings),
+        }));
         const res = await request(app).get(`/api/users/${id}/recommendations/listings`);
         expect(res.statusCode).toStrictEqual(200);
         expect(res.body.length).toStrictEqual(3);
