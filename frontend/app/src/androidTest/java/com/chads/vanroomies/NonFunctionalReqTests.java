@@ -184,9 +184,7 @@ public class NonFunctionalReqTests {
     public void maximumLoadTimeTest() throws Exception {
         UiObject login = mUiDevice.findObject(new UiSelector().textContains("Sign In"));
         if (login.exists()) {
-            currTaskStartTime = System.currentTimeMillis();
             nonFuncLoginHelper();
-            timeReport("Sign-in");
         }
 
         ViewInteraction bottomNavigationItemView = onView(
@@ -419,21 +417,6 @@ public class NonFunctionalReqTests {
         materialButton11.perform(click());
         timeReport("Send Message");
         pressBack();
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
     }
 
     private static Matcher<View> childAtPosition(
