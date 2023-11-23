@@ -19,7 +19,7 @@
     <string name="chat_send_button_text">Send</string>
     <string name="edit_chat_message_text">Enter Message</string>
     <string name="default_name">First Last</string>
-    <string name="invalid_input_message">First Last</string>
+    <string name="invalid_input_message">Please enter a non-empty message!</string>
     <string name="no_chats_found">Sorry, no chats found!</string>
 
     <!-- Chat Item -->
