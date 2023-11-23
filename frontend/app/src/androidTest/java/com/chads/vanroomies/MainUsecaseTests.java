@@ -19,11 +19,14 @@ import static org.hamcrest.CoreMatchers.allOf;
 import static org.hamcrest.CoreMatchers.is;
 import static org.junit.Assert.assertTrue;
 
+import android.os.IBinder;
 import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.ViewParent;
+import android.view.WindowManager;
 
+import androidx.test.espresso.Root;
 import androidx.test.espresso.ViewInteraction;
 import androidx.test.espresso.action.GeneralLocation;
 import androidx.test.espresso.action.GeneralSwipeAction;
@@ -491,7 +494,7 @@ public class MainUsecaseTests {
                         isDisplayed()));
         bottomNavigationItemView.perform(click());
 
-        // Click unmatch button
+        // Click unmatch button on the chat with "John Man"
         ViewInteraction unmatchButton = onView(
                 Matchers.allOf(withId(R.id.chat_row_unmatch), withContentDescription("Unmatch with User"),
                         childAtPosition(
@@ -519,7 +522,7 @@ public class MainUsecaseTests {
                                 3)));
         yesButton.perform(scrollTo(), click());
 
-        // Check there is no chat layout with name
+        // Check there is no chat layout with "John Man"
         ViewInteraction chatFragment = onView(
                 Matchers.allOf(withParent(Matchers.allOf(withId(R.id.chatlistrecycle),
                                 withParent(IsInstanceOf.<View>instanceOf(android.widget.FrameLayout.class)))),
@@ -558,6 +561,151 @@ public class MainUsecaseTests {
                 isDisplayed()));
     }
 
+    @Test
+    public void chatTest() throws Exception {
+        UiObject login = mUiDevice.findObject(new UiSelector().textContains("Sign In"));
+        if (login.exists()) {
+            loginHelper();
+        }
+
+        // Click on matches fragment
+        ViewInteraction bottomNavigationItemView = onView(
+                Matchers.allOf(withId(R.id.menu_matches), withContentDescription("Matches"),
+                        childAtPosition(
+                                childAtPosition(
+                                        withId(R.id.bottomNavigationView),
+                                        0),
+                                2),
+                        isDisplayed()));
+        bottomNavigationItemView.perform(click());
+
+        // Check card deck is not empty
+        ViewInteraction swipeDeck = onView(
+                Matchers.allOf(withId(R.id.matches_swipe_deck),
+                        childAtPosition(
+                                childAtPosition(withId(R.id.matches_relative_layout),
+                                        0),
+                                0),
+                        isDisplayed()));
+        swipeDeck.check((view, noViewFoundException) -> {
+            if (view instanceof SwipeDeck) {
+                int childCount = ((SwipeDeck) view).getChildCount();
+                assertTrue(childCount > 0);
+            }
+        });
+
+        // Swipe right on "John Man"
+        swipeDeck.perform(new GeneralSwipeAction(Swipe.FAST, GeneralLocation.CENTER, GeneralLocation.CENTER_RIGHT, Press.FINGER));
+
+        // Click on chat fragment
+        bottomNavigationItemView = onView(
+                Matchers.allOf(withId(R.id.menu_chat), withContentDescription("Chat"),
+                        childAtPosition(
+                                childAtPosition(
+                                        withId(R.id.bottomNavigationView),
+                                        0),
+                                3),
+                        isDisplayed()));
+        bottomNavigationItemView.perform(click());
+
+        // Click on the chat with "John Man"
+        ViewInteraction chatRecyclerView = onView(
+                Matchers.allOf(withId(R.id.chatlistrecycle),
+                        childAtPosition(
+                                withClassName(Matchers.is("android.widget.FrameLayout")),
+                                0)));
+        chatRecyclerView.perform(actionOnItemAtPosition(0, click()));
+
+        // Click on the "Send" button
+        ViewInteraction sendButton = onView(
+                Matchers.allOf(withId(R.id.chat_send_button), withText("Send"),
+                        childAtPosition(
+                                Matchers.allOf(withId(R.id.layout_chat_chatbox),
+                                        childAtPosition(
+                                                withClassName(Matchers.is("androidx.constraintlayout.widget.ConstraintLayout")),
+                                                2)),
+                                2),
+                        isDisplayed()));
+        sendButton.perform(click());
+
+        // Check for Toast message
+        onView(withText(R.string.invalid_input_message)).inRoot(new ToastMatcher())
+                .check(matches(isDisplayed()));
+
+        // Input "This is a test :)" in chatbox
+        ViewInteraction appCompatEditText = onView(
+                Matchers.allOf(withId(R.id.edit_chat_message),
+                        childAtPosition(
+                                Matchers.allOf(withId(R.id.layout_chat_chatbox),
+                                        childAtPosition(
+                                                withClassName(Matchers.is("androidx.constraintlayout.widget.ConstraintLayout")),
+                                                2)),
+                                1),
+                        isDisplayed()));
+        appCompatEditText.perform(replaceText("This is a test :)"), closeSoftKeyboard());
+
+        // Click on the "Send" button
+        sendButton = onView(
+                Matchers.allOf(withId(R.id.chat_send_button), withText("Send"),
+                        childAtPosition(
+                                Matchers.allOf(withId(R.id.layout_chat_chatbox),
+                                        childAtPosition(
+                                                withClassName(Matchers.is("androidx.constraintlayout.widget.ConstraintLayout")),
+                                                2)),
+                                2),
+                        isDisplayed()));
+        sendButton.perform(click());
+
+        // Check that the message sent is displayed in the chat channel
+        ViewInteraction chatMessage = onView(
+                Matchers.allOf(withId(R.id.chat_me_text), withText("This is a test :)"),
+                        withParent(Matchers.allOf(withId(R.id.chat_me_container),
+                                withParent(withId(R.id.chat_me_message)))),
+                        isDisplayed()));
+        chatMessage.check(matches(withText("This is a test :)")));
+
+        // Click back
+        pressBack();
+
+        // Click on another screen (e.g. profile fragment)
+        bottomNavigationItemView = onView(
+                Matchers.allOf(withId(R.id.menu_profile), withContentDescription("Profile"),
+                        childAtPosition(
+                                childAtPosition(
+                                        withId(R.id.bottomNavigationView),
+                                        0),
+                                0),
+                        isDisplayed()));
+        bottomNavigationItemView.perform(click());
+
+        // Click back on the chat fragment
+        bottomNavigationItemView = onView(
+                Matchers.allOf(withId(R.id.menu_chat), withContentDescription("Chat"),
+                        childAtPosition(
+                                childAtPosition(
+                                        withId(R.id.bottomNavigationView),
+                                        0),
+                                3),
+                        isDisplayed()));
+        bottomNavigationItemView.perform(click());
+
+        // Click on the chat with "John Man"
+        chatRecyclerView = onView(
+                Matchers.allOf(withId(R.id.chatlistrecycle),
+                        childAtPosition(
+                                withClassName(Matchers.is("android.widget.FrameLayout")),
+                                0)));
+        chatRecyclerView.perform(actionOnItemAtPosition(0, click()));
+
+        // Check that the message sent is displayed in the chat channel
+        chatMessage = onView(
+                Matchers.allOf(withId(R.id.chat_me_text), withText("This is a test :)"),
+                        withParent(Matchers.allOf(withId(R.id.chat_me_container),
+                                withParent(withId(R.id.chat_me_message)))),
+                        isDisplayed()));
+        chatMessage.check(matches(withText("This is a test :)")));
+    }
+
     private static Matcher<View> childAtPosition(
             final Matcher<View> parentMatcher, final int position) {
 
@@ -576,4 +724,26 @@ public class MainUsecaseTests {
             }
         };
     }
+
+    private static class ToastMatcher extends TypeSafeMatcher<Root> {
+        @Override
+        public void describeTo(Description description) {
+            description.appendText("is toast");
+        }
+
+        @Override
+        public boolean matchesSafely(Root root) {
+            int type = root.getWindowLayoutParams().get().type;
+            if ((type == WindowManager.LayoutParams.TYPE_TOAST)) {
+                IBinder windowToken = root.getDecorView().getWindowToken();
+                IBinder appToken = root.getDecorView().getApplicationWindowToken();
+                if (windowToken == appToken) {
+                    return true;
+                }
+            }
+            return false;
+        }
+    }
+
+
 }
