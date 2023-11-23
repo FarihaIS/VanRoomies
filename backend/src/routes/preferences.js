@@ -72,11 +72,11 @@ router.get('/:userId/recommendations/users', async (req, res, next) => {
     const currUser = await User.findById(req.params.userId);
     if (currUser) {
         const userPreferences = await Preferences.findOne({ userId: req.params.userId }).lean();
+        const excluded = [req.params.userId, ...currUser.notRecommended];
         if (!userPreferences) {
-            const allUsers = await User.find({});
+            const allUsers = await User.find({ _id: { $nin: excluded } });
             return res.status(200).json(allUsers);
         }
-        const excluded = [req.params.userId, ...currUser.notRecommended];
         const tentativeMatchPreferences = await Preferences.find({ userId: { $nin: excluded } }).lean();
         let rankedUsers = [];
         if (tentativeMatchPreferences.length !== 0) {
@@ -137,14 +137,13 @@ router.get('/:userId/recommendations/listings', async (req, res, next) => {
     const loggedInUser = await User.findById(req.params.userId);
     if (loggedInUser) {
         const userPreferences = await Preferences.findOne({ userId: req.params.userId }).lean();
-        if (!userPreferences) {
-            const allListings = await Listing.find({});
-            return res.status(200).json(allListings);
-        }
         const tentativeMatchListings = await Listing.find({
             userId: { $ne: req.params.userId },
             _id: { $nin: loggedInUser.reportedScam },
         }).lean();
+        if (!userPreferences) {
+            return res.status(200).json(tentativeMatchListings);
+        }
         let rankedListings = [];
 
         if (tentativeMatchListings.length !== 0) {
