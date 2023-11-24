@@ -5,6 +5,7 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.os.Parcelable;
 import android.os.StrictMode;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -38,6 +39,14 @@ public class MatchesFragment extends Fragment {
     private Gson gson;
 
     @Override
+    public void onSaveInstanceState(@NonNull Bundle outState) {
+        super.onSaveInstanceState(outState);
+        // Save the necessary data to the bundle
+        outState.putParcelableArrayList("userMatches", userMatches);
+        // You might need to save other state information if needed
+    }
+
+    @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         StrictMode.ThreadPolicy policy = new StrictMode.ThreadPolicy.Builder().permitAll().build();
@@ -55,10 +64,20 @@ public class MatchesFragment extends Fragment {
 
         httpClient = HTTPSClientFactory.createClient(getActivity().getApplication());
         gson = new Gson();
-        userMatches = new ArrayList<>();
         cardStack = v.findViewById(R.id.matches_swipe_deck);
+        userMatches = new ArrayList<>();
 
-        getAllMatches(httpClient, getActivity(), v);
+        if (savedInstanceState != null) {
+            ArrayList<Parcelable> parcelableArrayList = savedInstanceState.getParcelableArrayList("userMatches");
+            if (parcelableArrayList != null) {
+                userMatches = (ArrayList<UserProfile>) ((ArrayList) parcelableArrayList);
+                updateMatchesFragmentLayout(v);
+            }
+        }
+        else {
+            getAllMatches(httpClient, getActivity(), v);
+        }
+
         return v;
     }
 
