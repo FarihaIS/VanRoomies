@@ -32,18 +32,34 @@ import okhttp3.Response;
 
 public class MatchesFragment extends Fragment {
     final static String TAG = "MatchesFragment";
+    private final static String LAST_SEEN_MATCH_INDEX_KEY = "userMatches";
+    private final static String USER_MATCHES_KEY = "lastSeenMatchIndex";
     private ArrayList<UserProfile> userMatches;
     private SwipeDeck cardStack;
     private String thisUserId;
     private OkHttpClient httpClient;
     private Gson gson;
+    private int lastSeenMatchIndex = 0;
 
     @Override
     public void onSaveInstanceState(@NonNull Bundle outState) {
         super.onSaveInstanceState(outState);
-        // Save the necessary data to the bundle
-        outState.putParcelableArrayList("userMatches", userMatches);
-        // You might need to save other state information if needed
+        outState.putParcelableArrayList(USER_MATCHES_KEY, userMatches);
+        outState.putInt(LAST_SEEN_MATCH_INDEX_KEY, lastSeenMatchIndex);
+        Log.d(TAG, "Saved " + lastSeenMatchIndex + " in saved state");
+    }
+
+    @Override
+    public void onPause() {
+        super.onPause();
+        saveLastSeenMatchIndex();
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        // Reload the last seen index when the fragment is resumed
+        loadLastSeenMatchIndex();
     }
 
     @Override
@@ -68,11 +84,14 @@ public class MatchesFragment extends Fragment {
         userMatches = new ArrayList<>();
 
         if (savedInstanceState != null) {
-            ArrayList<Parcelable> parcelableArrayList = savedInstanceState.getParcelableArrayList("userMatches");
+            Log.d(TAG, "There is some saved instance state!");
+            ArrayList<Parcelable> parcelableArrayList = savedInstanceState.getParcelableArrayList(USER_MATCHES_KEY);
             if (parcelableArrayList != null) {
                 userMatches = (ArrayList<UserProfile>) ((ArrayList) parcelableArrayList);
                 updateMatchesFragmentLayout(v);
             }
+            lastSeenMatchIndex = savedInstanceState.getInt(LAST_SEEN_MATCH_INDEX_KEY, 0);
+            Log.d(TAG, "Retrieving index from saved state = " + lastSeenMatchIndex);
         }
         else {
             getAllMatches(httpClient, getActivity(), v);
@@ -84,11 +103,14 @@ public class MatchesFragment extends Fragment {
     private void updateMatchesFragmentLayout(View v) {
         MatchDeckAdapter matchDeckAdapter = new MatchDeckAdapter(v.getContext(), userMatches);
         cardStack.setAdapter(matchDeckAdapter);
+        cardStack.setSelection(lastSeenMatchIndex);
+        Log.d(TAG, "Setting cardstack selection to " + lastSeenMatchIndex);
 
         cardStack.setEventCallback(new SwipeDeck.SwipeEventCallback() {
             @Override
             public void cardSwipedLeft(int position) {
                 Log.d(TAG, "Match Rejected");
+                lastSeenMatchIndex = position + 1;
             }
 
             @Override
@@ -229,5 +251,17 @@ public class MatchesFragment extends Fragment {
                 });
             }
         });
+    }
+
+    private void saveLastSeenMatchIndex() {
+        SharedPreferences prefs = getActivity().getPreferences(Context.MODE_PRIVATE);
+        SharedPreferences.Editor editor = prefs.edit();
+        editor.putInt(LAST_SEEN_MATCH_INDEX_KEY, lastSeenMatchIndex);
+        editor.apply();
+    }
+
+    private void loadLastSeenMatchIndex() {
+        SharedPreferences prefs = getActivity().getPreferences(Context.MODE_PRIVATE);
+        lastSeenMatchIndex = prefs.getInt(LAST_SEEN_MATCH_INDEX_KEY, 0);
     }
 }
