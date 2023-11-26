@@ -108,6 +108,21 @@
             app:icon="@drawable/ic_edit"
             app:iconTint="#F44336" />
 
+        <Button
+            android:id="@+id/sign_out_button"
+            android:layout_width="102dp"
+            android:layout_height="49dp"
+            android:layout_alignParentStart="true"
+            android:layout_alignParentTop="true"
+            android:layout_alignParentEnd="true"
+            android:layout_marginStart="10dp"
+            android:layout_marginTop="10dp"
+            android:layout_marginEnd="299dp"
+            android:layout_marginBottom="-17dp"
+            android:text="@string/sign_out"
+            android:textAllCaps="false"
+            android:textSize="12sp" />
+
     </RelativeLayout>
 
     <TextView
