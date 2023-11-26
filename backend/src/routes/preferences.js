@@ -110,13 +110,13 @@ router.put('/:userId/recommendations/users', async (req, res, next) => {
     if (currentUser && matchUser) {
         let updatedUser = await User.findByIdAndUpdate(
             req.params.userId,
-            { $push: { notRecommended: req.body.excludedId } },
+            { $addToSet: { notRecommended: req.body.excludedId } },
             { new: true },
         );
 
         await User.findByIdAndUpdate(
             req.body.excludedId,
-            { $push: { notRecommended: req.params.userId } },
+            { $addToSet: { notRecommended: req.params.userId } },
             { new: true },
         );
         res.status(200).json(updatedUser);
