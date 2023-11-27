@@ -38,7 +38,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
-import kotlinx.coroutines.MainCoroutineDispatcher;
 import okhttp3.Call;
 import okhttp3.Callback;
 import okhttp3.FormBody;
@@ -51,9 +50,6 @@ import okhttp3.ResponseBody;
 public class ProfileFragment extends Fragment {
     final static String TAG = "ProfileFragment";
     private GoogleSignInClient mGoogleSignInClient;
-    private GoogleSignInAccount acct;
-    private GoogleSignInOptions gso;
-
     private OkHttpClient httpClient;
     final static Gson g = new Gson();
     private TextView profileName;
@@ -105,12 +101,12 @@ public class ProfileFragment extends Fragment {
 
         // Setup Sign-Out
         signOutButton = view.findViewById(R.id.sign_out_button);
-        gso = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
+        GoogleSignInOptions gso = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
                 .requestIdToken(Constants.clientId)
                 .requestEmail()
                 .build();
         mGoogleSignInClient = GoogleSignIn.getClient(getActivity(), gso);
-        acct = GoogleSignIn.getLastSignedInAccount(getActivity());
+        GoogleSignInAccount acct = GoogleSignIn.getLastSignedInAccount(getActivity());
         signOutButton.setOnClickListener(new View.OnClickListener(){
             @Override
             public void onClick(View v){
