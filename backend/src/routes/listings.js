@@ -87,7 +87,7 @@ router.post('/:listingId/report', async (req, res, next) => {
         // If both objects are non-null can update both safely
         await User.findByIdAndUpdate(
             req.body.reporterId,
-            { $push: { reportedScam: req.params.listingId } },
+            { $addToSet: { reportedScam: req.params.listingId } },
             { new: true },
         );
         let updatedListing = await Listing.findByIdAndUpdate(

@@ -100,13 +100,13 @@ router.post('/:userId/block', async (req, res, next) => {
     if (currentUser && blockedUser) {
         await User.findByIdAndUpdate(
             req.params.userId,
-            { $push: { notRecommended: req.body.blockedId } },
+            { $addToSet: { notRecommended: req.body.blockedId } },
             { new: true },
         );
 
         let updatedBlocked = await User.findByIdAndUpdate(
             req.body.blockedId,
-            { $push: { notRecommended: req.params.userId }, $inc: { blockedCount: 1 } },
+            { $addToSet: { notRecommended: req.params.userId }, $inc: { blockedCount: 1 } },
             { new: true },
         );
         if (updatedBlocked.blockedCount >= BLOCK_THRESHOLD) {
