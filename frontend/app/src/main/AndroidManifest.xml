@@ -21,6 +21,13 @@
         <activity
             android:name=".ViewListingActivity"
             android:exported="false" />
+        <meta-data
+            android:name="com.google.android.geo.API_KEY"
+            android:value="${MAPS_API_KEY}" />
+        <activity
+            android:name=".MapsActivity"
+            android:exported="false"
+            android:label="@string/title_activity_maps"/>
         <activity
             android:name=".ChatChannelActivity"
             android:exported="false" />

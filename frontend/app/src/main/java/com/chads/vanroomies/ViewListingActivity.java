@@ -7,6 +7,7 @@ import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -49,12 +50,20 @@ public class ViewListingActivity extends AppCompatActivity {
     private Button togglePetFriendlyButton;
     private Button editMoveInButton;
     private Button reportButton;
+    private Button mapButton;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         StrictMode.ThreadPolicy policy = new StrictMode.ThreadPolicy.Builder().permitAll().build();
         StrictMode.setThreadPolicy(policy);
         setContentView(R.layout.activity_view_listing);
+
+        mapButton = findViewById(R.id.map_button);
+        mapButton.setOnClickListener(view -> {
+            Intent mapsIntent = new Intent(ViewListingActivity.this, MapsActivity.class); // intent for maps
+            startActivity(mapsIntent); // Go to maps
+        });
+
 
         // Grabbing parameters from listings view
         Bundle b = getIntent().getExtras();
