@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -24,12 +25,19 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.google.android.gms.auth.api.signin.GoogleSignIn;
+import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
+import com.google.android.gms.auth.api.signin.GoogleSignInClient;
+import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
 import com.google.gson.Gson;
 import org.json.JSONException;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+
 import okhttp3.Call;
 import okhttp3.Callback;
 import okhttp3.FormBody;
@@ -41,6 +49,7 @@ import okhttp3.ResponseBody;
 
 public class ProfileFragment extends Fragment {
     final static String TAG = "ProfileFragment";
+    private GoogleSignInClient mGoogleSignInClient;
     private OkHttpClient httpClient;
     final static Gson g = new Gson();
     private TextView profileName;
@@ -60,6 +69,7 @@ public class ProfileFragment extends Fragment {
     private TextView preferencesLeaseLength;
     private Button editPreferencesButton;
     private ImageView profilePicture;
+    private Button signOutButton;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -88,6 +98,21 @@ public class ProfileFragment extends Fragment {
         if (result != null){
             Log.d(TAG, result);
         }
+
+        // Setup Sign-Out
+        signOutButton = view.findViewById(R.id.sign_out_button);
+        GoogleSignInOptions gso = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
+                .requestIdToken(Constants.clientId)
+                .requestEmail()
+                .build();
+        mGoogleSignInClient = GoogleSignIn.getClient(getActivity(), gso);
+        GoogleSignInAccount acct = GoogleSignIn.getLastSignedInAccount(getActivity());
+        signOutButton.setOnClickListener(new View.OnClickListener(){
+            @Override
+            public void onClick(View v){
+                signOut();
+            }
+        });
 
         // Get profile
         profileName = view.findViewById(R.id.profile_name);
@@ -472,5 +497,15 @@ public class ProfileFragment extends Fragment {
             preference = "N";
         }
         return preference;
+    }
+
+    void signOut(){
+        mGoogleSignInClient.signOut().addOnCompleteListener(new OnCompleteListener<Void>() {
+            @Override
+            public void onComplete(@NonNull Task<Void> task) {
+                getActivity().finish();
+                startActivity(new Intent(getActivity(), MainActivity.class));
+            }
+        });
     }
 }

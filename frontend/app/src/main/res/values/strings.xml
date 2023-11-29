@@ -36,6 +36,7 @@
     <string name="profile_blurb">Profile Blurb</string>
     <string name="profile_blurb_text">Lorum Ipsum Tandem Bike Something Something Ride A Trike Einee Meeny Minee Moe Catch A Tiger By Its Toe Something Something About A Doe Expecto Patronum</string>
     <string name="profile_blurb_desc">Profile Name</string>
+    <string name="sign_out">Sign Out</string>
 
     <!-- Listings Fragment -->
     <string name="listings_image_desc">The image for a given listing</string>
