@@ -21,8 +21,11 @@ import java.io.IOException;
 import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.CompletableFuture;
+
 import okhttp3.Call;
 import okhttp3.Callback;
 import okhttp3.OkHttpClient;
@@ -35,7 +38,7 @@ public class ChatFragment extends Fragment {
     private String thisUserId;
     private OkHttpClient httpClient;
     private Gson gson;
-    private Map<UserProfile, ArrayList<ChatMessage>> allChatMessages;
+    private LinkedHashMap<UserProfile, ArrayList<ChatMessage>> allChatMessages;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -52,14 +55,18 @@ public class ChatFragment extends Fragment {
         thisUserId = sharedPref.getString(Constants.userIdKey, Constants.userDefault);
         Log.d(TAG, sharedPref.getString(Constants.userIdKey, Constants.userDefault));
 
-        httpClient = HTTPSClientFactory.createClient(getActivity().getApplication());
         gson = new Gson();
-        allChatMessages = new HashMap<>();
+        httpClient = HTTPSClientFactory.createClient(getActivity().getApplication());
+        allChatMessages = new LinkedHashMap<>();
         chatListRecycler = v.findViewById(R.id.chatlistrecycle);
-
-        getAllChatMessages(httpClient, getActivity(), v);
-
         return v;
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        allChatMessages = new LinkedHashMap<>();
+        getAllChatMessages(httpClient, getActivity(), this.getView());
     }
 
     private void updateChatFragment(View v) {
@@ -99,15 +106,15 @@ public class ChatFragment extends Fragment {
                                 List<String> userPair = conversation.getUsers();
                                 if (userPair.get(0).equals(thisUserId)) {
                                     user = new UserProfile(userPair.get(1));
-                                }
-                                else {
+                                } else {
                                     user = new UserProfile(userPair.get(0));
                                 }
-
                                 eachMessageList = conversation.getMessages();
-                                updateUserProfile(httpClient, getActivity(), user, eachMessageList, v);
+                                CompletableFuture<Response> future = updateUserProfile(httpClient, user, eachMessageList);
+                                future.join();
                                 Log.d(TAG, "Inside getAllChatMessages: first name is " + user.getFirstName());
                             }
+                            updateChatFragment(v);
                         } else {
                             Log.d(TAG, "Inside getAllChatMessages: responseData is null");
                         }
@@ -119,39 +126,50 @@ public class ChatFragment extends Fragment {
             }
         });
     }
-
-    private void updateUserProfile(OkHttpClient client, Activity activity, UserProfile user, ArrayList<ChatMessage> messages, View v) {
+    private CompletableFuture<Response> updateUserProfile(OkHttpClient client, UserProfile user, ArrayList<ChatMessage> messages) {
         String url = Constants.baseServerURL + Constants.userEndpoint + user.get_id();
         Request request = new Request.Builder().url(url).build();
-        client.newCall(request).enqueue(new Callback() {
+        OkHttpResponseFuture callback = new OkHttpResponseFuture() {
             @Override
             public void onFailure(@NonNull Call call, @NonNull IOException e) {
                 Log.d(TAG, e.getMessage());
+                future.completeExceptionally(e);
             }
 
             @Override
             public void onResponse(@NonNull Call call, @NonNull Response response) {
-                activity.runOnUiThread(() -> {
-                    try {
-                        String responseData = response.body().string();
-                        if (response.body() != null) {
-                            UserProfile fullUserProfile = gson.fromJson(responseData, UserProfile.class);
+                try {
+                    String responseData = response.body().string();
+                    if (response.body() != null) {
+                        UserProfile fullUserProfile = gson.fromJson(responseData, UserProfile.class);
 
-                            user.setFirstName(fullUserProfile.getFirstName());
-                            user.setLastName(fullUserProfile.getLastName());
-                            user.setProfilePicture(fullUserProfile.getProfilePicture());
-                            Log.d(TAG, "Inside updateUserProfile: first name is " + user.getFirstName());
-                            allChatMessages.put(user, messages);
-                        } else {
-                            Log.d(TAG, "Inside updateUserProfile: responseData is null");
-                        }
+                        user.setFirstName(fullUserProfile.getFirstName());
+                        user.setLastName(fullUserProfile.getLastName());
+                        user.setProfilePicture(fullUserProfile.getProfilePicture());
+                        Log.d(TAG, "Inside updateUserProfile: first name is " + user.getFirstName());
+                        allChatMessages.put(user, messages);
+                    } else {
+                        Log.d(TAG, "Inside updateUserProfile: responseData is null");
                     }
-                    catch (IOException e) {
-                        e.printStackTrace();
-                    }
-                    updateChatFragment(v);
-                });
+                }
+                catch (IOException e) {
+                    e.printStackTrace();
+                }
+                future.complete(response);
             }
-        });
+        };
+        client.newCall(request).enqueue(callback);
+        return callback.future;
+    }
+    public static class OkHttpResponseFuture implements Callback {
+        public final CompletableFuture<Response> future = new CompletableFuture<>();
+
+        @Override public void onFailure(Call call, IOException e) {
+            future.completeExceptionally(e);
+        }
+
+        @Override public void onResponse(Call call, Response response) {
+            future.complete(response);
+        }
     }
 }

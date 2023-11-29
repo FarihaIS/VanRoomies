@@ -9,6 +9,12 @@ router.get('/conversations/user/:userId', async (req, res, next) => {
         res.status(404).json({ error: 'User not found' });
         return;
     }
+    // sort conversations by latest message
+    conversations.sort((a, b) => {
+        const latestA = a.messages[a.messages.length - 1].timestamp;
+        const latestB = b.messages[b.messages.length - 1].timestamp;
+        return latestB - latestA;
+    });
     res.json(conversations);
     next();
 });

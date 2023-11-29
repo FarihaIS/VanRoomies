@@ -12,7 +12,11 @@ const sendPushNotification = async (token, senderName, message) => {
         },
         token,
     };
-    await getMessaging().send(messageObj);
+    try {
+        await getMessaging().send(messageObj);
+    } catch (error) {
+        console.log('Error sending message:', error);
+    }
 };
 
 module.exports = sendPushNotification;
