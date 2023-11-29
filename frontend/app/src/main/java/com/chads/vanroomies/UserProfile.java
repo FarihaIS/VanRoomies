@@ -3,8 +3,6 @@ package com.chads.vanroomies;
 import android.os.Parcel;
 import android.os.Parcelable;
 
-import java.io.Serializable;
-
 public class UserProfile implements Parcelable {
     private String _id;
     private String firstName;
