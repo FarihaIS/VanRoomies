@@ -10,7 +10,7 @@
     <RelativeLayout
         android:id="@+id/relativeLayout"
         android:layout_width="match_parent"
-        android:layout_height="350dp"
+        android:layout_height="300dp"
         android:background="#D2E2E0"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -62,6 +62,8 @@
         app:layout_constraintTop_toBottomOf="@+id/relativeLayout"
         app:layout_constraintVertical_bias="0.078" />
 
+    <!-- Edit Buttons for Owners -->
+
     <TextView
         android:id="@+id/listing_name"
         android:layout_width="250dp"
@@ -74,12 +76,10 @@
         android:textSize="24sp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.267"
+        app:layout_constraintHorizontal_bias="0.279"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/relativeLayout"
-        app:layout_constraintVertical_bias="0.202" />
-
-    <!-- Edit Buttons for Owners -->
+        app:layout_constraintVertical_bias="0.189" />
 
     <androidx.cardview.widget.CardView
         android:id="@+id/cardView"
@@ -92,7 +92,7 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/listing_name"
-        app:layout_constraintVertical_bias="0.571">
+        app:layout_constraintVertical_bias="0.323">
 
         <TextView
             android:id="@+id/listing_desc"
@@ -122,6 +122,24 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/relativeLayout"
         app:layout_constraintVertical_bias="0.886" />
+
+    <TextView
+        android:id="@+id/location_coords"
+        android:layout_width="197dp"
+        android:layout_height="26dp"
+        android:layout_alignParentBottom="true"
+        android:layout_centerHorizontal="true"
+        android:contentDescription="@string/listingDate"
+        android:fontFamily="sans-serif"
+        android:text="@string/lat_long"
+        android:textAlignment="center"
+        android:textSize="18sp"
+        app:layout_constraintBottom_toTopOf="@+id/listing_date"
+        app:layout_constraintEnd_toStartOf="@+id/map_button"
+        app:layout_constraintHorizontal_bias="0.906"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/cardView"
+        app:layout_constraintVertical_bias="0.511" />
 
     <TextView
         android:id="@+id/move_in_date"
@@ -156,10 +174,10 @@
         app:iconTint="#F44336"
         app:layout_constraintBottom_toTopOf="@+id/edit_housing_desc"
         app:layout_constraintEnd_toStartOf="@+id/listing_name"
-        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintHorizontal_bias="0.2"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/edit_housing_type"
-        app:layout_constraintVertical_bias="0.0" />
+        app:layout_constraintVertical_bias="0.333" />
 
     <Button
         android:id="@+id/edit_housing_desc"
@@ -174,12 +192,32 @@
         android:textColor="#D2E2E0"
         app:icon="@drawable/ic_edit"
         app:iconTint="#F44336"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="@+id/cardView"
-        app:layout_constraintHorizontal_bias="0.028"
+        app:layout_constraintBottom_toTopOf="@+id/cardView"
+        app:layout_constraintEnd_toEndOf="@+id/listing_name"
+        app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="@+id/cardView"
-        app:layout_constraintTop_toBottomOf="@+id/edit_housing_type"
-        app:layout_constraintVertical_bias="0.151" />
+        app:layout_constraintTop_toBottomOf="@+id/listing_name"
+        app:layout_constraintVertical_bias="0.0" />
+
+    <Button
+        android:id="@+id/edit_lat_long"
+        android:layout_width="49dp"
+        android:layout_height="33dp"
+        android:layout_alignParentTop="true"
+        android:layout_alignParentEnd="true"
+        android:layout_alignParentBottom="true"
+        android:background="@android:color/transparent"
+        android:scaleX="1"
+        android:scaleY="1"
+        android:textColor="#D2E2E0"
+        app:icon="@drawable/ic_edit"
+        app:iconTint="#F44336"
+        app:layout_constraintBottom_toTopOf="@+id/listing_date"
+        app:layout_constraintEnd_toStartOf="@+id/location_coords"
+        app:layout_constraintHorizontal_bias="0.935"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/cardView"
+        app:layout_constraintVertical_bias="0.416" />
 
     <Button
         android:id="@+id/edit_housing_type"
@@ -267,11 +305,11 @@
         android:layout_width="82dp"
         android:layout_height="52dp"
         android:text="@string/view_map"
-        app:layout_constraintBottom_toTopOf="@+id/cardView"
+        app:layout_constraintBottom_toTopOf="@+id/move_in_date"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.555"
-        app:layout_constraintStart_toEndOf="@+id/listing_name"
-        app:layout_constraintTop_toBottomOf="@+id/edit_pet_friendly"
-        app:layout_constraintVertical_bias="1.0" />
+        app:layout_constraintHorizontal_bias="0.957"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/cardView"
+        app:layout_constraintVertical_bias="0.529" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
