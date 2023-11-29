@@ -58,13 +58,6 @@ public class ViewListingActivity extends AppCompatActivity {
         StrictMode.setThreadPolicy(policy);
         setContentView(R.layout.activity_view_listing);
 
-        mapButton = findViewById(R.id.map_button);
-        mapButton.setOnClickListener(view -> {
-            Intent mapsIntent = new Intent(ViewListingActivity.this, MapsActivity.class); // intent for maps
-            startActivity(mapsIntent); // Go to maps
-        });
-
-
         // Grabbing parameters from listings view
         Bundle b = getIntent().getExtras();
         client = HTTPSClientFactory.createClient(ViewListingActivity.this.getApplication());
@@ -292,6 +285,21 @@ public class ViewListingActivity extends AppCompatActivity {
                         String listingDate = result.getListingDate().split(getString(R.string.datetime_regex), 2)[0];
                         String moveInDate = result.getMoveInDate().split(getString(R.string.datetime_regex), 2)[0];
                         String petFriendly = String.valueOf(result.getPetFriendly());
+                        SingleListingResponseResult.LocationObj location = result.getLocation();
+                        double latitude = location.getLatitude();
+                        double longitude = location.getLongitude();
+
+                        // Instantiating Maps Button
+                        mapButton = findViewById(R.id.map_button);
+                        mapButton.setOnClickListener(view -> {
+                            Intent mapsIntent = new Intent(ViewListingActivity.this, MapsActivity.class); // intent for maps
+                            Bundle b = new Bundle();
+                            b.putString("title", title);
+                            b.putDouble("latitude", latitude);
+                            b.putDouble("longitude", longitude);
+                            mapsIntent.putExtras(b);
+                            startActivity(mapsIntent); // Go to maps
+                        });
 
                         // Instantiating TextViews
                         ImageView listing_image = findViewById(R.id.listing_picture);
