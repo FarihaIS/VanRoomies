@@ -105,7 +105,6 @@ public class ProfileFragment extends Fragment {
                 .requestEmail()
                 .build();
         mGoogleSignInClient = GoogleSignIn.getClient(getActivity(), gso);
-        GoogleSignInAccount acct = GoogleSignIn.getLastSignedInAccount(getActivity());
         signOutButton.setOnClickListener(new View.OnClickListener(){
             @Override
             public void onClick(View v){
