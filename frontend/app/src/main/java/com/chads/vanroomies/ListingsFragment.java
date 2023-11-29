@@ -36,13 +36,16 @@ import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Dictionary;
 import java.util.HashMap;
+import java.util.Hashtable;
 import java.util.List;
 import java.util.Map;
 
 import okhttp3.Call;
 import okhttp3.Callback;
 import okhttp3.FormBody;
+import okhttp3.MediaType;
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import okhttp3.RequestBody;
@@ -159,6 +162,7 @@ public class ListingsFragment extends Fragment implements ListingsItemSelectList
                             }
                         } catch (NumberFormatException e) {
                             Toast.makeText(context, "Latitude and Longitude must be numerical. (i.e. 123.0000)", Toast.LENGTH_LONG).show();
+                            return;
                         }
 
                         try {
@@ -342,19 +346,25 @@ public class ListingsFragment extends Fragment implements ListingsItemSelectList
         else {
             petFriendly = "false";
         }
+
+        JSONObject location = new JSONObject();
+        location.put("latitude", Double.valueOf(params.get(5)));
+        location.put("longitude", Double.valueOf(params.get(6)));
+
         // Setting up a POST request
-        RequestBody formBody = new FormBody.Builder()
-                .add("userId", userId)
-                .add("title", params.get(0))
-                .add("description", params.get(1))
-                .add("housingType", params.get(2))
-                .add("rentalPrice", params.get(3))
-                .add("listingDate", getTodayAsString()) // ToDo: Get current date in future milestones
-                .add("moveInDate", "2024-03-01") // NOTE: This is a hardcoded value and this is a limitation of the project.
-                .add("petFriendly", petFriendly)
-                .add("status", "active")
-                .add("location", params.get(4))
-                .build();
+        JSONObject json = new JSONObject();
+        json.put("userId", userId);
+        json.put("title", params.get(0));
+        json.put("description", params.get(1));
+        json.put("housingType", params.get(2));
+        json.put("rentalPrice", params.get(3));
+        json.put("listingDate", getTodayAsString());
+        json.put("moveInDate", "2024-03-01");
+        json.put("petFriendly", petFriendly);
+        json.put("status", "active");
+        json.put("location", location);
+
+        RequestBody formBody = RequestBody.create(MediaType.parse("application/json"), json.toString());
 
         Request request = new Request.Builder().url(Constants.baseServerURL + Constants.listingByListingIdEndpoint)
                 .post(formBody) // POST
