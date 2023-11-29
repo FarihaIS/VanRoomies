@@ -69,7 +69,6 @@ public class ProfileFragment extends Fragment {
     private TextView preferencesLeaseLength;
     private Button editPreferencesButton;
     private ImageView profilePicture;
-    private Button signOutButton;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -100,13 +99,12 @@ public class ProfileFragment extends Fragment {
         }
 
         // Setup Sign-Out
-        signOutButton = view.findViewById(R.id.sign_out_button);
+        Button signOutButton = view.findViewById(R.id.sign_out_button);
         GoogleSignInOptions gso = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
                 .requestIdToken(Constants.clientId)
                 .requestEmail()
                 .build();
         mGoogleSignInClient = GoogleSignIn.getClient(getActivity(), gso);
-        GoogleSignInAccount acct = GoogleSignIn.getLastSignedInAccount(getActivity());
         signOutButton.setOnClickListener(new View.OnClickListener(){
             @Override
             public void onClick(View v){

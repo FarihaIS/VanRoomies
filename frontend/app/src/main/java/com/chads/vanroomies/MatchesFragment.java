@@ -42,14 +42,6 @@ public class MatchesFragment extends Fragment {
     private int lastSeenMatchIndex = 0;
 
     @Override
-    public void onSaveInstanceState(@NonNull Bundle outState) {
-        super.onSaveInstanceState(outState);
-        outState.putParcelableArrayList(USER_MATCHES_KEY, userMatches);
-        outState.putInt(LAST_SEEN_MATCH_INDEX_KEY, lastSeenMatchIndex);
-        Log.d(TAG, "Saved " + lastSeenMatchIndex + " in saved state");
-    }
-
-    @Override
     public void onPause() {
         super.onPause();
         saveLastSeenMatchIndex();

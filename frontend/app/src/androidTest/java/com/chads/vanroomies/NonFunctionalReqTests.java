@@ -46,6 +46,10 @@ public class NonFunctionalReqTests {
     long currTaskStartTime = 0;
     long currTaskElapsedTime = 0;
     private UiDevice mUiDevice;
+    @Rule
+    public ActivityScenarioRule<MainActivity> mActivityScenarioRule =
+            new ActivityScenarioRule<>(MainActivity.class);
+
     public void nonFuncLoginHelper() throws Exception {
         // Google Sign-In using UiDevice in conjunction with Espresso for third party popup compatibility
         ViewInteraction id = onView(
@@ -85,9 +89,6 @@ public class NonFunctionalReqTests {
         Log.d(TAG, task + ": " + currTaskElapsedTime + " milliseconds");
     }
 
-    @Rule
-    public ActivityScenarioRule<MainActivity> mActivityScenarioRule =
-            new ActivityScenarioRule<>(MainActivity.class);
     @Before
     public void before() {
         mUiDevice = UiDevice.getInstance(InstrumentationRegistry.getInstrumentation());
