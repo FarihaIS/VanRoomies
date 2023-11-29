@@ -262,4 +262,16 @@
         app:layout_constraintTop_toBottomOf="@+id/listing_date"
         app:layout_constraintVertical_bias="0.0" />
 
+    <Button
+        android:id="@+id/map_button"
+        android:layout_width="82dp"
+        android:layout_height="52dp"
+        android:text="@string/view_map"
+        app:layout_constraintBottom_toTopOf="@+id/cardView"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.555"
+        app:layout_constraintStart_toEndOf="@+id/listing_name"
+        app:layout_constraintTop_toBottomOf="@+id/edit_pet_friendly"
+        app:layout_constraintVertical_bias="1.0" />
+
 </androidx.constraintlayout.widget.ConstraintLayout>
