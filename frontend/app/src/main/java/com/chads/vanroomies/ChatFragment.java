@@ -164,10 +164,6 @@ public class ChatFragment extends Fragment {
     public static class OkHttpResponseFuture implements Callback {
         public final CompletableFuture<Response> future = new CompletableFuture<>();
 
-        public OkHttpResponseFuture() {
-            super();
-        }
-
         @Override public void onFailure(Call call, IOException e) {
             future.completeExceptionally(e);
         }
