@@ -19,12 +19,14 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.gson.Gson;
 
 import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.io.IOException;
 import java.util.List;
@@ -33,6 +35,7 @@ import java.util.Objects;
 import okhttp3.Call;
 import okhttp3.Callback;
 import okhttp3.FormBody;
+import okhttp3.MediaType;
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import okhttp3.RequestBody;
@@ -51,6 +54,8 @@ public class ViewListingActivity extends AppCompatActivity {
     private Button editMoveInButton;
     private Button reportButton;
     private Button mapButton;
+    private Button editLatLongButton;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -180,18 +185,104 @@ public class ViewListingActivity extends AppCompatActivity {
         });
     }
 
+    public void enableLocButton(Button button, String attribute, TextView text_field, String listingId){
+        button.setEnabled(true);
+        button.setVisibility(View.VISIBLE);
+        // Set Listener
+        button.setOnClickListener(view -> {
+            // Setting up Add Listing Prompt
+            Context context = view.getContext();
+            AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(context);
+            LinearLayout layout = new LinearLayout(context);
+            layout.setOrientation(LinearLayout.VERTICAL);
+
+            final EditText latitude = new EditText(context);
+            final EditText longitude = new EditText(context);
+
+            latitude.setHint("Latitude as a Decimal between -180 and 180 (e.g. -15.2345). Optional.");
+            longitude.setHint("Longitude as a Decimal between -180 and 180 (e.g. 123.1536). Optional.");
+            layout.addView(latitude);
+            layout.addView(longitude);
+            alertDialogBuilder.setView(layout);
+            alertDialogBuilder.setCancelable(true).setPositiveButton("Save", new DialogInterface.OnClickListener() {
+                public void onClick(DialogInterface dialog, int id) {
+                    dialog.dismiss();
+                    try {
+                        if (Double.parseDouble(String.valueOf(latitude.getText())) > 180 || Double.parseDouble(String.valueOf(latitude.getText())) < -180) {
+                            Toast.makeText(context, "Latitude must be between -180 and 180.", Toast.LENGTH_LONG).show();
+                        } else if (Double.parseDouble(String.valueOf(longitude.getText())) > 180 || Double.parseDouble(String.valueOf(longitude.getText())) < -180) {
+                            Toast.makeText(context, "Longitude must be between -180 and 180.", Toast.LENGTH_LONG).show();
+                        }
+                    } catch (NumberFormatException e) {
+                        Toast.makeText(context, "Latitude and Longitude must be numerical. (i.e. 123.0000)", Toast.LENGTH_LONG).show();
+                        return;
+                    }
+
+                    try {
+                        double parsedLatitude = Double.parseDouble(String.valueOf(latitude.getText()));
+                        double parsedLongitude =  Double.parseDouble(String.valueOf(longitude.getText()));
+                        updateLocationText(client, view, ViewListingActivity.this, attribute,
+                                listingId, text_field, String.format("(%.4f, %.4f)", parsedLatitude ,parsedLongitude),
+                                    parsedLatitude, parsedLongitude);
+                    } catch (JSONException e) {
+                        Log.d(TAG, Log.getStackTraceString(e));
+                    }
+                }
+            }).setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+                public void onClick(DialogInterface dialog, int id) {
+                    dialog.dismiss();
+                }
+            });
+            AlertDialog alertDialog = alertDialogBuilder.create();
+            alertDialog.show();
+        });
+    }
+
     public void disableButton(Button button){
         button.setEnabled(false);
         button.setVisibility(View.INVISIBLE);
     }
 
-    public void updateEditableText(OkHttpClient client, View view, Activity act, String field, String listingId, TextView textview_to_update, String new_text) throws JSONException {
+    public void updateEditableText(OkHttpClient client, View view, Activity act, String field,
+                                   String listingId, TextView textview_to_update, String new_text) throws JSONException {
         // Setting up the request
         RequestBody formBody = new FormBody.Builder()
                 .add(field, new_text)
                 .build();
         Request request = new Request.Builder()
                 .url(Constants.baseServerURL + Constants.listingByListingIdEndpoint + listingId)
+                .put(formBody) // PUT
+                .build();
+        client.newCall(request).enqueue(new Callback() {
+            @Override
+            public void onFailure(@NonNull Call call, @NonNull IOException e) {
+                Log.d(TAG, e.getMessage());
+            }
+
+            @Override
+            public void onResponse(@NonNull Call call, @NonNull Response response) {
+                act.runOnUiThread(() -> {
+                    Log.d(TAG, response.toString());
+                    textview_to_update.setText(new_text);
+                });
+            }
+        });
+    }
+
+    public void updateLocationText(OkHttpClient client, View view, Activity act, String field,
+                                   String listingId, TextView textview_to_update, String new_text,
+                                   double latitude, double longitude) throws JSONException {
+        JSONObject location = new JSONObject();
+        location.put("latitude", latitude);
+        location.put("longitude", longitude);
+
+        // Setting up a PUT request
+        JSONObject json = new JSONObject();
+        json.put(field, location);
+
+        RequestBody formBody = RequestBody.create(MediaType.parse("application/json"), json.toString());
+
+        Request request = new Request.Builder().url(Constants.baseServerURL + Constants.listingByListingIdEndpoint + listingId)
                 .put(formBody) // PUT
                 .build();
         client.newCall(request).enqueue(new Callback() {
@@ -252,6 +343,16 @@ public class ViewListingActivity extends AppCompatActivity {
             alertDialog.show();
         });
     }
+
+    public double[] getLatestLocation(TextView location_textview){
+        double[] result = new double[2];
+        String curr_loc = String.valueOf(location_textview.getText());
+        String[] lat_long_array = curr_loc.split(", ", 2);
+        result[0] = Double.parseDouble(lat_long_array[0].substring(1));
+        result[1] = Double.parseDouble(lat_long_array[1].substring(0, lat_long_array[1].length()-1));
+        return result;
+    }
+
     public void getListing(OkHttpClient client, String listingId, String userId){
         Request request = new Request.Builder().url(Constants.baseServerURL + Constants.listingByListingIdEndpoint + listingId).build();
         client.newCall(request).enqueue(new Callback() {
@@ -289,18 +390,6 @@ public class ViewListingActivity extends AppCompatActivity {
                         double latitude = location.getLatitude();
                         double longitude = location.getLongitude();
 
-                        // Instantiating Maps Button
-                        mapButton = findViewById(R.id.map_button);
-                        mapButton.setOnClickListener(view -> {
-                            Intent mapsIntent = new Intent(ViewListingActivity.this, MapsActivity.class); // intent for maps
-                            Bundle b = new Bundle();
-                            b.putString("title", title);
-                            b.putDouble("latitude", latitude);
-                            b.putDouble("longitude", longitude);
-                            mapsIntent.putExtras(b);
-                            startActivity(mapsIntent); // Go to maps
-                        });
-
                         // Instantiating TextViews
                         ImageView listing_image = findViewById(R.id.listing_picture);
                         TextView title_textview = findViewById(R.id.listing_name);
@@ -309,6 +398,22 @@ public class ViewListingActivity extends AppCompatActivity {
                         TextView listing_date_textview = findViewById(R.id.listing_date);
                         TextView move_in_date_textview = findViewById(R.id.move_in_date);
                         TextView pet_textview = findViewById(R.id.pet_friendly);
+                        TextView location_textview = findViewById(R.id.location_coords);
+
+                        // Instantiating Maps Button
+                        mapButton = findViewById(R.id.map_button);
+                        mapButton.setOnClickListener(view -> {
+                            Intent mapsIntent = new Intent(ViewListingActivity.this, MapsActivity.class); // intent for maps
+                            double[] curr_loc = getLatestLocation(location_textview);
+                            Log.d(TAG, String.valueOf(curr_loc[0]));
+                            Log.d(TAG, String.valueOf(curr_loc[1]));
+                            Bundle b = new Bundle();
+                            b.putString("title", title);
+                            b.putDouble("latitude", curr_loc[0]);
+                            b.putDouble("longitude", curr_loc[1]);
+                            mapsIntent.putExtras(b);
+                            startActivity(mapsIntent); // Go to maps
+                        });
 
                         // Setting ImageView. Verification done when setting photoString
                         byte[] decodedString = Base64.decode(photoString, Base64.DEFAULT);
@@ -327,12 +432,14 @@ public class ViewListingActivity extends AppCompatActivity {
                         else {
                             pet_textview.setText(String.format("%s %s", getString(R.string.pets), getString(R.string.not_allowed)));
                         }
+                        location_textview.setText(String.format("(%.4f, %.4f)", latitude, longitude));
 
                         editTitleButton = findViewById(R.id.edit_title);
                         editHousingDescButton = findViewById(R.id.edit_housing_desc);
                         editHousingTypeButton = findViewById(R.id.edit_housing_type);
                         togglePetFriendlyButton = findViewById(R.id.edit_pet_friendly);
                         editMoveInButton = findViewById(R.id.edit_move_in_button);
+                        editLatLongButton = findViewById(R.id.edit_lat_long);
                         reportButton = findViewById(R.id.report_button);
                         disableButton(editMoveInButton);
                         if(!isOwner) {
@@ -340,6 +447,7 @@ public class ViewListingActivity extends AppCompatActivity {
                             disableButton(editHousingDescButton);
                             disableButton(editHousingTypeButton);
                             disableButton(togglePetFriendlyButton);
+                            disableButton(editLatLongButton);
                             // TODO: In future milestones, implement a way to change Move-In Date and Image
                             // disableButton(editMoveInButton);
                             setupReportButton(listingId, userId);
@@ -349,6 +457,7 @@ public class ViewListingActivity extends AppCompatActivity {
                             enableButton(editHousingDescButton, "description", description_textview, listingId);
                             enableButton(editHousingTypeButton, "housingType", housing_type_textview, listingId);
                             enableToggle(togglePetFriendlyButton, "petFriendly", pet_textview, listingId);
+                            enableLocButton(editLatLongButton, "location", location_textview, listingId);
                             disableButton(reportButton);
                             // enableButton(editMoveInButton, "moveInDate", move_in_date_textview, listingId);
                         }

@@ -121,7 +121,7 @@ public class ListingsFragment extends Fragment implements ListingsItemSelectList
             layout.addView(latitude);
             layout.addView(longitude);
 
-            alertDialogBuilder.setView(layout); // Again this is a set method, not add
+            alertDialogBuilder.setView(layout);
             alertDialogBuilder.setCancelable(true).setPositiveButton("Create", new DialogInterface.OnClickListener() {
                 public void onClick(DialogInterface dialog, int id) {
                     dialog.dismiss();

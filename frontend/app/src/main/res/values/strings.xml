@@ -63,6 +63,7 @@
     <string name="report_scam_text">Report Listing</string>
     <string name="view_map">View Map</string>
     <string name="title_activity_maps">Maps</string>
+    <string name="lat_long">Lat and Long</string>
 
     <!-- Content Descriptions -->
     <string name="home_screen_logo">App Logo</string>
