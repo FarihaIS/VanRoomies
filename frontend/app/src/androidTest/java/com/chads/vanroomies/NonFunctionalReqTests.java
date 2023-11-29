@@ -58,7 +58,6 @@ public class NonFunctionalReqTests {
                                 0),
                         isDisplayed()));
         id.perform(click());
-        clicks ++;
 
         mUiDevice.waitForIdle(3000);
         UiObject addAccount = mUiDevice.findObject(new UiSelector().text("Add another account"));
@@ -67,7 +66,6 @@ public class NonFunctionalReqTests {
         if (addAccount.exists()) {
             UiObject account = mUiDevice.findObject(new UiSelector().textContains("@"));
             account.click();
-            clicks++;
             clickReport("Login");
         }
         else {
@@ -76,7 +74,7 @@ public class NonFunctionalReqTests {
     }
 
     public void clickReport(String task) {
-        assert clicks <= 5;
+        assert clicks <= 3;
         Log.d(TAG, task + ": " + clicks + " click(s)");
         clicks = 0;
     }

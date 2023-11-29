@@ -46,7 +46,7 @@ public class ChatChannelActivity extends AppCompatActivity {
         // Retrieve UserProfile and list of ChatMessages from ChatListAdapter
         Intent chatIntent = getIntent();
         thisUserId = chatIntent.getStringExtra("thisUserId");
-        chatUser = (UserProfile) chatIntent.getSerializableExtra("otherUserProfile");
+        chatUser = (UserProfile) chatIntent.getParcelableExtra("otherUserProfile");
         chatMessages = (ArrayList<ChatMessage>) chatIntent.getSerializableExtra("otherUserMessages");
 
         setUpChatSocket();
