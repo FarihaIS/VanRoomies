@@ -125,9 +125,38 @@ describe('Socket.io routines', () => {
     });
 
     // Input: everything is valid except the firebaseToken
-    // Expected behavior: send a message to the user with userId = to; do not send a push notification
+    // Expected behavior: send a message to the user with userId = to; fail to send a push notification
     // Expected output: { status: "success" }
     test('ON private message invalid firebase token', async () => {
+        Conversation.findOne.mockResolvedValue(null);
+        Conversation.prototype.save.mockResolvedValue({
+            users: [12345, 23456],
+            messages: [],
+            save: jest.fn(),
+        });
+
+        getMessaging.mockReturnValueOnce(mockMessaging);
+        mockMessaging.send.mockRejectedValueOnce(new Error('Invalid token'));
+        const message = 'hola';
+
+        const response = await clientSocket.emitWithAck('private message', {
+            content: message,
+            to: 23456,
+        });
+        expect(response).toEqual({ status: 'success' });
+        expect(mockMessaging.send).toHaveBeenCalledWith({
+            notification: {
+                title: `VanRoomies message from: ${firstName}`,
+                body: message,
+            },
+            token: firebaseToken,
+        });
+    });
+
+    // Input: everything is valid except the firebaseToken which is missing
+    // Expected behavior: send a message to the user with userId = to; do not send a push notification
+    // Expected output: { status: "success" }
+    test('ON private message missing firebase token', async () => {
         User.findById.mockResolvedValue({ firstName: 'John', lastName: 'Doe', firebaseToken: null });
         Conversation.findOne.mockResolvedValue({
             messages: [],

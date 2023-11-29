@@ -14,11 +14,23 @@ jest.mock('firebase-admin/messaging', () => ({
 const getMockConversations = (userId) => [
     {
         users: [userId, 'alice123'],
-        messages: [],
+        messages: [
+            {
+                sender: userId,
+                content: 'Hello!',
+                timestamp: Date.now(),
+            },
+        ],
     },
     {
         users: [userId, 'bob456'],
-        messages: [],
+        messages: [
+            {
+                sender: userId,
+                content: 'Hello!',
+                timestamp: Date.now(),
+            },
+        ],
     },
 ];
 const mockMessaging = {
