@@ -101,18 +101,25 @@ public class ListingsFragment extends Fragment implements ListingsItemSelectList
             final EditText rentalPrice = new EditText(context);
             // final EditText moveInDate = new EditText(context);
             final EditText petFriendly = new EditText(context);
+            final EditText latitude = new EditText(context);
+            final EditText longitude = new EditText(context);
+
 
             titleBox.setHint("Listing Title (5 characters minimum)");
             descriptionBox.setHint("Description");
             housingType.setHint("Housing Type (Must be: 'studio', '1-bedroom', '2-bedroom', or 'other')");
             rentalPrice.setHint("Rental Price (Numerical)");
             petFriendly.setHint("Pets Allowed? (Y/N)");
+            latitude.setHint("Latitude as a Decimal between -180 and 180 (e.g. -15.2345). Optional.");
+            longitude.setHint("Longitude as a Decimal between -180 and 180 (e.g. 123.1536). Optional.");
 
             layout.addView(titleBox);
             layout.addView(housingType);
             layout.addView(descriptionBox);
             layout.addView(rentalPrice);
             layout.addView(petFriendly);
+            layout.addView(latitude);
+            layout.addView(longitude);
 
             alertDialogBuilder.setView(layout); // Again this is a set method, not add
             alertDialogBuilder.setCancelable(true).setPositiveButton("Create", new DialogInterface.OnClickListener() {
@@ -124,6 +131,11 @@ public class ListingsFragment extends Fragment implements ListingsItemSelectList
                     listingParams.add(housingType.getText().toString());
                     listingParams.add(rentalPrice.getText().toString());
                     listingParams.add(petFriendly.getText().toString());
+                    listingParams.add(latitude.getText().toString().equals("")
+                            ? "0.0000" : latitude.getText().toString());
+                    listingParams.add(longitude.getText().toString().equals("")
+                            ? "0.0000" : longitude.getText().toString());
+
                     // Ensuring all fields are filled out
                     if (listingParams.contains("")) {
                         Toast.makeText(context, "Please fill in all fields.", Toast.LENGTH_LONG).show();
@@ -137,7 +149,18 @@ public class ListingsFragment extends Fragment implements ListingsItemSelectList
                         Toast.makeText(context, "The rental price must be numerical (i.e. '1500').", Toast.LENGTH_LONG).show();
                     } else if (!listingParams.get(4).equals("Y") && !listingParams.get(4).equals("N")) {
                         Toast.makeText(context, "Pet Friendly must be 'Y' or 'N'", Toast.LENGTH_LONG).show();
-                    } else {
+                    }
+                    else {
+                        try {
+                            if (Double.parseDouble(listingParams.get(5)) > 180 || Double.parseDouble(listingParams.get(5)) < -180) {
+                                Toast.makeText(context, "Latitude must be between -180 and 180.", Toast.LENGTH_LONG).show();
+                            } else if (Double.parseDouble(listingParams.get(6)) > 180 || Double.parseDouble(listingParams.get(6)) < -180) {
+                                Toast.makeText(context, "Longitude must be between -180 and 180.", Toast.LENGTH_LONG).show();
+                            }
+                        } catch (NumberFormatException e) {
+                            Toast.makeText(context, "Latitude and Longitude must be numerical. (i.e. 123.0000)", Toast.LENGTH_LONG).show();
+                        }
+
                         try {
                             Log.d(TAG, "Creating Listing.");
                             createListing(httpClient, view, getActivity(), listingParams, userId);
@@ -330,6 +353,7 @@ public class ListingsFragment extends Fragment implements ListingsItemSelectList
                 .add("moveInDate", "2024-03-01") // NOTE: This is a hardcoded value and this is a limitation of the project.
                 .add("petFriendly", petFriendly)
                 .add("status", "active")
+                .add("location", params.get(4))
                 .build();
 
         Request request = new Request.Builder().url(Constants.baseServerURL + Constants.listingByListingIdEndpoint)
