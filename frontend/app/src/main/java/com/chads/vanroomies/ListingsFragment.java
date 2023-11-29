@@ -32,11 +32,14 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 import java.io.IOException;
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+
 import okhttp3.Call;
 import okhttp3.Callback;
 import okhttp3.FormBody;
@@ -323,8 +326,8 @@ public class ListingsFragment extends Fragment implements ListingsItemSelectList
                 .add("description", params.get(1))
                 .add("housingType", params.get(2))
                 .add("rentalPrice", params.get(3))
-                .add("listingDate", "2023-10-22") // ToDo: Get current date in future milestones
-                .add("moveInDate", "2024-01-01") // ToDo: Get from user and parse in future milestones
+                .add("listingDate", getTodayAsString()) // ToDo: Get current date in future milestones
+                .add("moveInDate", "2024-03-01") // NOTE: This is a hardcoded value and this is a limitation of the project.
                 .add("petFriendly", petFriendly)
                 .add("status", "active")
                 .build();
@@ -351,5 +354,10 @@ public class ListingsFragment extends Fragment implements ListingsItemSelectList
         } catch(NumberFormatException e){
             return false;
         }
+    }
+
+    public String getTodayAsString() {
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+        return LocalDate.now().format(formatter);
     }
 }
