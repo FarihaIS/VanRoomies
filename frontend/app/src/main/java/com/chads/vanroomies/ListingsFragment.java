@@ -32,20 +32,24 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 import java.io.IOException;
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+
 import okhttp3.Call;
 import okhttp3.Callback;
-import okhttp3.FormBody;
+import okhttp3.MediaType;
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import okhttp3.RequestBody;
 import okhttp3.Response;
 import okhttp3.ResponseBody;
 
+// ChatGPT usage: No
 public class ListingsFragment extends Fragment implements ListingsItemSelectListener{
     final static String TAG = "ListingsFragment";
     private OkHttpClient httpClient;
@@ -56,6 +60,7 @@ public class ListingsFragment extends Fragment implements ListingsItemSelectList
     final static int view_cols = 2;
     private RecyclerView recyclerView;
     private ArrayList<ListingsRecyclerData> recyclerDataArrayList;
+    private View view;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -67,7 +72,7 @@ public class ListingsFragment extends Fragment implements ListingsItemSelectList
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.fragment_listings, container, false);
+        view = inflater.inflate(R.layout.fragment_listings, container, false);
         recyclerView = view.findViewById(R.id.idListingsRV);
 
         SharedPreferences sharedPref = getActivity().getSharedPreferences(Constants.userData, Context.MODE_PRIVATE);
@@ -98,20 +103,27 @@ public class ListingsFragment extends Fragment implements ListingsItemSelectList
             final EditText rentalPrice = new EditText(context);
             // final EditText moveInDate = new EditText(context);
             final EditText petFriendly = new EditText(context);
+            final EditText latitude = new EditText(context);
+            final EditText longitude = new EditText(context);
+
 
             titleBox.setHint("Listing Title (5 characters minimum)");
             descriptionBox.setHint("Description");
             housingType.setHint("Housing Type (Must be: 'studio', '1-bedroom', '2-bedroom', or 'other')");
             rentalPrice.setHint("Rental Price (Numerical)");
             petFriendly.setHint("Pets Allowed? (Y/N)");
+            latitude.setHint("Latitude as a Decimal between -180 and 180 (e.g. -15.2345). Optional.");
+            longitude.setHint("Longitude as a Decimal between -180 and 180 (e.g. 123.1536). Optional.");
 
             layout.addView(titleBox);
             layout.addView(housingType);
             layout.addView(descriptionBox);
             layout.addView(rentalPrice);
             layout.addView(petFriendly);
+            layout.addView(latitude);
+            layout.addView(longitude);
 
-            alertDialogBuilder.setView(layout); // Again this is a set method, not add
+            alertDialogBuilder.setView(layout);
             alertDialogBuilder.setCancelable(true).setPositiveButton("Create", new DialogInterface.OnClickListener() {
                 public void onClick(DialogInterface dialog, int id) {
                     dialog.dismiss();
@@ -121,6 +133,11 @@ public class ListingsFragment extends Fragment implements ListingsItemSelectList
                     listingParams.add(housingType.getText().toString());
                     listingParams.add(rentalPrice.getText().toString());
                     listingParams.add(petFriendly.getText().toString());
+                    listingParams.add(latitude.getText().toString().equals("")
+                            ? "0.0000" : latitude.getText().toString());
+                    listingParams.add(longitude.getText().toString().equals("")
+                            ? "0.0000" : longitude.getText().toString());
+
                     // Ensuring all fields are filled out
                     if (listingParams.contains("")) {
                         Toast.makeText(context, "Please fill in all fields.", Toast.LENGTH_LONG).show();
@@ -134,7 +151,19 @@ public class ListingsFragment extends Fragment implements ListingsItemSelectList
                         Toast.makeText(context, "The rental price must be numerical (i.e. '1500').", Toast.LENGTH_LONG).show();
                     } else if (!listingParams.get(4).equals("Y") && !listingParams.get(4).equals("N")) {
                         Toast.makeText(context, "Pet Friendly must be 'Y' or 'N'", Toast.LENGTH_LONG).show();
-                    } else {
+                    }
+                    else {
+                        try {
+                            if (Double.parseDouble(listingParams.get(5)) > 180 || Double.parseDouble(listingParams.get(5)) < -180) {
+                                Toast.makeText(context, "Latitude must be between -180 and 180.", Toast.LENGTH_LONG).show();
+                            } else if (Double.parseDouble(listingParams.get(6)) > 180 || Double.parseDouble(listingParams.get(6)) < -180) {
+                                Toast.makeText(context, "Longitude must be between -180 and 180.", Toast.LENGTH_LONG).show();
+                            }
+                        } catch (NumberFormatException e) {
+                            Toast.makeText(context, "Latitude and Longitude must be numerical. (i.e. 123.0000)", Toast.LENGTH_LONG).show();
+                            return;
+                        }
+
                         try {
                             Log.d(TAG, "Creating Listing.");
                             createListing(httpClient, view, getActivity(), listingParams, userId);
@@ -316,18 +345,25 @@ public class ListingsFragment extends Fragment implements ListingsItemSelectList
         else {
             petFriendly = "false";
         }
+
+        JSONObject location = new JSONObject();
+        location.put("latitude", Double.valueOf(params.get(5)));
+        location.put("longitude", Double.valueOf(params.get(6)));
+
         // Setting up a POST request
-        RequestBody formBody = new FormBody.Builder()
-                .add("userId", userId)
-                .add("title", params.get(0))
-                .add("description", params.get(1))
-                .add("housingType", params.get(2))
-                .add("rentalPrice", params.get(3))
-                .add("listingDate", "2023-10-22") // ToDo: Get current date in future milestones
-                .add("moveInDate", "2024-01-01") // ToDo: Get from user and parse in future milestones
-                .add("petFriendly", petFriendly)
-                .add("status", "active")
-                .build();
+        JSONObject json = new JSONObject();
+        json.put("userId", userId);
+        json.put("title", params.get(0));
+        json.put("description", params.get(1));
+        json.put("housingType", params.get(2));
+        json.put("rentalPrice", params.get(3));
+        json.put("listingDate", getTodayAsString());
+        json.put("moveInDate", "2024-03-01");
+        json.put("petFriendly", petFriendly);
+        json.put("status", "active");
+        json.put("location", location);
+
+        RequestBody formBody = RequestBody.create(MediaType.parse("application/json"), json.toString());
 
         Request request = new Request.Builder().url(Constants.baseServerURL + Constants.listingByListingIdEndpoint)
                 .post(formBody) // POST
@@ -350,6 +386,29 @@ public class ListingsFragment extends Fragment implements ListingsItemSelectList
             return true;
         } catch(NumberFormatException e){
             return false;
+        }
+    }
+
+    public String getTodayAsString() {
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+        return LocalDate.now().format(formatter);
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        SharedPreferences sharedPref = getActivity().getSharedPreferences(Constants.userData, Context.MODE_PRIVATE);
+        String userId = sharedPref.getString(Constants.userIdKey, Constants.userDefault);
+        if (toggleButton.isChecked()){
+            addListingButton.setEnabled(true);
+            addListingButton.setVisibility(View.VISIBLE);
+            titleText.setText(getString(R.string.listings_header_owned));
+            getOwnedListings(httpClient, view, getActivity(), userId);
+        } else {
+            addListingButton.setEnabled(false);
+            addListingButton.setVisibility(View.INVISIBLE);
+            titleText.setText(getString(R.string.listings_header_recommended));
+            getRecommendedListings(httpClient, view, getActivity(), userId);
         }
     }
 }

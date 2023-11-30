@@ -3,6 +3,7 @@ package com.chads.vanroomies;
 import java.util.HashMap;
 
 // Reference: https://www.geeksforgeeks.org/recyclerview-using-gridlayoutmanager-in-android-with-example/
+// ChatGPT usage: No
 public class ListingsRecyclerData {
     private String title;
     private String imageString;

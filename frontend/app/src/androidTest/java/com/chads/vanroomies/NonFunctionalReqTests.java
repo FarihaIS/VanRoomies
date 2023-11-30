@@ -207,7 +207,6 @@ public class NonFunctionalReqTests {
         switchMaterial.perform(click());
 
         // Create Listing
-        currTaskStartTime = System.currentTimeMillis();
         ViewInteraction materialButton = onView(
                 Matchers.allOf(withId(R.id.createListingButton), withText("+"),
                         childAtPosition(
@@ -270,12 +269,12 @@ public class NonFunctionalReqTests {
                                         withClassName(Matchers.is("android.widget.ScrollView")),
                                         0),
                                 3)));
+        currTaskStartTime = System.currentTimeMillis();
         materialButton2.perform(scrollTo(), click());
         timeReport("Create Listing");
 
 
         // Edit Listing
-        currTaskStartTime = System.currentTimeMillis();
         ViewInteraction recyclerView = onView(
                 Matchers.allOf(withId(R.id.idListingsRV),
                         childAtPosition(
@@ -289,7 +288,7 @@ public class NonFunctionalReqTests {
                                 childAtPosition(
                                         withId(android.R.id.content),
                                         0),
-                                9),
+                                12),
                         isDisplayed()));
         materialButton3.perform(click());
 
@@ -308,7 +307,7 @@ public class NonFunctionalReqTests {
                                 childAtPosition(
                                         withId(android.R.id.content),
                                         0),
-                                10),
+                                13),
                         isDisplayed()));
         materialButton5.perform(click());
 
@@ -327,7 +326,7 @@ public class NonFunctionalReqTests {
                                 childAtPosition(
                                         withId(android.R.id.content),
                                         0),
-                                7),
+                                9),
                         isDisplayed()));
         materialButton7.perform(click());
 
@@ -346,7 +345,7 @@ public class NonFunctionalReqTests {
                                 childAtPosition(
                                         withId(android.R.id.content),
                                         0),
-                                8),
+                                10),
                         isDisplayed()));
         materialButton9.perform(click());
 
@@ -357,12 +356,12 @@ public class NonFunctionalReqTests {
                                         withClassName(Matchers.is("android.widget.ScrollView")),
                                         0),
                                 3)));
+        currTaskStartTime = System.currentTimeMillis();
         materialButton10.perform(scrollTo(), click());
         timeReport("Edit Listing");
         pressBack();
 
         // See Matches
-        currTaskStartTime = System.currentTimeMillis();
         ViewInteraction bottomNavigationItemView2 = onView(
                 Matchers.allOf(withId(R.id.menu_matches), withContentDescription("Matches"),
                         childAtPosition(
@@ -371,11 +370,11 @@ public class NonFunctionalReqTests {
                                         0),
                                 2),
                         isDisplayed()));
+        currTaskStartTime = System.currentTimeMillis();
         bottomNavigationItemView2.perform(click());
         timeReport("See Matches");
 
         // Send a Chat Message
-        currTaskStartTime = System.currentTimeMillis();
         ViewInteraction bottomNavigationItemView3 = onView(
                 Matchers.allOf(withId(R.id.menu_chat), withContentDescription("Chat"),
                         childAtPosition(
@@ -413,6 +412,7 @@ public class NonFunctionalReqTests {
                                                 2)),
                                 2),
                         isDisplayed()));
+        currTaskStartTime = System.currentTimeMillis();
         materialButton11.perform(click());
         timeReport("Send Message");
         pressBack();

@@ -7,6 +7,7 @@ import androidx.fragment.app.FragmentTransaction;
 import android.os.Bundle;
 import com.chads.vanroomies.databinding.ActivityHomeBinding;
 
+// ChatGPT usage: No
 public class HomeActivity extends AppCompatActivity {
     ActivityHomeBinding binding;
     @Override

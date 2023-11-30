@@ -10,6 +10,7 @@ import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import okhttp3.Response;
 
+// ChatGPT usage: No
 public class GetHelloWorldTest {
     final static String TAG = "GetHelloWorldTest";
     public static String testGetHelloWorld(OkHttpClient httpClient, Activity act){
