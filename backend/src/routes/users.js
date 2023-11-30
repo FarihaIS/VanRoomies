@@ -5,7 +5,7 @@ const Listing = require('../models/listingModel');
 const Preferences = require('../models/preferencesModel');
 const messageStore = require('../chat/messageStore');
 const { generateAuthenticationToken } = require('../authentication/jwtAuthentication');
-const { BLOCK_THRESHOLD } = require('../utils/constants');
+const { BLOCK_THRESHOLD, DEFAULT_IMAGES } = require('../utils/constants');
 const router = express.Router();
 
 /**
@@ -39,6 +39,7 @@ router.post('/login', async (req, res, next) => {
             firstName: req.body.firstName,
             lastName: req.body.lastName,
             email: req.body.email,
+            profilePicture: DEFAULT_IMAGES['person'],
         });
         const savedUser = await user.save();
         const userToken = generateAuthenticationToken(savedUser);

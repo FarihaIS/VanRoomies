@@ -2,7 +2,7 @@ const express = require('express');
 const Listing = require('../models/listingModel');
 const User = require('../models/userModel');
 // const { authenticateJWT } = require('../authentication/jwtAuthentication');
-const { SCAM_THRESHOLD } = require('../utils/constants');
+const { SCAM_THRESHOLD, DEFAULT_IMAGES } = require('../utils/constants');
 const router = express.Router();
 
 /**
@@ -45,6 +45,7 @@ router.post('/', async (req, res, next) => {
     const user = await User.findById(req.body.userId);
     if (user) {
         const listing = new Listing(req.body);
+        listing.images = [DEFAULT_IMAGES[listing.housingType] || ''];
         await listing.save();
         res.location(`/api/listing/${listing._id}`);
         res.status(201).json(listing);

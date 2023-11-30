@@ -1,5 +1,6 @@
 const request = require('supertest');
 const app = require('../../src/app');
+const { logErrors, errorHandler } = require('../../src/middlewares');
 const User = require('../../src/models/userModel');
 jest.mock('../../src/models/userModel');
 
@@ -79,5 +80,40 @@ describe('POST firebase token', () => {
         });
         expect(res.statusCode).toStrictEqual(404);
         expect(res.body).toStrictEqual({ error: 'User not found' });
+    });
+});
+
+// Misc middleware.js handlers
+describe('Middlewares', () => {
+    test('logErrors Function', () => {
+        const error = new Error('Test Error Message');
+        const next = jest.fn();
+        jest.spyOn(console, 'error').mockImplementation();
+
+        logErrors(error, 'req', 'res', next);
+
+        expect(console.error).toHaveBeenCalledWith('Test Error Message');
+        expect(next).toHaveBeenCalledWith(error);
+    });
+
+    test('errorHandler Function headersSent=>True', () => {
+        const error = new Error('Test Error Message');
+        const res = { headersSent: true, status: jest.fn(), json: jest.fn() };
+        const next = jest.fn();
+
+        errorHandler(error, 'req', res, next);
+
+        expect(next).toHaveBeenCalledWith(error);
+    });
+
+    test('errorHandler Function headersSent=>False', () => {
+        const error = new Error('Test Error Message');
+        const res = { headersSent: false, status: jest.fn(), json: jest.fn() };
+        const next = jest.fn();
+
+        errorHandler(error, 'req', res, next);
+
+        expect(res.status).toHaveBeenCalledWith(500);
+        expect(res.json).toHaveBeenCalledWith({ error: error.message });
     });
 });

@@ -1,3 +1,5 @@
+const { base64Encoding } = require('./utils');
+
 // House Type related constants
 const NONSHAREABLE = ['studio', '1-bedroom'];
 const TWOBEDROOM = '2-bedroom';
@@ -16,4 +18,23 @@ const BLOCK_THRESHOLD = 5;
 // Scam reporing behavior
 const SCAM_THRESHOLD = 5;
 
-module.exports = { NONSHAREABLE, TWOBEDROOM, POSINF, NEGINF, HABITS, NEUTRAL, BLOCK_THRESHOLD, SCAM_THRESHOLD };
+// Default images
+const DEFAULT_IMAGES = {
+    studio: base64Encoding('./src/utils/imgs/studio.jpeg'),
+    '1-bedroom': base64Encoding('./src/utils/imgs/1-bed.jpeg'),
+    '2-bedroom': base64Encoding('./src/utils/imgs/2-bed.jpeg'),
+    other: base64Encoding('./src/utils/imgs/other.jpeg'),
+    person: base64Encoding('./src/utils/imgs/person.png'),
+};
+
+module.exports = {
+    NONSHAREABLE,
+    TWOBEDROOM,
+    POSINF,
+    NEGINF,
+    HABITS,
+    NEUTRAL,
+    BLOCK_THRESHOLD,
+    SCAM_THRESHOLD,
+    DEFAULT_IMAGES,
+};
