@@ -6,8 +6,8 @@
   "scripts": {
     "start": "cross-env NODE_ENV=production node src/server.js",
     "dev": "cross-env NODE_ENV=development nodemon src/server.js",
-    "lint": "npm run prettier",
-    "prettier": "prettier --write './{src,test}/**/*.js'",
+    "lint": "prettier --write './{src,test}/**/*.js'",
+    "lint-check": "prettier --check './{src,test}/**/*.js'",
     "test": "jest --maxWorkers=50% --coverage=true --collectCoverageFrom='src/**/*.js'"
   },
   "author": "",
