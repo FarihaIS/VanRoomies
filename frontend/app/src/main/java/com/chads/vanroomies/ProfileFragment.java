@@ -70,6 +70,7 @@ public class ProfileFragment extends Fragment {
     private Button editPreferencesButton;
     private ImageView profilePicture;
 
+    // ChatGPT Usage: No
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -77,6 +78,7 @@ public class ProfileFragment extends Fragment {
         StrictMode.setThreadPolicy(policy);
     }
 
+    // ChatGPT Usage: No
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
@@ -265,6 +267,7 @@ public class ProfileFragment extends Fragment {
         return view;
     }
 
+    // ChatGPT Usage: No
     public String validatePreferences(List<String> preferenceParams){
         if (preferenceParams.contains("")) {
             return "Please fill in all fields.";
@@ -301,6 +304,7 @@ public class ProfileFragment extends Fragment {
         return null;
     }
 
+    // ChatGPT Usage: No
     public void getProfile(OkHttpClient client, View view, Activity act, String user_id){
         Request request = new Request.Builder().url(Constants.baseServerURL + Constants.userEndpoint + user_id).build();
         client.newCall(request).enqueue(new Callback() {
@@ -348,6 +352,7 @@ public class ProfileFragment extends Fragment {
         });
     }
 
+    // ChatGPT Usage: No
     public void getUserPreferences(OkHttpClient client, View view, Activity act, String user_id){
         Request request = new Request.Builder().url(Constants.baseServerURL + Constants.userPreferencesEndpoint(user_id)).build();
         client.newCall(request).enqueue(new Callback() {
@@ -403,6 +408,7 @@ public class ProfileFragment extends Fragment {
         });
     }
 
+    // ChatGPT Usage: No
     public void editOrAddPreferences(OkHttpClient client, View view, Activity act, String user_id, List<String> preferenceParams){
         String petFriendly = preferenceParams.get(4).equals("Y") ? "true" : "false";
         // Setting up a POST request
@@ -445,6 +451,8 @@ public class ProfileFragment extends Fragment {
             }
         });
     }
+
+    // ChatGPT Usage: No
     public void updateUserBio(OkHttpClient client, View view, Activity act, String user_id, String desc) throws JSONException {
         // Setting up the request
         RequestBody formBody = new FormBody.Builder()
@@ -471,6 +479,7 @@ public class ProfileFragment extends Fragment {
         });
     }
 
+    // ChatGPT Usage: No
     // From https://stackoverflow.com/questions/37929419/set-size-of-contents-dynamically-in-dp-in-android
     public static int pxFromDp(Context context, float dp) {
         return (int)(dp * context.getResources().getDisplayMetrics().density);
@@ -485,6 +494,7 @@ public class ProfileFragment extends Fragment {
         }
     }
 
+    // ChatGPT Usage: No
     // Takes the current text from the screen and converts it to what was previously inputted
     public static String getExistingPreferenceField(CharSequence input){
         String preference = input.toString().split(": ")[1];
@@ -497,6 +507,7 @@ public class ProfileFragment extends Fragment {
         return preference;
     }
 
+    // ChatGPT Usage: No
     void signOut(){
         mGoogleSignInClient.signOut().addOnCompleteListener(new OnCompleteListener<Void>() {
             @Override

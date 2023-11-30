@@ -41,12 +41,14 @@ public class MatchesFragment extends Fragment {
     private Gson gson;
     private int lastSeenMatchIndex = 0;
 
+    // ChatGPT Usage: No
     @Override
     public void onPause() {
         super.onPause();
         saveLastSeenMatchIndex();
     }
 
+    // ChatGPT Usage: No
     @Override
     public void onResume() {
         super.onResume();
@@ -54,6 +56,7 @@ public class MatchesFragment extends Fragment {
         loadLastSeenMatchIndex();
     }
 
+    // ChatGPT Usage: No
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -61,6 +64,7 @@ public class MatchesFragment extends Fragment {
         StrictMode.setThreadPolicy(policy);
     }
 
+    // ChatGPT Usage: No
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
@@ -92,6 +96,7 @@ public class MatchesFragment extends Fragment {
         return v;
     }
 
+    // ChatGPT Usage: No
     private void updateMatchesFragmentLayout(View v) {
         MatchDeckAdapter matchDeckAdapter = new MatchDeckAdapter(v.getContext(), userMatches);
         cardStack.setAdapter(matchDeckAdapter);
@@ -131,6 +136,7 @@ public class MatchesFragment extends Fragment {
         });
     }
 
+    // ChatGPT Usage: No
     private void getAllMatches(OkHttpClient client, Activity activity, View v) {
         String url = Constants.baseServerURL + Constants.userEndpoint + thisUserId + Constants.matchesByUserIdEndpoint;
         Request request = new Request.Builder().url(url).build();
@@ -173,6 +179,7 @@ public class MatchesFragment extends Fragment {
         });
     }
 
+    // ChatGPT Usage: No
     private void excludeUserFromFutureMatches(OkHttpClient client, Activity activity, String matchUserId) {
         String url = Constants.baseServerURL + Constants.userEndpoint + thisUserId + Constants.matchesByUserIdEndpoint;
         Log.d(TAG, "Exclude userId " + matchUserId);
@@ -209,6 +216,7 @@ public class MatchesFragment extends Fragment {
         });
     }
 
+    // ChatGPT Usage: No
     private void startChatWithMatchedUser(OkHttpClient client, Activity activity, String matchUserId) {
         String url = Constants.baseServerURL + Constants.chatsByUserIdEndpoint + thisUserId;
         RequestBody requestBody = new FormBody.Builder()
@@ -245,6 +253,7 @@ public class MatchesFragment extends Fragment {
         });
     }
 
+    // ChatGPT Usage: No
     private void saveLastSeenMatchIndex() {
         SharedPreferences prefs = getActivity().getPreferences(Context.MODE_PRIVATE);
         SharedPreferences.Editor editor = prefs.edit();
@@ -252,6 +261,7 @@ public class MatchesFragment extends Fragment {
         editor.apply();
     }
 
+    // ChatGPT Usage: No
     private void loadLastSeenMatchIndex() {
         SharedPreferences prefs = getActivity().getPreferences(Context.MODE_PRIVATE);
         lastSeenMatchIndex = prefs.getInt(LAST_SEEN_MATCH_INDEX_KEY, 0);

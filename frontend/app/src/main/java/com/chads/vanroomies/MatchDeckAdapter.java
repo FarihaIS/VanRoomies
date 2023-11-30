@@ -22,21 +22,25 @@ public class MatchDeckAdapter extends BaseAdapter {
         this.context = context;
     }
 
+    // ChatGPT Usage: No
     @Override
     public int getCount() {
         return users.size();
     }
 
+    // ChatGPT Usage: No
     @Override
     public Object getItem(int position) {
         return users.get(position);
     }
 
+    // ChatGPT Usage: No
     @Override
     public long getItemId(int position) {
         return position;
     }
 
+    // ChatGPT Usage: No
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
         View v = convertView;

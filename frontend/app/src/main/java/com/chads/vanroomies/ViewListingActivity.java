@@ -58,6 +58,8 @@ public class ViewListingActivity extends AppCompatActivity {
     private Button editLatLongButton;
     private Button editPriceButton;
 
+
+    // ChatGPT Usage: No
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -77,6 +79,7 @@ public class ViewListingActivity extends AppCompatActivity {
         }
     }
 
+    // ChatGPT Usage: No
     public void enableButton(Button button, String attribute, TextView text_field, String listingId){
         button.setEnabled(true);
         button.setVisibility(View.VISIBLE);
@@ -131,6 +134,7 @@ public class ViewListingActivity extends AppCompatActivity {
         });
     }
 
+    // ChatGPT Usage: No
     public void enableToggle(Button button, String attribute, TextView text_field, String listingId){
         button.setEnabled(true);
         button.setVisibility(View.VISIBLE);
@@ -196,6 +200,7 @@ public class ViewListingActivity extends AppCompatActivity {
         });
     }
 
+    // ChatGPT Usage: No
     public void enableLocButton(Button button, String attribute, TextView text_field, String listingId){
         button.setEnabled(true);
         button.setVisibility(View.VISIBLE);
@@ -249,6 +254,7 @@ public class ViewListingActivity extends AppCompatActivity {
         });
     }
 
+    // ChatGPT Usage: No
     public void enablePriceButton(Button button, String attribute, TextView text_field, String listingId) {
         button.setEnabled(true);
         button.setVisibility(View.VISIBLE);
@@ -288,11 +294,13 @@ public class ViewListingActivity extends AppCompatActivity {
         });
     }
 
+    // ChatGPT Usage: No
     public void disableButton(Button button){
         button.setEnabled(false);
         button.setVisibility(View.INVISIBLE);
     }
 
+    // ChatGPT Usage: No
     public void updateEditableText(OkHttpClient client, View view, Activity act, String field,
                                    String listingId, TextView textview_to_update, String new_text) throws JSONException {
         // Setting up the request
@@ -326,6 +334,7 @@ public class ViewListingActivity extends AppCompatActivity {
         });
     }
 
+    // ChatGPT Usage: No
     public void updateLocationText(OkHttpClient client, View view, Activity act, String field,
                                    String listingId, TextView textview_to_update, String new_text,
                                    double latitude, double longitude) throws JSONException {
@@ -357,9 +366,13 @@ public class ViewListingActivity extends AppCompatActivity {
             }
         });
     }
+
+    // ChatGPT Usage: No
     public static int pxFromDp(Context context, float dp) {
         return (int)(dp * context.getResources().getDisplayMetrics().density);
     }
+
+    // ChatGPT Usage: No
     public void reportListing(OkHttpClient client, String listingId, String userId) {
         // Setting up a POST request
         RequestBody formBody = new FormBody.Builder()
@@ -380,6 +393,8 @@ public class ViewListingActivity extends AppCompatActivity {
             }
         });
     }
+
+    // ChatGPT Usage: No
     public void setupReportButton(String listingId, String userId){
         reportButton.setOnClickListener(view -> {
             AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(view.getContext());
@@ -401,6 +416,7 @@ public class ViewListingActivity extends AppCompatActivity {
         });
     }
 
+    // ChatGPT Usage: No
     public void deleteListing(OkHttpClient client, String listingId) {
         // Setting up a DELETE request
         Request request = new Request.Builder() // localhost:3000/api/listings/:listingId
@@ -440,6 +456,7 @@ public class ViewListingActivity extends AppCompatActivity {
         });
     }
 
+    // ChatGPT Usage: No
     public double[] getLatestLocation(TextView location_textview){
         double[] result = new double[2];
         String curr_loc = String.valueOf(location_textview.getText());
@@ -449,6 +466,7 @@ public class ViewListingActivity extends AppCompatActivity {
         return result;
     }
 
+    // ChatGPT Usage: No
     public void getListing(OkHttpClient client, String listingId, String userId){
         Request request = new Request.Builder().url(Constants.baseServerURL + Constants.listingByListingIdEndpoint + listingId).build();
         client.newCall(request).enqueue(new Callback() {
