@@ -17,6 +17,8 @@ import static androidx.test.espresso.matcher.ViewMatchers.withParent;
 import static androidx.test.espresso.matcher.ViewMatchers.withText;
 import static org.hamcrest.CoreMatchers.allOf;
 import static org.hamcrest.CoreMatchers.is;
+import static org.hamcrest.Matchers.either;
+import static org.hamcrest.Matchers.not;
 import static org.junit.Assert.assertTrue;
 
 import android.os.IBinder;
@@ -36,6 +38,7 @@ import androidx.test.ext.junit.rules.ActivityScenarioRule;
 import androidx.test.ext.junit.runners.AndroidJUnit4;
 import androidx.test.filters.LargeTest;
 import androidx.test.platform.app.InstrumentationRegistry;
+import androidx.test.uiautomator.By;
 import androidx.test.uiautomator.UiDevice;
 import androidx.test.uiautomator.UiObject;
 import androidx.test.uiautomator.UiSelector;
@@ -96,6 +99,7 @@ public class MainUsecaseTests {
     public void before() {
         mUiDevice = UiDevice.getInstance(InstrumentationRegistry.getInstrumentation());
     }
+
     @Test
     public void manageListingTest() throws Exception {
         UiObject login = mUiDevice.findObject(new UiSelector().textContains("Sign In"));
@@ -104,7 +108,7 @@ public class MainUsecaseTests {
         }
 
         ViewInteraction bottomNavigationItemView = onView(
-                allOf(withId(R.id.menu_listings), withContentDescription("Listings"),
+                Matchers.allOf(withId(R.id.menu_listings), withContentDescription("Listings"),
                         childAtPosition(
                                 childAtPosition(
                                         withId(R.id.bottomNavigationView),
@@ -113,27 +117,19 @@ public class MainUsecaseTests {
                         isDisplayed()));
         bottomNavigationItemView.perform(click());
 
-        // We check that the text says "Listings" here so we know that the bottom navigation bar functions properly
-        ViewInteraction textView = onView(
-                Matchers.allOf(withId(com.google.android.material.R.id.navigation_bar_item_large_label_view), withText("Listings"),
-                        withParent(Matchers.allOf(withId(com.google.android.material.R.id.navigation_bar_item_labels_group),
-                                withParent(Matchers.allOf(withId(R.id.menu_listings), withContentDescription("Listings"))))),
-                        isDisplayed()));
-        textView.check(matches(withText("Listings")));
-
-        ViewInteraction toggleListingType = onView(
-                allOf(withId(R.id.listings_toggle),
+        ViewInteraction toggleListings = onView(
+                Matchers.allOf(withId(R.id.listings_toggle),
                         childAtPosition(
                                 childAtPosition(
                                         withId(R.id.frame_layout),
                                         0),
                                 1),
                         isDisplayed()));
-        toggleListingType.perform(click());
+        toggleListings.perform(click());
 
-        // Creating a listing
+        // Create a listing with an invalid title
         ViewInteraction createListingButton = onView(
-                allOf(withId(R.id.createListingButton), withText("+"),
+                Matchers.allOf(withId(R.id.createListingButton), withText("+"),
                         childAtPosition(
                                 childAtPosition(
                                         withId(R.id.frame_layout),
@@ -142,175 +138,145 @@ public class MainUsecaseTests {
                         isDisplayed()));
         createListingButton.perform(click());
 
-        ViewInteraction createListingName = onView(
-                allOf(childAtPosition(
+        ViewInteraction editTitle = onView(
+                Matchers.allOf(childAtPosition(
                                 childAtPosition(
                                         withId(android.R.id.custom),
                                         0),
                                 0),
                         isDisplayed()));
-        createListingName.perform(replaceText("Studio in Kits"), closeSoftKeyboard());
+        editTitle.perform(replaceText("Stu"), closeSoftKeyboard());
 
-        ViewInteraction createListingType = onView(
-                allOf(childAtPosition(
+        ViewInteraction editDesc = onView(
+                Matchers.allOf(childAtPosition(
                                 childAtPosition(
                                         withId(android.R.id.custom),
                                         0),
                                 1),
                         isDisplayed()));
-        createListingType.perform(replaceText("studio"), closeSoftKeyboard());
+        editDesc.perform(replaceText("This is a lovely and affordable studio right by Kits Beach"), closeSoftKeyboard());
 
-        ViewInteraction createListingDesc = onView(
-                allOf(childAtPosition(
+        ViewInteraction editHousingType = onView(
+                Matchers.allOf(childAtPosition(
                                 childAtPosition(
                                         withId(android.R.id.custom),
                                         0),
                                 2),
                         isDisplayed()));
-        createListingDesc.perform(replaceText("This is a lovely and affordable studio right by Kits Beach"), closeSoftKeyboard());
+        editHousingType.perform(replaceText("studio"), closeSoftKeyboard());
 
-        ViewInteraction createListingPrice = onView(
-                allOf(childAtPosition(
+        ViewInteraction editPrice = onView(
+                Matchers.allOf(childAtPosition(
                                 childAtPosition(
                                         withId(android.R.id.custom),
                                         0),
                                 3),
                         isDisplayed()));
-        createListingPrice.perform(replaceText("1500"), closeSoftKeyboard());
+        editPrice.perform(replaceText("1500"), closeSoftKeyboard());
 
-        ViewInteraction createListingPetFriendly = onView(
-                allOf(childAtPosition(
+        ViewInteraction editPets = onView(
+                Matchers.allOf(childAtPosition(
                                 childAtPosition(
                                         withId(android.R.id.custom),
                                         0),
                                 4),
                         isDisplayed()));
-        createListingPetFriendly.perform(replaceText("N"), closeSoftKeyboard());
+        editPets.perform(replaceText("N"), closeSoftKeyboard());
 
-        ViewInteraction createListingConfirm = onView(
-                allOf(withId(android.R.id.button1), withText("Create")));
-        createListingConfirm.perform(scrollTo(), click());
-
-        ViewInteraction recyclerView = onView(
-                allOf(withId(R.id.idListingsRV),
-                        childAtPosition(
-                                withClassName(is("androidx.constraintlayout.widget.ConstraintLayout")),
-                                0)));
-        recyclerView.perform(actionOnItemAtPosition(0, click()));
-
-        mUiDevice.waitForIdle(3000);
-
-        // Editing the listing
-        ViewInteraction editListingTypeButton = onView(withId(R.id.edit_housing_type));
-        editListingTypeButton.perform(click());
-
-        // Update Housing Type from Studio -> 1-bedroom
-        ViewInteraction editListingType = onView(
-                allOf(withText("studio"),
-                        childAtPosition(
-                                allOf(withId(android.R.id.custom),
-                                        childAtPosition(
-                                                withClassName(is("android.widget.FrameLayout")),
-                                                0)),
-                                0),
-                        isDisplayed()));
-        editListingType.perform(replaceText("1-bedroom"));
-
-        editListingType = onView(
-                allOf(withText("1-bedroom"),
-                        childAtPosition(
-                                allOf(withId(android.R.id.custom),
-                                        childAtPosition(
-                                                withClassName(is("android.widget.FrameLayout")),
-                                                0)),
-                                0),
-                        isDisplayed()));
-        editListingType.perform(closeSoftKeyboard());
-
-        ViewInteraction currSaveButton = onView(
-                allOf(withId(android.R.id.button1), withText("Save"),
-                        childAtPosition(
-                                childAtPosition(
-                                        withClassName(is("android.widget.ScrollView")),
-                                        0),
-                                3)));
-        currSaveButton.perform(scrollTo(), click());
-
-        // Update Listing Title from Studio in Kits to 1-Bedroom in Kits
-        ViewInteraction editListingTitleButton = onView(
-                allOf(withId(R.id.edit_title),
-                        childAtPosition(
-                                childAtPosition(
-                                        withId(android.R.id.content),
-                                        0),
-                                7),
-                        isDisplayed()));
-        editListingTitleButton.perform(click());
-
-        ViewInteraction editListingTitle = onView(
-                allOf(withText("Studio in Kits"),
-                        childAtPosition(
-                                allOf(withId(android.R.id.custom),
-                                        childAtPosition(
-                                                withClassName(is("android.widget.FrameLayout")),
-                                                0)),
-                                0),
-                        isDisplayed()));
-        editListingTitle.perform(replaceText("1-Bedroom in Kits"));
-
-        editListingTitle = onView(
-                allOf(withText("1-Bedroom in Kits"),
-                        childAtPosition(
-                                allOf(withId(android.R.id.custom),
-                                        childAtPosition(
-                                                withClassName(is("android.widget.FrameLayout")),
-                                                0)),
-                                0),
-                        isDisplayed()));
-        editListingTitle.perform(closeSoftKeyboard());
-
-        currSaveButton = onView(
-                allOf(withId(android.R.id.button1), withText("Save"),
-                        childAtPosition(
-                                childAtPosition(
-                                        withClassName(is("android.widget.ScrollView")),
-                                        0),
-                                3)));
-        currSaveButton.perform(scrollTo(), click());
-
-        // Update Pet Friendly to Yes
-        ViewInteraction editPetFriendlyButton = onView(
-                Matchers.allOf(withId(R.id.edit_pet_friendly),
-                        childAtPosition(
-                                childAtPosition(
-                                        withId(android.R.id.content),
-                                        0),
-                                10),
-                        isDisplayed()));
-        editPetFriendlyButton.perform(click());
-
-        ViewInteraction editPetFriendlyChoice = onView(
-                Matchers.allOf(withId(android.R.id.button1), withText("Yes"),
+        ViewInteraction confirmCreation = onView(
+                Matchers.allOf(withId(android.R.id.button1), withText("Create"),
                         childAtPosition(
                                 childAtPosition(
                                         withClassName(Matchers.is("android.widget.ScrollView")),
                                         0),
                                 3)));
-        editPetFriendlyChoice.perform(scrollTo(), click());
+        confirmCreation.perform(scrollTo(), click());
 
-        // Updating Housing Description for 1-bedroom
-        ViewInteraction editHousingDescButton = onView(
-                Matchers.allOf(withId(R.id.edit_housing_desc),
+        // Create a listing with proper inputs
+        createListingButton = onView(
+                Matchers.allOf(withId(R.id.createListingButton), withText("+"),
+                        childAtPosition(
+                                childAtPosition(
+                                        withId(R.id.frame_layout),
+                                        0),
+                                3),
+                        isDisplayed()));
+        createListingButton.perform(click());
+
+        editTitle = onView(
+                Matchers.allOf(childAtPosition(
+                                childAtPosition(
+                                        withId(android.R.id.custom),
+                                        0),
+                                0),
+                        isDisplayed()));
+        editTitle.perform(replaceText("Studio in Kits"), closeSoftKeyboard());
+
+        editHousingType = onView(
+                Matchers.allOf(childAtPosition(
+                                childAtPosition(
+                                        withId(android.R.id.custom),
+                                        0),
+                                1),
+                        isDisplayed()));
+        editHousingType.perform(replaceText("studio"), closeSoftKeyboard());
+
+        editDesc = onView(
+                Matchers.allOf(childAtPosition(
+                                childAtPosition(
+                                        withId(android.R.id.custom),
+                                        0),
+                                2),
+                        isDisplayed()));
+        editDesc.perform(replaceText("This is a lovely and affordable studio right by Kits Beach"), closeSoftKeyboard());
+
+        editPrice = onView(
+                Matchers.allOf(childAtPosition(
+                                childAtPosition(
+                                        withId(android.R.id.custom),
+                                        0),
+                                3),
+                        isDisplayed()));
+        editPrice.perform(replaceText("1500"), closeSoftKeyboard());
+
+        editPets = onView(
+                Matchers.allOf(childAtPosition(
+                                childAtPosition(
+                                        withId(android.R.id.custom),
+                                        0),
+                                4),
+                        isDisplayed()));
+        editPets.perform(replaceText("N"), closeSoftKeyboard());
+
+        confirmCreation = onView(
+                Matchers.allOf(withId(android.R.id.button1), withText("Create"),
+                        childAtPosition(
+                                childAtPosition(
+                                        withClassName(Matchers.is("android.widget.ScrollView")),
+                                        0),
+                                3)));
+        confirmCreation.perform(scrollTo(), click());
+
+        // Look at the individual listing
+        ViewInteraction listingsRecyclerView = onView(
+                Matchers.allOf(withId(R.id.idListingsRV),
+                        childAtPosition(
+                                withClassName(Matchers.is("androidx.constraintlayout.widget.ConstraintLayout")),
+                                0)));
+        listingsRecyclerView.perform(actionOnItemAtPosition(0, click()));
+
+        editTitle = onView(
+                Matchers.allOf(withId(R.id.edit_title),
                         childAtPosition(
                                 childAtPosition(
                                         withId(android.R.id.content),
                                         0),
-                                8),
+                                9),
                         isDisplayed()));
-        editHousingDescButton.perform(click());
+        editTitle.perform(click());
 
-        ViewInteraction editHousingDesc = onView(
-                Matchers.allOf(withText("This is a lovely and affordable studio right by Kits Beach"),
+        editTitle = onView(
+                Matchers.allOf(withText("Studio in Kits"),
                         childAtPosition(
                                 Matchers.allOf(withId(android.R.id.custom),
                                         childAtPosition(
@@ -318,10 +284,10 @@ public class MainUsecaseTests {
                                                 0)),
                                 0),
                         isDisplayed()));
-        editHousingDesc.perform(click());
+        editTitle.perform(replaceText("Stu"));
 
-        editHousingDesc = onView(
-                Matchers.allOf(withText("This is a lovely and affordable studio right by Kits Beach"),
+        editTitle = onView(
+                Matchers.allOf(withText("Stu"),
                         childAtPosition(
                                 Matchers.allOf(withId(android.R.id.custom),
                                         childAtPosition(
@@ -329,40 +295,134 @@ public class MainUsecaseTests {
                                                 0)),
                                 0),
                         isDisplayed()));
-        editHousingDesc.perform(replaceText("This is a lovely and affordable 1-bedroom right by Kits Beach"));
+        editTitle.perform(closeSoftKeyboard());
 
-        editHousingDesc = onView(
-                Matchers.allOf(withText("This is a lovely and affordable 1-bedroom right by Kits Beach"),
-                        childAtPosition(
-                                Matchers.allOf(withId(android.R.id.custom),
-                                        childAtPosition(
-                                                withClassName(Matchers.is("android.widget.FrameLayout")),
-                                                0)),
-                                0),
-                        isDisplayed()));
-        editHousingDesc.perform(closeSoftKeyboard());
-
-        currSaveButton = onView(
+        ViewInteraction confirmEdit = onView(
                 Matchers.allOf(withId(android.R.id.button1), withText("Save"),
                         childAtPosition(
                                 childAtPosition(
                                         withClassName(Matchers.is("android.widget.ScrollView")),
                                         0),
                                 3)));
-        currSaveButton.perform(scrollTo(), click());
+        confirmEdit.perform(scrollTo(), click());
+
+        // Check for Toast message - title edit failure
+        onView(withText("The title must be at least 5 characters long.")).inRoot(new ToastMatcher())
+                .check(matches(isDisplayed()));
+
+        editTitle = onView(
+                Matchers.allOf(withId(R.id.edit_title),
+                        childAtPosition(
+                                childAtPosition(
+                                        withId(android.R.id.content),
+                                        0),
+                                9),
+                        isDisplayed()));
+        editTitle.perform(click());
+
+        editTitle = onView(
+                Matchers.allOf(withText("Studio in Kits"),
+                        childAtPosition(
+                                Matchers.allOf(withId(android.R.id.custom),
+                                        childAtPosition(
+                                                withClassName(Matchers.is("android.widget.FrameLayout")),
+                                                0)),
+                                0),
+                        isDisplayed()));
+        editTitle.perform(replaceText("Amazing Studio in Kits"));
+
+        editTitle = onView(
+                Matchers.allOf(withText("Amazing Studio in Kits"),
+                        childAtPosition(
+                                Matchers.allOf(withId(android.R.id.custom),
+                                        childAtPosition(
+                                                withClassName(Matchers.is("android.widget.FrameLayout")),
+                                                0)),
+                                0),
+                        isDisplayed()));
+        editTitle.perform(closeSoftKeyboard());
+
+        confirmEdit = onView(
+                Matchers.allOf(withId(android.R.id.button1), withText("Save"),
+                        childAtPosition(
+                                childAtPosition(
+                                        withClassName(Matchers.is("android.widget.ScrollView")),
+                                        0),
+                                3)));
+        confirmEdit.perform(scrollTo(), click());
 
         // Checking if the posting has been updated immediately on the frontend
         onView(withId(R.id.housing_type))
-                .check(matches(withText("1-bedroom")));
+                .check(matches(withText("studio")));
         onView(withId(R.id.pet_friendly))
-                .check(matches(withText("Pets: Allowed")));
+                .check(matches(withText("Pets: Not Allowed")));
         onView(withId(R.id.listing_name))
-                .check(matches(withText("1-Bedroom in Kits")));
+                .check(matches(withText("Amazing Studio in Kits")));
         onView(withId(R.id.listing_desc))
-                .check(matches(withText("This is a lovely and affordable 1-bedroom right by Kits Beach")));
+                .check(matches(withText("This is a lovely and affordable studio right by Kits Beach")));
 
-        // Return to listings fragment
         pressBack();
+
+        listingsRecyclerView = onView(
+                Matchers.allOf(withId(R.id.idListingsRV),
+                        childAtPosition(
+                                withClassName(Matchers.is("androidx.constraintlayout.widget.ConstraintLayout")),
+                                0)));
+        listingsRecyclerView.perform(actionOnItemAtPosition(0, click()));
+
+
+        ViewInteraction deleteListing = onView(
+                Matchers.allOf(withId(R.id.delete_button), withText("Delete Listing"),
+                        childAtPosition(
+                                childAtPosition(
+                                        withId(android.R.id.content),
+                                        0),
+                                18),
+                        isDisplayed()));
+        deleteListing.perform(click());
+
+        ViewInteraction confirmDelete = onView(
+                Matchers.allOf(withId(android.R.id.button1), withText("Yes"),
+                        childAtPosition(
+                                childAtPosition(
+                                        withClassName(Matchers.is("android.widget.ScrollView")),
+                                        0),
+                                3)));
+        confirmDelete.perform(scrollTo(), click());
+
+        bottomNavigationItemView = onView(
+                Matchers.allOf(withId(R.id.menu_matches), withContentDescription("Matches"),
+                        childAtPosition(
+                                childAtPosition(
+                                        withId(R.id.bottomNavigationView),
+                                        0),
+                                2),
+                        isDisplayed()));
+        bottomNavigationItemView.perform(click());
+
+        bottomNavigationItemView = onView(
+                Matchers.allOf(withId(R.id.menu_listings), withContentDescription("Listings"),
+                        childAtPosition(
+                                childAtPosition(
+                                        withId(R.id.bottomNavigationView),
+                                        0),
+                                1),
+                        isDisplayed()));
+        bottomNavigationItemView.perform(click());
+
+        toggleListings = onView(
+                Matchers.allOf(withId(R.id.listings_toggle),
+                        childAtPosition(
+                                childAtPosition(
+                                        withId(R.id.frame_layout),
+                                        0),
+                                1),
+                        isDisplayed()));
+        toggleListings.perform(click());
+
+        // Assert that our listing was deleted by checking the name
+        onView(allOf(withId(R.id.idTVListing), withText("Amazing Studio in Kits")))
+                .check(doesNotExist());
     }
 
     @Test
@@ -630,7 +690,7 @@ public class MainUsecaseTests {
                         isDisplayed()));
         sendButton.perform(click());
 
-        // Check for Toast message
+        // Check for Toast message - failure
         onView(withText(R.string.invalid_input_message)).inRoot(new ToastMatcher())
                 .check(matches(isDisplayed()));
 

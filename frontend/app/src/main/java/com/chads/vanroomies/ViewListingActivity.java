@@ -53,8 +53,10 @@ public class ViewListingActivity extends AppCompatActivity {
     private Button togglePetFriendlyButton;
     private Button editMoveInButton;
     private Button reportButton;
+    private Button deleteButton;
     private Button mapButton;
     private Button editLatLongButton;
+    private Button editPriceButton;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -98,6 +100,15 @@ public class ViewListingActivity extends AppCompatActivity {
                                 !text.equals("2-bedroom") &&
                                 !text.equals("other")){
                                 Toast.makeText(view.getContext(), "Please enter a valid value for housingType.", Toast.LENGTH_LONG).show();
+                            }
+                            else {
+                                updateEditableText(client, view, ViewListingActivity.this, attribute, listingId, text_field, String.valueOf(et.getText()));
+                            }
+                        }
+                        else if (Objects.equals(attribute, "title")){
+                            String text = String.valueOf(et.getText());
+                            if (text.length() < 5){
+                                Toast.makeText(view.getContext(), "The title must be at least 5 characters long.", Toast.LENGTH_LONG).show();
                             }
                             else {
                                 updateEditableText(client, view, ViewListingActivity.this, attribute, listingId, text_field, String.valueOf(et.getText()));
@@ -238,6 +249,45 @@ public class ViewListingActivity extends AppCompatActivity {
         });
     }
 
+    public void enablePriceButton(Button button, String attribute, TextView text_field, String listingId) {
+        button.setEnabled(true);
+        button.setVisibility(View.VISIBLE);
+        // Set Listener
+        button.setOnClickListener(view -> {
+            // Setting up Add Listing Prompt
+            Context context = view.getContext();
+            AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(context);
+            LinearLayout layout = new LinearLayout(context);
+            layout.setOrientation(LinearLayout.VERTICAL);
+
+            final EditText price = new EditText(context);
+
+            price.setHint("Monthly rental price (in CAD). Must be numerical and in whole dollars (e.g. 1500).");
+            layout.addView(price);
+            alertDialogBuilder.setView(layout);
+            alertDialogBuilder.setCancelable(true).setPositiveButton("Save", new DialogInterface.OnClickListener() {
+                public void onClick(DialogInterface dialog, int id) {
+                    dialog.dismiss();
+                    try {
+                        if (ListingsFragment.isNumeric(String.valueOf(price.getText())) && !String.valueOf(price.getText()).contains(".")) {
+                            updateEditableText(client, view, ViewListingActivity.this, attribute, listingId, text_field, String.valueOf(price.getText()));
+                        } else {
+                            Toast.makeText(context, "Rental price must be numerical and in whole dollars (e.g. 1500).", Toast.LENGTH_LONG).show();
+                        }
+                    } catch (JSONException e) {
+                        Log.d(TAG, Log.getStackTraceString(e));
+                    }
+                }
+            }).setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+                public void onClick(DialogInterface dialog, int id) {
+                    dialog.dismiss();
+                }
+            });
+            AlertDialog alertDialog = alertDialogBuilder.create();
+            alertDialog.show();
+        });
+    }
+
     public void disableButton(Button button){
         button.setEnabled(false);
         button.setVisibility(View.INVISIBLE);
@@ -263,7 +313,14 @@ public class ViewListingActivity extends AppCompatActivity {
             public void onResponse(@NonNull Call call, @NonNull Response response) {
                 act.runOnUiThread(() -> {
                     Log.d(TAG, response.toString());
-                    textview_to_update.setText(new_text);
+                    if (field.equals("rentalPrice")){
+                        textview_to_update.setText(String.format("$%s/month", new_text));
+                    } else {
+                        textview_to_update.setText(new_text);
+                    }
+                    if (field.equals("title")){
+                        Toast.makeText(view.getContext(), "Updated title! This change will show in the list of listings after the next refresh.", Toast.LENGTH_LONG).show();
+                    }
                 });
             }
         });
@@ -319,7 +376,7 @@ public class ViewListingActivity extends AppCompatActivity {
             }
             @Override
             public void onResponse(@NonNull Call call, @NonNull Response response) {
-                Log.d(TAG, "Listing successfully reported!");
+                Log.d(TAG, "Listing successfully reported! It will not show up next time onwards.");
             }
         });
     }
@@ -335,6 +392,45 @@ public class ViewListingActivity extends AppCompatActivity {
                     Toast.makeText(ViewListingActivity.this, "Listing reported! This listing will no longer be recommended to you.", Toast.LENGTH_LONG).show();
                 }
             }).setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+                public void onClick(DialogInterface dialog, int id) {
+                    dialog.dismiss();
+                }
+            });
+            AlertDialog alertDialog = alertDialogBuilder.create();
+            alertDialog.show();
+        });
+    }
+
+    public void deleteListing(OkHttpClient client, String listingId) {
+        // Setting up a DELETE request
+        Request request = new Request.Builder() // localhost:3000/api/listings/:listingId
+                .url(Constants.baseServerURL + Constants.listingByListingIdEndpoint + listingId)
+                .delete() // DELETE
+                .build();
+        client.newCall(request).enqueue(new Callback() {
+            @Override
+            public void onFailure(@NonNull Call call, @NonNull IOException e) {
+                Log.d(TAG, e.getMessage());
+            }
+            @Override
+            public void onResponse(@NonNull Call call, @NonNull Response response) {
+                Log.d(TAG, "Listing successfully deleted!");
+            }
+        });
+    }
+    public void setupDeleteButton(String listingId) {
+        deleteButton.setOnClickListener(view -> {
+            AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(view.getContext());
+            alertDialogBuilder.setTitle("Are you sure you want to delete this listing permanently?");
+            alertDialogBuilder.setCancelable(true).setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+                public void onClick(DialogInterface dialog, int id) {
+                    dialog.dismiss();
+                    disableButton(deleteButton);
+                    deleteListing(client, listingId);
+                    Toast.makeText(ViewListingActivity.this, "Listing deleted! This listing will no longer be recommended to others or be shown in your owned listings next time.", Toast.LENGTH_LONG).show();
+                    finish();
+                }
+            }).setNegativeButton("No", new DialogInterface.OnClickListener() {
                 public void onClick(DialogInterface dialog, int id) {
                     dialog.dismiss();
                 }
@@ -386,6 +482,7 @@ public class ViewListingActivity extends AppCompatActivity {
                         String listingDate = result.getListingDate().split(getString(R.string.datetime_regex), 2)[0];
                         String moveInDate = result.getMoveInDate().split(getString(R.string.datetime_regex), 2)[0];
                         String petFriendly = String.valueOf(result.getPetFriendly());
+                        String price = String.valueOf(result.getRentalPrice());
                         SingleListingResponseResult.LocationObj location = result.getLocation();
                         double latitude = location.getLatitude();
                         double longitude = location.getLongitude();
@@ -399,6 +496,7 @@ public class ViewListingActivity extends AppCompatActivity {
                         TextView move_in_date_textview = findViewById(R.id.move_in_date);
                         TextView pet_textview = findViewById(R.id.pet_friendly);
                         TextView location_textview = findViewById(R.id.location_coords);
+                        TextView price_textview = findViewById(R.id.price);
 
                         // Instantiating Maps Button
                         mapButton = findViewById(R.id.map_button);
@@ -433,6 +531,7 @@ public class ViewListingActivity extends AppCompatActivity {
                             pet_textview.setText(String.format("%s %s", getString(R.string.pets), getString(R.string.not_allowed)));
                         }
                         location_textview.setText(String.format("(%.4f, %.4f)", latitude, longitude));
+                        price_textview.setText(String.format("$%s/month", price));
 
                         editTitleButton = findViewById(R.id.edit_title);
                         editHousingDescButton = findViewById(R.id.edit_housing_desc);
@@ -440,7 +539,9 @@ public class ViewListingActivity extends AppCompatActivity {
                         togglePetFriendlyButton = findViewById(R.id.edit_pet_friendly);
                         editMoveInButton = findViewById(R.id.edit_move_in_button);
                         editLatLongButton = findViewById(R.id.edit_lat_long);
+                        editPriceButton = findViewById(R.id.edit_price);
                         reportButton = findViewById(R.id.report_button);
+                        deleteButton = findViewById(R.id.delete_button);
                         disableButton(editMoveInButton);
                         if(!isOwner) {
                             disableButton(editTitleButton);
@@ -448,8 +549,8 @@ public class ViewListingActivity extends AppCompatActivity {
                             disableButton(editHousingTypeButton);
                             disableButton(togglePetFriendlyButton);
                             disableButton(editLatLongButton);
-                            // TODO: In future milestones, implement a way to change Move-In Date and Image
-                            // disableButton(editMoveInButton);
+                            disableButton(editPriceButton);
+                            disableButton(deleteButton);
                             setupReportButton(listingId, userId);
                         }
                         else {
@@ -458,8 +559,9 @@ public class ViewListingActivity extends AppCompatActivity {
                             enableButton(editHousingTypeButton, "housingType", housing_type_textview, listingId);
                             enableToggle(togglePetFriendlyButton, "petFriendly", pet_textview, listingId);
                             enableLocButton(editLatLongButton, "location", location_textview, listingId);
+                            enablePriceButton(editPriceButton,"rentalPrice", price_textview, listingId);
+                            setupDeleteButton(listingId);
                             disableButton(reportButton);
-                            // enableButton(editMoveInButton, "moveInDate", move_in_date_textview, listingId);
                         }
 
                     } catch (IOException e) {
