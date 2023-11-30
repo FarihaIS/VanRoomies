@@ -105,6 +105,15 @@ public class ViewListingActivity extends AppCompatActivity {
                                 updateEditableText(client, view, ViewListingActivity.this, attribute, listingId, text_field, String.valueOf(et.getText()));
                             }
                         }
+                        else if (Objects.equals(attribute, "title")){
+                            String text = String.valueOf(et.getText());
+                            if (text.length() < 5){
+                                Toast.makeText(view.getContext(), "The title must be at least 5 characters long.", Toast.LENGTH_LONG).show();
+                            }
+                            else {
+                                updateEditableText(client, view, ViewListingActivity.this, attribute, listingId, text_field, String.valueOf(et.getText()));
+                            }
+                        }
                         else {
                             updateEditableText(client, view, ViewListingActivity.this, attribute, listingId, text_field, String.valueOf(et.getText()));
                         }
@@ -308,6 +317,9 @@ public class ViewListingActivity extends AppCompatActivity {
                         textview_to_update.setText(String.format("$%s/month", new_text));
                     } else {
                         textview_to_update.setText(new_text);
+                    }
+                    if (field.equals("title")){
+                        Toast.makeText(view.getContext(), "Updated title! This change will show in the list of listings after the next refresh.", Toast.LENGTH_LONG).show();
                     }
                 });
             }
