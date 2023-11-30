@@ -2,6 +2,7 @@ const express = require('express');
 const router = express.Router();
 
 const messageStore = require('../chat/messageStore');
+const Conversation = require('../models/conversationModel');
 
 router.get('/conversations/user/:userId', async (req, res, next) => {
     const conversations = await messageStore.getConversationsByUser(req.params.userId);
@@ -26,6 +27,11 @@ router.post('/conversations/user/:userId', async (req, res, next) => {
     if (!content || !to) {
         const missing = !content ? 'content' : 'to';
         res.status(404).json({ error: `${missing} was not provided` });
+        return;
+    }
+    const exists = await Conversation.exists({ users: [userId, to] });
+    if (exists) {
+        res.status(409).json({ error: 'Conversation already exists' });
         return;
     }
     const status = await messageStore.sendMessage(req.body.content, userId, to);
