@@ -65,6 +65,24 @@
     <!-- Edit Buttons for Owners -->
 
     <TextView
+        android:id="@+id/price"
+        android:layout_width="150dp"
+        android:layout_height="35dp"
+        android:layout_alignParentBottom="true"
+        android:layout_centerHorizontal="true"
+        android:contentDescription="@string/pet_friendly"
+        android:fontFamily="sans-serif"
+        android:gravity="end"
+        android:text="@string/price"
+        android:textSize="18sp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.938"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/relativeLayout"
+        app:layout_constraintVertical_bias="0.255" />
+
+    <TextView
         android:id="@+id/listing_name"
         android:layout_width="250dp"
         android:layout_height="34dp"
@@ -76,10 +94,10 @@
         android:textSize="24sp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.279"
+        app:layout_constraintHorizontal_bias="0.26"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/relativeLayout"
-        app:layout_constraintVertical_bias="0.189" />
+        app:layout_constraintVertical_bias="0.166" />
 
     <androidx.cardview.widget.CardView
         android:id="@+id/cardView"
@@ -259,6 +277,26 @@
         app:layout_constraintStart_toStartOf="@+id/pet_friendly"
         app:layout_constraintTop_toBottomOf="@+id/relativeLayout"
         app:layout_constraintVertical_bias="0.128" />
+
+    <Button
+        android:id="@+id/edit_price"
+        android:layout_width="40dp"
+        android:layout_height="43dp"
+        android:layout_alignParentTop="true"
+        android:layout_alignParentEnd="true"
+        android:layout_alignParentBottom="true"
+        android:background="@android:color/transparent"
+        android:scaleX="1"
+        android:scaleY="1"
+        android:textColor="#D2E2E0"
+        app:icon="@drawable/ic_edit"
+        app:iconTint="#F44336"
+        app:layout_constraintBottom_toTopOf="@+id/edit_move_in_button"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.984"
+        app:layout_constraintStart_toStartOf="@+id/pet_friendly"
+        app:layout_constraintTop_toBottomOf="@+id/relativeLayout"
+        app:layout_constraintVertical_bias="0.358" />
 
     <Button
         android:id="@+id/edit_move_in_button"
