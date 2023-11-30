@@ -9,6 +9,7 @@ import java.security.cert.X509Certificate;
 import javax.net.ssl.TrustManagerFactory;
 import javax.net.ssl.X509TrustManager;
 
+// ChatGPT Usage: No
 public class CustomTrustManager implements X509TrustManager {
     private X509TrustManager defaultTrustManager;
     private X509Certificate[] additionalCertificates;

@@ -2,6 +2,7 @@ package com.chads.vanroomies;
 
 import java.io.Serializable;
 
+// ChatGPT Usage: No
 public class ChatMessage implements Serializable {
     private String sender;
     private String message;

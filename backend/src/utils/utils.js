@@ -8,6 +8,7 @@ const fs = require('fs');
  * @param {Array<Array<Object>>} scoreIdPair - (ID, score) pair
  * @returns {Array<ObjectID>} - IDs ranked based on their score
  */
+// ChatGPT Usage: No
 const generateRecommendations = (scoreIdPair) => {
     const rankedPairs = scoreIdPair.sort((item1, item2) => item2[1] - item1[1]);
     return rankedPairs.map((pair) => pair[0]);
@@ -21,10 +22,12 @@ const generateRecommendations = (scoreIdPair) => {
  * @param {User Object} other - otherEntity
  * @returns {Number} - matching score
  */
+// ChatGPT Usage: No
 const calculatePetFriendlinessScore = (user, other) => {
     return user.petFriendly === other.petFriendly ? 1 : 0;
 };
 
+// ChatGPT Usage: No
 const sanitize = (message) => {
     return validator.escape(validator.trim(message));
 };

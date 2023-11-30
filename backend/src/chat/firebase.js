@@ -1,5 +1,6 @@
 const { getMessaging } = require('firebase-admin/messaging');
 
+// ChatGPT Usage: No
 const sendPushNotification = async (token, senderName, message) => {
     if (!token) {
         console.log('No token provided');

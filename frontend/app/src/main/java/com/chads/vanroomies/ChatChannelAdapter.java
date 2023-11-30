@@ -12,6 +12,7 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.Locale;
 
+// ChatGPT Usage: No
 public class ChatChannelAdapter extends RecyclerView.Adapter {
     private static final int VIEW_TYPE_MESSAGE_SENT = 1;
     private static final int VIEW_TYPE_MESSAGE_RECEIVED = 0;
@@ -63,6 +64,7 @@ public class ChatChannelAdapter extends RecyclerView.Adapter {
         ((MessageHolder) holder).bind(message);
     }
 
+    // ChatGPT Usage: No
     private static class MessageHolder extends RecyclerView.ViewHolder {
         TextView messageText;
         TextView dateText;

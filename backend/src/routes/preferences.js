@@ -13,6 +13,7 @@ const { generateRecommendations } = require('../utils/utils');
  *
  * Route: GET /api/users/:userId/preferences where userId is the ID of user
  */
+// ChatGPT Usage: No
 router.get('/:userId/preferences', async (req, res, next) => {
     const preferences = await Preferences.findOne({ userId: req.params.userId });
     if (preferences) {
@@ -30,6 +31,7 @@ router.get('/:userId/preferences', async (req, res, next) => {
  *
  * Body: {userId: ObjectId, minPrice: Number, maxPrice: Number ....}
  */
+// ChatGPT Usage: No
 router.post('/:userId/preferences', async (req, res, next) => {
     const user = await User.findById(req.params.userId);
     if (user) {
@@ -50,6 +52,7 @@ router.post('/:userId/preferences', async (req, res, next) => {
  *
  * Body: {title: String <new_title>, rentalPrice: Number<new_price> ....}
  */
+// ChatGPT Usage: No
 router.put('/:userId/preferences', async (req, res, next) => {
     const userId = req.params.userId;
     const updatedPreferences = await Preferences.findOneAndUpdate({ userId }, req.body, { new: true });
@@ -66,8 +69,9 @@ router.put('/:userId/preferences', async (req, res, next) => {
  *
  * Route: GET /api/users/:userId/recommendations/users
  *
- * Body: {....filters???}
+ * Body: {}
  */
+// ChatGPT Usage: No
 router.get('/:userId/recommendations/users', async (req, res, next) => {
     const currUser = await User.findById(req.params.userId);
     if (currUser) {
@@ -102,6 +106,7 @@ router.get('/:userId/recommendations/users', async (req, res, next) => {
  *
  * Body: {excludedId: ""}
  */
+// ChatGPT Usage: No
 router.put('/:userId/recommendations/users', async (req, res, next) => {
     // Get both users first, and only proceed if both are found
     let currentUser = await User.findById(req.params.userId);
@@ -131,8 +136,9 @@ router.put('/:userId/recommendations/users', async (req, res, next) => {
  *
  * Route: GET /api/users/:userId/recommendations/listings
  *
- * Body: {....filters???}
+ * Body: {}
  */
+// ChatGPT Usage: No
 router.get('/:userId/recommendations/listings', async (req, res, next) => {
     const loggedInUser = await User.findById(req.params.userId);
     if (loggedInUser) {

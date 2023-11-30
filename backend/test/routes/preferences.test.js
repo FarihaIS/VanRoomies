@@ -7,6 +7,7 @@ jest.mock('../../src/models/preferencesModel');
 const Listing = require('../../src/models/listingModel');
 jest.mock('../../src/models/listingModel');
 
+// ChatGPT Usage: No
 const createDummyPreferences = (id, extras) => {
     const pref = {
         _id: 'preferenceObjectId',
@@ -32,6 +33,7 @@ const createDummyPreferences = (id, extras) => {
     }
 };
 
+// ChatGPT Usage: No
 const createDummyUser = (userId, extras) => {
     const newUser = {
         _id: userId,
@@ -47,6 +49,7 @@ const createDummyUser = (userId, extras) => {
     }
 };
 
+// ChatGPT Usage: No
 const createDummyListing = (userId, extra) => {
     const listing = {
         _id: 'preferenceObjectId',
@@ -78,6 +81,7 @@ describe('GET preferences by user id', () => {
     // Expected status code: 200
     // Expected behavior: return Preference object that matches the userId
     // Expected output: Preference object
+    // ChatGPT Usage: No
     test('Valid userId for Preferences', async () => {
         const id = 'validId';
         Preferences.findOne.mockResolvedValue(createDummyPreferences(id));
@@ -89,6 +93,7 @@ describe('GET preferences by user id', () => {
     // Expected status code: 404
     // Expected behavior: return an error message
     // Expected output: { error: "User not found" }
+    // ChatGPT Usage: No
     test('Invalid userId', async () => {
         const id = 'invalidId';
         Preferences.findOne.mockResolvedValue(null);
@@ -108,6 +113,7 @@ describe('POST preferences for a user id', () => {
     // Expected status code: 201
     // Expected behavior: Create Preference object for the given user ID
     // Expected output: Preference object
+    // ChatGPT Usage: No
     test('Valid userId for Preferences', async () => {
         const id = 'validId';
         User.findById.mockResolvedValue({ _id: id });
@@ -120,6 +126,7 @@ describe('POST preferences for a user id', () => {
     // Expected status code: 404
     // Expected behavior: return an error message
     // Expected output: { error: "User not found" }
+    // ChatGPT Usage: No
     test('Invalid userId', async () => {
         const id = 'invalidId';
         User.findById.mockResolvedValue(null);
@@ -139,6 +146,7 @@ describe('PUT preferences for a user id', () => {
     // Expected status code: 200
     // Expected behavior: Update Preference object for the given user ID
     // Expected output: Preference object
+    // ChatGPT Usage: No
     test('Update Preferences for Valid User Id', async () => {
         const id = 'validId';
         const updates = {
@@ -156,6 +164,7 @@ describe('PUT preferences for a user id', () => {
     // Expected status code: 404
     // Expected behavior: return an error message
     // Expected output: { error: 'Did not match any user! }
+    // ChatGPT Usage: No
     test('Update Preferences for Invalid User Id', async () => {
         const id = 'invalidId';
         Preferences.findOneAndUpdate.mockResolvedValue(null);
@@ -176,6 +185,7 @@ describe('PUT user match exclusion for pair of users', () => {
     // Expected status code: 200
     // Expected behavior: Add excluded user to list of notRecommended
     // Expected output: User object
+    // ChatGPT Usage: No
     test('Successful exclusion - both user IDs are correct', async () => {
         const id = 'validId1';
         const body = { excludedId: 'validId2' };
@@ -193,6 +203,7 @@ describe('PUT user match exclusion for pair of users', () => {
     // Expected status code: 404
     // Expected behavior: return an error message
     // Expected output: { error: 'Incorrect provided user ID' }
+    // ChatGPT Usage: No
     test('Invalid userId for request parameters', async () => {
         const id = 'invalidId';
         const body = { excludedId: 'validId2' };
@@ -208,6 +219,7 @@ describe('PUT user match exclusion for pair of users', () => {
     // Expected status code: 404
     // Expected behavior: return an error message
     // Expected output: { error: 'Incorrect provided user ID' }
+    // ChatGPT Usage: No
     test('Invalid userId for request parameters', async () => {
         const id = 'invalidId';
         const body = { excludedId: 'validId2' };
@@ -229,6 +241,7 @@ describe('GET other user recommendations for a user', () => {
     // Expected status code: 404
     // Expected behavior: return an error message
     // Expected output: { error: 'Did not match any user!' }
+    // ChatGPT Usage: No
     test('Invalid User ID provided', async () => {
         const id = 'userId';
         User.findById.mockResolvedValue(null);
@@ -241,6 +254,7 @@ describe('GET other user recommendations for a user', () => {
     // Expected status code: 200
     // Expected behavior: return users without any specific order
     // Expected output: list User objects
+    // ChatGPT Usage: No
     test('No set preferences - get all users', async () => {
         const id = 'userId';
         const userList = [createDummyUser('id1'), createDummyUser('id2'), createDummyUser('id3')];
@@ -258,6 +272,7 @@ describe('GET other user recommendations for a user', () => {
     // Expected status code: 200
     // Expected behavior: returns empty list because no tentative matches exist
     // Expected output: []
+    // ChatGPT Usage: No
     test('Preferences set - No tentative matches exist!', async () => {
         const id = 'userId';
         User.findById.mockResolvedValue(createDummyUser(id));
@@ -277,6 +292,7 @@ describe('GET other user recommendations for a user', () => {
     // Expected status code: 200
     // Expected behavior: returns list of users sorted in order of best match
     // Expected output: list User objects
+    // ChatGPT Usage: No
     test('Preferences set - Tentative matches exist!', async () => {
         const id = 'userId';
         const tentativeMatches = [
@@ -361,6 +377,7 @@ describe('GET listing recommendations for a user', () => {
     // Expected status code: 404
     // Expected behavior: return an error message
     // Expected output: { error: 'Did not match any user!' }
+    // ChatGPT Usage: No
     test('Invalid User ID provided', async () => {
         const id = 'userId';
         User.findById.mockResolvedValue(null);
@@ -373,6 +390,7 @@ describe('GET listing recommendations for a user', () => {
     // Expected status code: 200
     // Expected behavior: return users without any specific order
     // Expected output: list Listing objects
+    // ChatGPT Usage: No
     test('No set preferences - get all listings', async () => {
         const id = 'userId';
         const listings = [createDummyListing('id1'), createDummyListing('id2'), createDummyListing('id3')];
@@ -392,6 +410,7 @@ describe('GET listing recommendations for a user', () => {
     // Expected status code: 200
     // Expected behavior: returns empty list because no tentative listings exist
     // Expected output: []
+    // ChatGPT Usage: No
     test('Preferences set - No tentative listings exist!', async () => {
         const id = 'userId';
         User.findById.mockResolvedValue(createDummyUser(id));
@@ -411,6 +430,7 @@ describe('GET listing recommendations for a user', () => {
     // Expected status code: 200
     // Expected behavior: returns list of Listings objects sorted in order of best match
     // Expected output: list Listing objects
+    // ChatGPT Usage: No
     test('Preferences set - Tentative listings exist!', async () => {
         const id = 'userId';
         const tentativeMatchListings = [

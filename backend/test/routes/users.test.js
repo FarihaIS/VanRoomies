@@ -34,6 +34,7 @@ describe('POST user login', () => {
     // Expected status code: 200
     // Expected behavior: return User object that matches the email
     // Expected output: User object
+    // ChatGPT Usage: No
     test('Valid and existing email', async () => {
         const email = 'user@github.com';
         User.findOne.mockResolvedValue({
@@ -50,6 +51,7 @@ describe('POST user login', () => {
     // Expected status code: 201
     // Expected behavior: create a new User in the database
     // Expected output: {userToken: String, user: User}
+    // ChatGPT Usage: No
     test('Valid and new email', async () => {
         const email = 'existing@github.com';
         User.findOne.mockResolvedValue(null);
@@ -77,6 +79,7 @@ describe('GET user by id', () => {
     // Expected status code: 200
     // Expected behavior: return User object that matches the userId
     // Expected output: User object
+    // ChatGPT Usage: No
     test('Valid userId', async () => {
         const id = 'someUserId';
         User.findById.mockResolvedValue({
@@ -93,6 +96,7 @@ describe('GET user by id', () => {
     // Expected status code: 404
     // Expected behavior: return an error message
     // Expected output: { error: "User not found" }
+    // ChatGPT Usage: No
     test('Invalid userId', async () => {
         const id = 'invalid';
         User.findById.mockResolvedValue(null);
@@ -112,6 +116,7 @@ describe('PUT user by id', () => {
     // Expected status code: 200
     // Expected behavior: update User object that matches the userId
     // Expected output: User object
+    // ChatGPT Usage: No
     test('Valid userId', async () => {
         const id = 'someUserId';
         const updatedUser = {
@@ -129,6 +134,7 @@ describe('PUT user by id', () => {
     // Expected status code: 404
     // Expected behavior: return an error message
     // Expected output: { error: "User not found" }
+    // ChatGPT Usage: No
     test('Invalid userId', async () => {
         const id = 'invalid';
         User.findByIdAndUpdate.mockResolvedValue(null);
@@ -152,6 +158,7 @@ describe('DELETE user by id', () => {
     // Expected status code: 200
     // Expected behavior: delete User object that matches the userId
     // Expected output: User object
+    // ChatGPT Usage: No
     test('Valid userId', async () => {
         const id = 'someUserId';
         User.findByIdAndDelete.mockResolvedValue({ _id: id });
@@ -164,6 +171,7 @@ describe('DELETE user by id', () => {
     // Expected status code: 404
     // Expected behavior: return an error message
     // Expected output: { error: "User not found" }
+    // ChatGPT Usage: No
     test('Invalid userId', async () => {
         const id = 'invalid';
         User.findByIdAndDelete.mockResolvedValue(null);
@@ -183,6 +191,7 @@ describe('POST block user by id from another user', () => {
     // Expected status code: 200
     // Expected behavior: update User object that matches the userId and blockedId
     // Expected output: { message: "User blocked successfully!" }
+    // ChatGPT Usage: No
     test('Valid userId and blockedId', async () => {
         const id = 'someUserId';
         const blockedId = 'someBlockedId';
@@ -204,6 +213,7 @@ describe('POST block user by id from another user', () => {
     // Expected status code: 404
     // Expected behavior: return an error message
     // Expected output: { error: "User blocking failed!" }
+    // ChatGPT Usage: No
     test('Invalid userId or blockedId', async () => {
         const id = 'invalid';
         const blockedId = 'invalid';
@@ -219,6 +229,7 @@ describe('POST block user by id from another user', () => {
     // Expected status code: 403
     // Expected behavior: return an error message
     // Expected output: { message: "User already blocked!" }
+    // ChatGPT Usage: No
     test('User already blocked blockedId', async () => {
         const id = 'someUserId';
         const blockedId = 'someBlockedId';
@@ -234,6 +245,7 @@ describe('POST block user by id from another user', () => {
     // Expected status code: 200
     // Expected behavior: delete User object that matches the blockedId
     // Expected output: { message: "User blocked successfully!" }
+    // ChatGPT Usage: No
     test('User blocked by >= BLOCK_THRESHOLD users', async () => {
         const id = 'someUserId';
         const blockedId = 'someBlockedId';
@@ -265,6 +277,7 @@ describe('POST unmatch user by id from another user', () => {
     // Expected status code: 200
     // Expected behavior: update User object that matches the userId and unmatchedId
     // Expected output: { message: 'Unmatched with user successfully!' }
+    // ChatGPT Usage: No
     test('Valid userId and unmatchedId', async () => {
         const id = 'someUserId';
         const unmatchedId = 'someBlockedId';
@@ -286,6 +299,7 @@ describe('POST unmatch user by id from another user', () => {
     // Expected status code: 404
     // Expected behavior: return an error message
     // Expected output: { error: 'User unmatching failed!' }
+    // ChatGPT Usage: No
     test('Invalid userId or unmatchId', async () => {
         const id = 'invalid';
         const unmatchedId = 'invalid';

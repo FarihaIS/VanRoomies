@@ -4,6 +4,7 @@ const router = express.Router();
 const messageStore = require('../chat/messageStore');
 const Conversation = require('../models/conversationModel');
 
+// ChatGPT Usage: No
 router.get('/conversations/user/:userId', async (req, res, next) => {
     const conversations = await messageStore.getConversationsByUser(req.params.userId);
     if (!conversations) {
@@ -20,6 +21,7 @@ router.get('/conversations/user/:userId', async (req, res, next) => {
     next();
 });
 
+// ChatGPT Usage: No
 router.post('/conversations/user/:userId', async (req, res, next) => {
     const content = req.body.content;
     const to = req.body.to;

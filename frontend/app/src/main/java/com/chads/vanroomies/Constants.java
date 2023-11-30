@@ -1,5 +1,6 @@
 package com.chads.vanroomies;
 
+// ChatGPT Usage: No
 public class Constants {
     // Endpoints
     // TESTING: final static String baseServerURL = "https://10.0.2.2:3000";

@@ -26,6 +26,7 @@ import io.socket.client.IO;
 import io.socket.client.Socket;
 import io.socket.emitter.Emitter;
 
+// ChatGPT Usage: No
 public class ChatChannelActivity extends AppCompatActivity {
     final static String TAG = "ChatChannelActivity";
     private ChatChannelAdapter chatChannelAdapter;

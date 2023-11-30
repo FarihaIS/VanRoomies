@@ -10,6 +10,7 @@ const router = express.Router();
  *
  * Route: GET /api/listings/:listingId where listingId is the ID of the listing in the database
  */
+// ChatGPT Usage: No
 router.get('/:listingId', async (req, res, next) => {
     const listing = await Listing.findById(req.params.listingId);
     if (listing) {
@@ -24,6 +25,7 @@ router.get('/:listingId', async (req, res, next) => {
  *
  * Route: GET /api/listings/user/:userId where userId is the ID of the user
  */
+// ChatGPT Usage: No
 router.get('/user/:userId', async (req, res, next) => {
     let listings = await Listing.find({ userId: req.params.userId }).sort({ listingDate: 1 });
     if (listings) {
@@ -41,6 +43,7 @@ router.get('/user/:userId', async (req, res, next) => {
  *
  * Body: {userID: String, title: String .... images: [String]}
  */
+// ChatGPT Usage: No
 router.post('/', async (req, res, next) => {
     const user = await User.findById(req.body.userId);
     if (user) {
@@ -62,6 +65,7 @@ router.post('/', async (req, res, next) => {
  *
  * Body: {title: String <new_title>, rentalPrice: Number<new_price> ....}
  */
+// ChatGPT Usage: No
 router.put('/:listingId', async (req, res, next) => {
     const updatedListing = await Listing.findByIdAndUpdate(req.params.listingId, req.body, { new: true });
     if (updatedListing) {
@@ -79,6 +83,7 @@ router.put('/:listingId', async (req, res, next) => {
  *
  * Body: {reporterId: ""}
  */
+// ChatGPT Usage: No
 router.post('/:listingId/report', async (req, res, next) => {
     // Either both updates should occur or neither should so first try to get both documents
     let currentUser = await User.findById(req.body.reporterId);
@@ -110,6 +115,7 @@ router.post('/:listingId/report', async (req, res, next) => {
  *
  * Route: DELETE /api/listings/:listingId where listingId is the ID of the listing in the database
  */
+// ChatGPT Usage: No
 router.delete('/:listingId', async (req, res, next) => {
     const deletedListing = await Listing.findByIdAndDelete(req.params.listingId);
     if (deletedListing) {

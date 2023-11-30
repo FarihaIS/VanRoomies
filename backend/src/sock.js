@@ -4,6 +4,7 @@ const messageStore = require('./chat/messageStore');
 const { Server } = require('socket.io');
 const { sanitize } = require('./utils/utils');
 
+// ChatGPT Usage: No
 module.exports = function (server) {
     const io = new Server(server);
     io.use(async (socket, next) => {
