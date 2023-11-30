@@ -18,6 +18,7 @@ import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
 import com.google.android.gms.auth.api.signin.GoogleSignInClient;
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
 import com.google.android.gms.common.api.ApiException;
+import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.messaging.FirebaseMessaging;
 import com.google.gson.Gson;
@@ -124,7 +125,11 @@ public class MainActivity extends AppCompatActivity {
         // Check for existing Google Sign In account, if the user is already signed in
         // the GoogleSignInAccount will be non-null.
         GoogleSignInAccount account = GoogleSignIn.getLastSignedInAccount(this);
+        System.out.println("SILENTISIGNIN");
+        silentSignIn();
         if (account != null){
+            System.out.println("NON NULL ACCOUNT");
+            System.out.println(account.getIdToken());
             httpClient = HTTPSClientFactory.createClient(MainActivity.this.getApplication());
             RegistrationTaskParams params = new RegistrationTaskParams(httpClient, MainActivity.this, account);
             AsyncTaskRunner getUserIdTask = new AsyncTaskRunner();
@@ -158,6 +163,27 @@ public class MainActivity extends AppCompatActivity {
             }
             return resp;
         }
+    }
+
+    private void silentSignIn() {
+        Task<GoogleSignInAccount> task = mGoogleSignInClient.silentSignIn();
+        if (task.isSuccessful()) {
+            // There's immediate result available.
+            GoogleSignInAccount signInAccount = task.getResult();
+            System.out.println("SUCCESS IN SILENT!");
+            System.out.println(signInAccount.getIdToken());
+        } else {
+            task.addOnCompleteListener(task1 -> {
+                try {
+                    GoogleSignInAccount signInAccount = task1.getResult(ApiException.class);
+                    System.out.println("SUCCESS IN SILENT!");
+                    System.out.println(signInAccount.getIdToken());
+                } catch (ApiException apiException) {
+                    System.out.println(apiException.getStatus());
+                }
+            });
+        }
+
     }
 
     public void getUserId(OkHttpClient client, Activity act, GoogleSignInAccount account){

@@ -2,8 +2,9 @@ package com.chads.vanroomies;
 
 public class Constants {
     // Endpoints
-    // TESTING: final static String baseServerURL = "https://10.0.2.2:3000";
-    final static String baseServerURL = "https://20.121.136.167:3000";
+    // TESTING:
+     final static String baseServerURL = "https://10.0.2.2:3000";
+//    final static String baseServerURL = "https://20.121.136.167:3000";
     final static String helloWorldEndpoint = "/"; // GET
     final static String listingByUserIdEndpoint = "/api/listings/user/"; // GET, needs user_id appended
     final static String listingByListingIdEndpoint = "/api/listings/"; // GET/PUT, needs listing_id appended. POST does not.

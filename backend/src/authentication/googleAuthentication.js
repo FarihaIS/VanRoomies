@@ -1,4 +1,4 @@
-// const { OAuth2Client } = require('google-auth-library');
+const { OAuth2Client } = require('google-auth-library');
 
 /**
  * To verify the google ID token sent by the frontend, the guide
@@ -17,14 +17,16 @@
  * @param {Object} res - Response is used to send back status
  * @param {Function} next - Callback to pass control to next middleware
  */
-// const validateGoogleIdToken = async (req, res, next) => {
-//     const client = new OAuth2Client(process.env.GCP_CLIENT_ID, process.env.GCP_CLIENT_SECRET);
-//     const ticket = await client.verifyIdToken({
-//         idToken: req.body.idToken,
-//         audience: process.env.GCP_CLIENT_ID,
-//     });
-//     if (ticket == null) return res.sendStatus(401);
-//     next();
-// };
+const validateGoogleIdToken = async (req, res, next) => {
+    const client = new OAuth2Client(process.env.GCP_CLIENT_ID, process.env.GCP_CLIENT_SECRET);
+    const ticket = await client.verifyIdToken({
+        idToken: req.body.idToken,
+        audience: process.env.GCP_CLIENT_ID,
+    });
+	console.log(ticket);
+	console.log(req.body.idToken)
+    if (ticket == null) return res.sendStatus(401);
+    next();
+};
 
-// module.exports = validateGoogleIdToken;
+module.exports = validateGoogleIdToken;

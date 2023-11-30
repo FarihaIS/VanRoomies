@@ -4,6 +4,7 @@ const mongoose = require('mongoose');
 const Listing = require('../models/listingModel');
 const Preferences = require('../models/preferencesModel');
 const messageStore = require('../chat/messageStore');
+const validateGoogleIdToken = require('../authentication/googleAuthentication');
 const { generateAuthenticationToken } = require('../authentication/jwtAuthentication');
 const { BLOCK_THRESHOLD } = require('../utils/constants');
 const router = express.Router();
@@ -29,7 +30,7 @@ const router = express.Router();
  *      status(200): User Object
  *      status(201): {userToken: String, user: User}
  */
-router.post('/login', async (req, res, next) => {
+router.post('/login', validateGoogleIdToken, async (req, res, next) => {
     const currentUser = await User.findOne({ email: req.body.email });
     if (currentUser) {
         // Set status 200 if user user already exists
