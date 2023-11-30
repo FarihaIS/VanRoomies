@@ -45,7 +45,7 @@ router.post('/', async (req, res, next) => {
     const user = await User.findById(req.body.userId);
     if (user) {
         const listing = new Listing(req.body);
-        listing.images = [DEFAULT_IMAGES[listing.housingType] || ""];
+        listing.images = [DEFAULT_IMAGES[listing.housingType] || ''];
         await listing.save();
         res.location(`/api/listing/${listing._id}`);
         res.status(201).json(listing);

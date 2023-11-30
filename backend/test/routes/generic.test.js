@@ -86,34 +86,34 @@ describe('POST firebase token', () => {
 // Misc middleware.js handlers
 describe('Middlewares', () => {
     test('logErrors Function', () => {
-        const error = new Error("Test Error Message");
+        const error = new Error('Test Error Message');
         const next = jest.fn();
         const consoleMock = jest.spyOn(console, 'error').mockImplementation();
 
-        logErrors(error, "req", "res", next);
+        logErrors(error, 'req', 'res', next);
 
-        expect(console.error).toHaveBeenCalledWith("Test Error Message");
+        expect(console.error).toHaveBeenCalledWith('Test Error Message');
         expect(next).toHaveBeenCalledWith(error);
     });
 
     test('errorHandler Function headersSent=>True', () => {
-        const error = new Error("Test Error Message");
-        const res = { headersSent: true, status: jest.fn(), json: jest.fn()};
+        const error = new Error('Test Error Message');
+        const res = { headersSent: true, status: jest.fn(), json: jest.fn() };
         const next = jest.fn();
 
-        errorHandler(error, "req", res, next);
+        errorHandler(error, 'req', res, next);
 
         expect(next).toHaveBeenCalledWith(error);
     });
 
     test('errorHandler Function headersSent=>False', () => {
-        const error = new Error("Test Error Message");
-        const res = { headersSent: false, status: jest.fn(), json: jest.fn()};
+        const error = new Error('Test Error Message');
+        const res = { headersSent: false, status: jest.fn(), json: jest.fn() };
         const next = jest.fn();
 
-        errorHandler(error, "req", res, next);
+        errorHandler(error, 'req', res, next);
 
         expect(res.status).toHaveBeenCalledWith(500);
-        expect(res.json).toHaveBeenCalledWith({error: error.message});
+        expect(res.json).toHaveBeenCalledWith({ error: error.message });
     });
 });
