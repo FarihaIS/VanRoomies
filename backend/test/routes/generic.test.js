@@ -9,6 +9,7 @@ describe('GET home page', () => {
     // Expected status code: 200
     // Expected behavior: return a simple hello world message
     // Expected output: Hello World!
+    // ChatGPT Usage: No
     test('Valid input', async () => {
         const res = await request(app).get('/');
         expect(res.statusCode).toStrictEqual(200);
@@ -36,6 +37,7 @@ describe('POST firebase token', () => {
     // Expected status code: 200
     // Expected behavior: save the token on the database
     // Expected output: { message: "Token saved" }
+    // ChatGPT Usage: No
     test('Valid input', async () => {
         const res = await request(app).post('/api/firebase_token').send({
             token: 'someToken',
@@ -49,6 +51,7 @@ describe('POST firebase token', () => {
     // Expected status code: 400
     // Expected behavior: return an error message
     // Expected output: { error: "Token or userId is missing" }
+    // ChatGPT Usage: No
     test('Missing token', async () => {
         const res = await request(app).post('/api/firebase_token').send({
             userId: 'someUserId',
@@ -61,6 +64,7 @@ describe('POST firebase token', () => {
     // Expected status code: 400
     // Expected behavior: return an error message
     // Expected output: { error: "Token or userId is missing" }
+    // ChatGPT Usage: No
     test('Missing userId', async () => {
         const res = await request(app).post('/api/firebase_token').send({
             token: 'someToken',
@@ -73,6 +77,7 @@ describe('POST firebase token', () => {
     // Expected status code: 404
     // Expected behavior: return an error message
     // Expected output: { error: "User not found" }
+    // ChatGPT Usage: No
     test('Invalid userId', async () => {
         const res = await request(app).post('/api/firebase_token').send({
             token: 'someToken',

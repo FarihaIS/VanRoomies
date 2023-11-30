@@ -3,6 +3,7 @@ const sendPushNotification = require('./firebase');
 const User = require('../models/userModel');
 const Conversation = require('../models/conversationModel');
 class MessageStore {
+    // ChatGPT Usage: No
     async sendMessage(content, fromId, toId) {
         const receivingUser = await User.findById(toId);
         const sendingUser = await User.findById(fromId);
@@ -18,6 +19,7 @@ class MessageStore {
         return true;
     }
 
+    // ChatGPT Usage: No
     async getConversationIfAbsent(userId1, userId2) {
         const conversation = await Conversation.findOne({
             users: { $all: [userId1, userId2] },
@@ -29,11 +31,13 @@ class MessageStore {
         return await newConversation.save();
     }
 
+    // ChatGPT Usage: No
     async getConversationsByUser(userId) {
         const conversations = await Conversation.find({ users: userId });
         return conversations;
     }
 
+    // ChatGPT Usage: No
     async deleteConversation(userId1, userId2) {
         return await Conversation.findOneAndDelete({
             users: { $all: [userId1, userId2] },

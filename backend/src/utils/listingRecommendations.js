@@ -8,6 +8,7 @@ const { calculatePetFriendlinessScore } = require('./utils');
  * @param {User Object} listings - collection of possible listings that could be a match
  * @returns {Array<Object>} - list of listing id and score pairs
  */
+// ChatGPT Usage: No
 const generateListingScores = (userPreferences, listings) => {
     let listingScores = [];
 
@@ -38,6 +39,7 @@ const generateListingScores = (userPreferences, listings) => {
  * @param {Object} listing - potential listing match
  * @returns {Number} - matching score normalized between 0 and 1
  */
+// ChatGPT Usage: No
 const calculateHousingTypeScore = (userPreferences, listing) => {
     if (userPreferences.housingType === listing.housingType) {
         return 1;
@@ -56,6 +58,7 @@ const calculateHousingTypeScore = (userPreferences, listing) => {
  * @param {Object} listing - potential listing match
  * @returns {Number} - matching score normalized between 0 and 1
  */
+// ChatGPT Usage: No
 const calculatePriceScore = (userPreferences, listing) => {
     if (listing.rentalPrice > userPreferences.maxPrice || listing.rentalPrice < userPreferences.minPrice) {
         return 0;
@@ -63,6 +66,7 @@ const calculatePriceScore = (userPreferences, listing) => {
     return 1 - (listing.rentalPrice - userPreferences.minPrice) / (userPreferences.maxPrice - userPreferences.minPrice);
 };
 
+// ChatGPT Usage: No
 const calculateMoveInDateScore = (listing, closestListing, farthestListing) => {
     const closestTime = new Date(closestListing);
     const farthestTime = new Date(farthestListing);
@@ -71,6 +75,7 @@ const calculateMoveInDateScore = (listing, closestListing, farthestListing) => {
     return 1 - normalizedTimeWindow;
 };
 
+// ChatGPT Usage: No
 const getClosestFarthestMoveDates = (userPreferences, listings) => {
     let minimalWindow = POSINF;
     let maximalWindow = NEGINF;

@@ -2,10 +2,12 @@ const express = require('express');
 const router = express.Router();
 const User = require('../models/userModel');
 
+// ChatGPT Usage: No
 router.get('/', (req, res) => {
     res.send('Hello World!');
 });
 
+// ChatGPT Usage: No
 router.post('/api/firebase_token', async (req, res) => {
     const token = req.body.token;
     const userId = req.body.userId;

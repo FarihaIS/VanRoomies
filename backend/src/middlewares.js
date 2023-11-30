@@ -1,8 +1,10 @@
+// ChatGPT Usage: No
 function logErrors(err, req, res, next) {
     console.error(err.message);
     next(err);
 }
 
+// ChatGPT Usage: No
 function errorHandler(err, req, res, next) {
     if (res.headersSent) {
         return next(err);

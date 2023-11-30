@@ -42,6 +42,7 @@ describe('Socket.io connection', () => {
     // Input: socket does not include a userId
     // Expected behavior: return an error
     // Expected output: { message: "No userId" }
+    // ChatGPT Usage: No
     test('Unsupplied userId', (done) => {
         clientSocket = ioc(`http://localhost:${port}`);
         clientSocket.auth = { userId: null };
@@ -56,6 +57,7 @@ describe('Socket.io connection', () => {
     // Input: socket includes an invalid userId
     // Expected behavior: return an error
     // Expected output: { message: "Invalid userId" }
+    // ChatGPT Usage: No
     test('Invalid userId', (done) => {
         clientSocket = ioc(`http://localhost:${port}`);
         clientSocket.auth = { userId: 12345 };
@@ -99,6 +101,7 @@ describe('Socket.io routines', () => {
     // Input: socket has a valid userId; content is a string; to is a valid userId
     // Expected behavior: send a message to the user with userId = to
     // Expected output: { status: "success" }
+    // ChatGPT Usage: No
     test('ON private message valid', async () => {
         Conversation.findOne.mockResolvedValue(null);
         Conversation.prototype.save.mockResolvedValue({
@@ -127,6 +130,7 @@ describe('Socket.io routines', () => {
     // Input: everything is valid except the firebaseToken
     // Expected behavior: send a message to the user with userId = to; fail to send a push notification
     // Expected output: { status: "success" }
+    // ChatGPT Usage: No
     test('ON private message invalid firebase token', async () => {
         Conversation.findOne.mockResolvedValue(null);
         Conversation.prototype.save.mockResolvedValue({
@@ -156,6 +160,7 @@ describe('Socket.io routines', () => {
     // Input: everything is valid except the firebaseToken which is missing
     // Expected behavior: send a message to the user with userId = to; do not send a push notification
     // Expected output: { status: "success" }
+    // ChatGPT Usage: No
     test('ON private message missing firebase token', async () => {
         User.findById.mockResolvedValue({ firstName: 'John', lastName: 'Doe', firebaseToken: null });
         Conversation.findOne.mockResolvedValue({
@@ -177,6 +182,7 @@ describe('Socket.io routines', () => {
     // Input: socket has an invalid userId
     // Expected behavior: return an error
     // Expected output: { message: "User not supplied", status: "error" }
+    // ChatGPT Usage: No
     test('ON private message invalid id', async () => {
         User.findById.mockResolvedValue(null);
         const response = await clientSocket.emitWithAck('private message', {

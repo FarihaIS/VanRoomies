@@ -5,6 +5,7 @@ jest.mock('../../src/models/userModel');
 const Listing = require('../../src/models/listingModel');
 jest.mock('../../src/models/listingModel');
 
+// ChatGPT Usage: No
 const createDummyListing = (userId, extra) => {
     const listing = {
         _id: 'preferenceObjectId',
@@ -36,6 +37,7 @@ describe('GET Listing by id', () => {
     // Expected status code: 200
     // Expected behavior: return Listing object that matches the parameter Id
     // Expected output: Listing object
+    // ChatGPT Usage: No
     test('Valid listingId', async () => {
         const id = 'validId';
         Listing.findById.mockResolvedValue(createDummyListing(id));
@@ -48,6 +50,7 @@ describe('GET Listing by id', () => {
     // Expected status code: 404
     // Expected behavior: return an error message
     // Expected output: { error: "User not found" }
+    // ChatGPT Usage: No
     test('Invalid userId', async () => {
         const id = 'invalidId';
         Listing.findById.mockResolvedValue(null);
@@ -67,6 +70,7 @@ describe('GET All Listings for a user ID', () => {
     // Expected status code: 200
     // Expected behavior: return Listing objects that matches the user Id
     // Expected output: collection of Listing objects
+    // ChatGPT Usage: No
     test('Valid user ID', async () => {
         const id = 'validId';
         const setOfHouses = [createDummyListing(id), createDummyListing(id)];
@@ -84,6 +88,7 @@ describe('GET All Listings for a user ID', () => {
     // Expected status code: 404
     // Expected behavior: return an error message
     // Expected output: { error: 'No listing found for given user ID' }
+    // ChatGPT Usage: No
     test('Invalid user ID', async () => {
         const id = 'invalidId';
         Listing.find.mockImplementation(() => ({
@@ -105,6 +110,7 @@ describe('Post a new listing for a given userID', () => {
     // Expected status code: 201
     // Expected behavior: return Listing objects that was created
     // Expected output: Listing object
+    // ChatGPT Usage: No
     test('Valid lister ID', async () => {
         const id = 'validId';
         const body = createDummyListing(id);
@@ -118,6 +124,7 @@ describe('Post a new listing for a given userID', () => {
     // Expected status code: 404
     // Expected behavior: return an error message
     // Expected output: { error: 'Incorrect user ID provided' }
+    // ChatGPT Usage: No
     test('Invalid lister ID', async () => {
         const id = 'invalidId';
         const body = createDummyListing(id);
@@ -138,6 +145,7 @@ describe('PUT listing based on listing ID', () => {
     // Expected status code: 200
     // Expected behavior: Update Listing object for the given listing ID
     // Expected output: Listing object
+    // ChatGPT Usage: No
     test('Update Listing for valid listing ID', async () => {
         const id = 'validListingId';
         const updates = {
@@ -155,6 +163,7 @@ describe('PUT listing based on listing ID', () => {
     // Expected status code: 404
     // Expected behavior: return an error message
     // Expected output: { error: 'Listing not found' }
+    // ChatGPT Usage: No
     test('Update Preferences for Invalid Listing Id', async () => {
         const id = 'invalidListingId';
         const updates = {
@@ -179,6 +188,7 @@ describe('Report Listing as scam', () => {
     // Expected status code: 200
     // Expected behavior: return Listing objects that was reported
     // Expected output: Listing object
+    // ChatGPT Usage: No
     test('Successful report', async () => {
         const id = 'validId';
         const body = { reporterId: 'IAmReporter' };
@@ -203,6 +213,7 @@ describe('Report Listing as scam', () => {
     // Expected status code: 200
     // Expected behavior: return Listing objects that was reported and delete listing
     // Expected output: Listing object
+    // ChatGPT Usage: No
     test('Successful report - with deletion', async () => {
         const id = 'validId';
         const body = { reporterId: 'IAmReporter' };
@@ -227,6 +238,7 @@ describe('Report Listing as scam', () => {
     // Expected status code: 404
     // Expected behavior: return an error message
     // Expected output: { error: 'Listing reporting failed!' }
+    // ChatGPT Usage: No
     test('Unsuccessful report - invalid listing ID', async () => {
         const id = 'validId';
         const body = { reporterId: 'IAmReporter' };
@@ -244,6 +256,7 @@ describe('Report Listing as scam', () => {
     // Expected status code: 404
     // Expected behavior: return an error message
     // Expected output: { error: 'Listing reporting failed!' }
+    // ChatGPT Usage: No
     test('Unsuccessful report - invalid listing ID', async () => {
         const id = 'validId';
         const body = { reporterId: 'IAmReporter' };
@@ -268,6 +281,7 @@ describe('DELETE listing based on listing ID', () => {
     // Expected status code: 200
     // Expected behavior: Delete given listing based on its ID
     // Expected output: Listing object that was deleted
+    // ChatGPT Usage: No
     test('Delete Listing for valid listing ID', async () => {
         const id = 'validListingId';
         Listing.findByIdAndDelete.mockResolvedValue(createDummyListing('userId'));
@@ -280,6 +294,7 @@ describe('DELETE listing based on listing ID', () => {
     // Expected status code: 404
     // Expected behavior: return an error message
     // Expected output: { error: 'Listing not found' }
+    // ChatGPT Usage: No
     test('Delete Listing for Invalid User Id', async () => {
         const id = 'invalidListingId';
         Listing.findByIdAndDelete.mockResolvedValue(null);

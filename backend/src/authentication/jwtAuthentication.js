@@ -13,7 +13,7 @@ const jwt = require('jsonwebtoken');
  * crypto module as following from a node shell:
  * ```require('crypto').randomBytes(64).toString('hex')```
  */
-
+// ChatGPT Usage: No
 /**
  * Generates an authentication token for a given user. This authentication
  * token can be used by this user to verify the legitimacy of their further

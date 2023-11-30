@@ -29,6 +29,7 @@ const router = express.Router();
  *      status(200): User Object
  *      status(201): {userToken: String, user: User}
  */
+// ChatGPT Usage: No
 router.post('/login', async (req, res, next) => {
     const currentUser = await User.findOne({ email: req.body.email });
     if (currentUser) {
@@ -54,6 +55,7 @@ router.post('/login', async (req, res, next) => {
  * Route: GET /api/users/:userId
  * Content-Type: application/json
  */
+// ChatGPT Usage: No
 router.get('/:userId', async (req, res, next) => {
     const user = await User.findById(req.params.userId);
     if (user) {
@@ -75,6 +77,7 @@ router.get('/:userId', async (req, res, next) => {
  *     "email": "testing@github.com"
  * 		...
  */
+// ChatGPT Usage: No
 router.put('/:userId', async (req, res, next) => {
     const updatedUser = await User.findByIdAndUpdate(req.params.userId, req.body, { new: true });
     if (updatedUser) {
@@ -93,6 +96,7 @@ router.put('/:userId', async (req, res, next) => {
  *
  * Body: {blockedId: ""}
  */
+// ChatGPT Usage: No
 router.post('/:userId/block', async (req, res, next) => {
     // Either both updates should occur or neither should so first try to get both documents
     let currentUser = await User.findById(req.params.userId);
@@ -140,6 +144,7 @@ router.post('/:userId/block', async (req, res, next) => {
  *
  * Body: {unmatchedId: ""}
  */
+// ChatGPT Usage: No
 router.post('/:userId/unmatch', async (req, res, next) => {
     let firstUser = await User.findById(req.params.userId);
     let secondUser = await User.findById(req.body.unmatchedId);
@@ -171,6 +176,7 @@ router.post('/:userId/unmatch', async (req, res, next) => {
  * Content-Type: application/json
  * Route: DELETE /api/users/:userId
  */
+// ChatGPT Usage: No
 router.delete('/:userId', async (req, res, next) => {
     const session = await mongoose.startSession();
 

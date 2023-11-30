@@ -47,6 +47,7 @@ describe('GET conversations from user', () => {
     // Expected status code: 200
     // Expected behavior: return a list of Conversations that the User is a part of
     // Expected output: Array of Conversation objects
+    // ChatGPT Usage: No
     test('Valid userId', async () => {
         const id = 'someUserId';
         Conversation.find.mockResolvedValueOnce(getMockConversations(id));
@@ -59,6 +60,7 @@ describe('GET conversations from user', () => {
     // Expected status code: 404
     // Expected behavior: return an error message
     // Expected output: { error: "User not found" }
+    // ChatGPT Usage: No
     test('Invalid userId', async () => {
         const id = 'invalid';
         Conversation.find.mockResolvedValueOnce(null);
@@ -71,6 +73,7 @@ describe('GET conversations from user', () => {
     // Expected status code: 200
     // Expected behavior: return an empty array
     // Expected output: []
+    // ChatGPT Usage: No
     test('User has no conversations', async () => {
         const id = 'someUserId';
         Conversation.find.mockResolvedValueOnce([]);
@@ -103,6 +106,7 @@ describe('POST a new conversation between users ', () => {
     // Expected status code: 201
     // Expected behavior: create a new Conversation in the database
     // Expected output: none
+    // ChatGPT Usage: No
     test('Valid input', async () => {
         User.findById.mockResolvedValue(user);
         const id = 'someUserId';
@@ -118,6 +122,7 @@ describe('POST a new conversation between users ', () => {
     // Expected status code: 404
     // Expected behavior: return an error message
     // Expected output: { error: "Conversation could not be started" }
+    // ChatGPT Usage: No
     test('Invalid userId', async () => {
         const id = 'invalid';
         User.findById.mockResolvedValue(null);
@@ -133,6 +138,7 @@ describe('POST a new conversation between users ', () => {
     // Expected status code: 404
     // Expected behavior: return an error message
     // Expected output: { error: "to was not provided" }
+    // ChatGPT Usage: No
     test('Missing receiving userId', async () => {
         const id = 'someUserId';
         const res = await request(app).post(`/api/chat/conversations/user/${id}`).send({
@@ -146,6 +152,7 @@ describe('POST a new conversation between users ', () => {
     // Expected status code: 404
     // Expected behavior: return an error message
     // Expected output: { error: "content was not provided" }
+    // ChatGPT Usage: No
     test('Content not provided', async () => {
         const id = 'someUserId';
         const res = await request(app).post(`/api/chat/conversations/user/${id}`).send({
@@ -159,6 +166,7 @@ describe('POST a new conversation between users ', () => {
     // Expected status code: 404
     // Expected behavior: return an error message
     // Expected output: { error: "Conversation already exists" }
+    // ChatGPT Usage: No
     test('Conversation already exists', async () => {
         const id = 'someUserId';
         User.findById.mockResolvedValue(user);

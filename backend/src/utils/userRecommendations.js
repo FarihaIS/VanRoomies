@@ -8,6 +8,7 @@ const { calculatePetFriendlinessScore } = require('./utils');
  * @param {User Object} potentialMatchesPreferences - preferences of potential roommates
  * @returns {Array<Object>} - list of user id and score pairs
  */
+// ChatGPT Usage: No
 const generateUserScores = (currentUserPreferences, potentialMatchesPreferences) => {
     let userScores = [];
     const minMaxRanges = calculateMinMaxRanges(currentUserPreferences, potentialMatchesPreferences);
@@ -42,6 +43,7 @@ const generateUserScores = (currentUserPreferences, potentialMatchesPreferences)
  * @param {User Object} possibleMatch - preferences of potential roommates
  * @returns {Number} - matching score
  */
+// ChatGPT Usage: No
 const aggregateCategorialPreferenceScores = (currentUser, possibleMatch) => {
     let score = 0;
 
@@ -64,6 +66,7 @@ const aggregateCategorialPreferenceScores = (currentUser, possibleMatch) => {
  * @param {User Object} possibleMatch - preferences of potential roommates
  * @returns {Number} - matching score
  */
+// ChatGPT Usage: No
 const housingTypeScore = (currentUser, possibleMatch) => {
     if (NONSHAREABLE.includes(currentUser.housingType) || NONSHAREABLE.includes(possibleMatch.housingType)) {
         return 0;
@@ -81,6 +84,7 @@ const housingTypeScore = (currentUser, possibleMatch) => {
  * @param {User Object} possibleMatch - preferences of potential roommates
  * @returns {Number} - matching score normalized between 0 and 1
  */
+// ChatGPT Usage: No
 const roommateCountScore = (currentUser, possibleMatch, minMaxRanges) => {
     // Min-max normalization to score the roommate such that the difference between the match is minimized
     const minRange = minMaxRanges.minRoomMateCountRange;
@@ -99,6 +103,7 @@ const roommateCountScore = (currentUser, possibleMatch, minMaxRanges) => {
  * @param {User Object} possibleMatch - preferences of potential roommates
  * @returns {Number} - matching score
  */
+// ChatGPT Usage: No
 const leaseLengthScore = (currentUser, possibleMatch, minMaxRanges) => {
     // This needs max-min normalization across all differences
     const minRange = minMaxRanges.minLeaseLengthRange;
@@ -119,6 +124,7 @@ const leaseLengthScore = (currentUser, possibleMatch, minMaxRanges) => {
  * @param {User Object} possibleMatch - preferences of potential roommates
  * @returns {Number} - matching score
  */
+// ChatGPT Usage: No
 const priceRangeScore = (currentUser, possibleMatch, minMaxRanges) => {
     // This needs max-min normalization across all differences
     let overlapPriceRange =
@@ -144,6 +150,7 @@ const priceRangeScore = (currentUser, possibleMatch, minMaxRanges) => {
  * @param {User Object} currentUserPreferences - preferences of current user seeking roommates
  * @param {User Object} potentialMatchesPreferences - preferences of potential roommates
  */
+// ChatGPT Usage: No
 const calculateMinMaxRanges = (currentUser, potentialMatches) => {
     let minRoomMateCountRange = POSINF;
     let maxRoomMateCountRange = NEGINF;

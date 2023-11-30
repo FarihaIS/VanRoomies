@@ -17,6 +17,7 @@
  * @param {Object} res - Response is used to send back status
  * @param {Function} next - Callback to pass control to next middleware
  */
+// ChatGPT Usage: No
 // const validateGoogleIdToken = async (req, res, next) => {
 //     const client = new OAuth2Client(process.env.GCP_CLIENT_ID, process.env.GCP_CLIENT_SECRET);
 //     const ticket = await client.verifyIdToken({
