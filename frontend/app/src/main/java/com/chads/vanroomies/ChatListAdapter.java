@@ -27,6 +27,7 @@ import okhttp3.Request;
 import okhttp3.RequestBody;
 import okhttp3.Response;
 
+// ChatGPT Usage: No
 public class ChatListAdapter extends RecyclerView.Adapter {
     final static String TAG = "ChatListAdapter";
     private final Context context;

@@ -32,6 +32,7 @@ import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import okhttp3.Response;
 
+// ChatGPT Usage: Partial
 public class ChatFragment extends Fragment {
     final static String TAG = "ChatFragment";
     private RecyclerView chatListRecycler;

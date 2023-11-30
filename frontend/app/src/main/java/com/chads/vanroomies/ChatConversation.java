@@ -3,6 +3,7 @@ package com.chads.vanroomies;
 import java.util.ArrayList;
 import java.util.List;
 
+// ChatGPT Usage: No
 public class ChatConversation {
     private String _id;
     private List<String> users;
