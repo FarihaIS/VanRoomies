@@ -53,6 +53,7 @@ public class ViewListingActivity extends AppCompatActivity {
     private Button togglePetFriendlyButton;
     private Button editMoveInButton;
     private Button reportButton;
+    private Button deleteButton;
     private Button mapButton;
     private Button editLatLongButton;
     private Button editPriceButton;
@@ -363,7 +364,7 @@ public class ViewListingActivity extends AppCompatActivity {
             }
             @Override
             public void onResponse(@NonNull Call call, @NonNull Response response) {
-                Log.d(TAG, "Listing successfully reported!");
+                Log.d(TAG, "Listing successfully reported! It will not show up next time onwards.");
             }
         });
     }
@@ -379,6 +380,45 @@ public class ViewListingActivity extends AppCompatActivity {
                     Toast.makeText(ViewListingActivity.this, "Listing reported! This listing will no longer be recommended to you.", Toast.LENGTH_LONG).show();
                 }
             }).setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+                public void onClick(DialogInterface dialog, int id) {
+                    dialog.dismiss();
+                }
+            });
+            AlertDialog alertDialog = alertDialogBuilder.create();
+            alertDialog.show();
+        });
+    }
+
+    public void deleteListing(OkHttpClient client, String listingId) {
+        // Setting up a DELETE request
+        Request request = new Request.Builder() // localhost:3000/api/listings/:listingId
+                .url(Constants.baseServerURL + Constants.listingByListingIdEndpoint + listingId)
+                .delete() // DELETE
+                .build();
+        client.newCall(request).enqueue(new Callback() {
+            @Override
+            public void onFailure(@NonNull Call call, @NonNull IOException e) {
+                Log.d(TAG, e.getMessage());
+            }
+            @Override
+            public void onResponse(@NonNull Call call, @NonNull Response response) {
+                Log.d(TAG, "Listing successfully deleted!");
+            }
+        });
+    }
+    public void setupDeleteButton(String listingId) {
+        deleteButton.setOnClickListener(view -> {
+            AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(view.getContext());
+            alertDialogBuilder.setTitle("Are you sure you want to delete this listing permanently?");
+            alertDialogBuilder.setCancelable(true).setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+                public void onClick(DialogInterface dialog, int id) {
+                    dialog.dismiss();
+                    disableButton(deleteButton);
+                    deleteListing(client, listingId);
+                    Toast.makeText(ViewListingActivity.this, "Listing deleted! This listing will no longer be recommended to others or be shown in your owned listings next time.", Toast.LENGTH_LONG).show();
+                    finish();
+                }
+            }).setNegativeButton("No", new DialogInterface.OnClickListener() {
                 public void onClick(DialogInterface dialog, int id) {
                     dialog.dismiss();
                 }
@@ -489,6 +529,7 @@ public class ViewListingActivity extends AppCompatActivity {
                         editLatLongButton = findViewById(R.id.edit_lat_long);
                         editPriceButton = findViewById(R.id.edit_price);
                         reportButton = findViewById(R.id.report_button);
+                        deleteButton = findViewById(R.id.delete_button);
                         disableButton(editMoveInButton);
                         if(!isOwner) {
                             disableButton(editTitleButton);
@@ -497,6 +538,7 @@ public class ViewListingActivity extends AppCompatActivity {
                             disableButton(togglePetFriendlyButton);
                             disableButton(editLatLongButton);
                             disableButton(editPriceButton);
+                            disableButton(deleteButton);
                             setupReportButton(listingId, userId);
                         }
                         else {
@@ -506,6 +548,7 @@ public class ViewListingActivity extends AppCompatActivity {
                             enableToggle(togglePetFriendlyButton, "petFriendly", pet_textview, listingId);
                             enableLocButton(editLatLongButton, "location", location_textview, listingId);
                             enablePriceButton(editPriceButton,"rentalPrice", price_textview, listingId);
+                            setupDeleteButton(listingId);
                             disableButton(reportButton);
                         }
 

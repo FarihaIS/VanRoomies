@@ -9,8 +9,8 @@
 
     <RelativeLayout
         android:id="@+id/relativeLayout"
-        android:layout_width="match_parent"
-        android:layout_height="300dp"
+        android:layout_width="412dp"
+        android:layout_height="282dp"
         android:background="#D2E2E0"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -27,6 +27,8 @@
             tools:srcCompat="@tools:sample/avatars" />
     </RelativeLayout>
 
+    <!-- Edit Buttons for Owners -->
+
     <TextView
         android:id="@+id/housing_type"
         android:layout_width="179dp"
@@ -39,10 +41,10 @@
         android:textSize="18sp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.193"
+        app:layout_constraintHorizontal_bias="0.181"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/relativeLayout"
-        app:layout_constraintVertical_bias="0.076" />
+        app:layout_constraintVertical_bias="0.119" />
 
     <TextView
         android:id="@+id/pet_friendly"
@@ -60,9 +62,7 @@
         app:layout_constraintHorizontal_bias="0.938"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/relativeLayout"
-        app:layout_constraintVertical_bias="0.078" />
-
-    <!-- Edit Buttons for Owners -->
+        app:layout_constraintVertical_bias="0.121" />
 
     <TextView
         android:id="@+id/price"
@@ -80,7 +80,7 @@
         app:layout_constraintHorizontal_bias="0.938"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/relativeLayout"
-        app:layout_constraintVertical_bias="0.255" />
+        app:layout_constraintVertical_bias="0.336" />
 
     <TextView
         android:id="@+id/listing_name"
@@ -97,7 +97,7 @@
         app:layout_constraintHorizontal_bias="0.26"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/relativeLayout"
-        app:layout_constraintVertical_bias="0.166" />
+        app:layout_constraintVertical_bias="0.227" />
 
     <androidx.cardview.widget.CardView
         android:id="@+id/cardView"
@@ -110,7 +110,7 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/listing_name"
-        app:layout_constraintVertical_bias="0.323">
+        app:layout_constraintVertical_bias="0.483">
 
         <TextView
             android:id="@+id/listing_desc"
@@ -157,7 +157,7 @@
         app:layout_constraintHorizontal_bias="0.906"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/cardView"
-        app:layout_constraintVertical_bias="0.511" />
+        app:layout_constraintVertical_bias="0.578" />
 
     <TextView
         android:id="@+id/move_in_date"
@@ -192,10 +192,10 @@
         app:iconTint="#F44336"
         app:layout_constraintBottom_toTopOf="@+id/edit_housing_desc"
         app:layout_constraintEnd_toStartOf="@+id/listing_name"
-        app:layout_constraintHorizontal_bias="0.2"
+        app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/edit_housing_type"
-        app:layout_constraintVertical_bias="0.333" />
+        app:layout_constraintVertical_bias="0.843" />
 
     <Button
         android:id="@+id/edit_housing_desc"
@@ -215,7 +215,7 @@
         app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="@+id/cardView"
         app:layout_constraintTop_toBottomOf="@+id/listing_name"
-        app:layout_constraintVertical_bias="0.0" />
+        app:layout_constraintVertical_bias="0.866" />
 
     <Button
         android:id="@+id/edit_lat_long"
@@ -232,10 +232,10 @@
         app:iconTint="#F44336"
         app:layout_constraintBottom_toTopOf="@+id/listing_date"
         app:layout_constraintEnd_toStartOf="@+id/location_coords"
-        app:layout_constraintHorizontal_bias="0.935"
+        app:layout_constraintHorizontal_bias="1.0"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/cardView"
-        app:layout_constraintVertical_bias="0.416" />
+        app:layout_constraintVertical_bias="0.705" />
 
     <Button
         android:id="@+id/edit_housing_type"
@@ -256,7 +256,7 @@
         app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/relativeLayout"
-        app:layout_constraintVertical_bias="0.061" />
+        app:layout_constraintVertical_bias="0.222" />
 
     <Button
         android:id="@+id/edit_pet_friendly"
@@ -273,10 +273,10 @@
         app:iconTint="#F44336"
         app:layout_constraintBottom_toTopOf="@+id/edit_move_in_button"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.75"
+        app:layout_constraintHorizontal_bias="0.73"
         app:layout_constraintStart_toStartOf="@+id/pet_friendly"
         app:layout_constraintTop_toBottomOf="@+id/relativeLayout"
-        app:layout_constraintVertical_bias="0.128" />
+        app:layout_constraintVertical_bias="0.234" />
 
     <Button
         android:id="@+id/edit_price"
@@ -296,7 +296,7 @@
         app:layout_constraintHorizontal_bias="0.984"
         app:layout_constraintStart_toStartOf="@+id/pet_friendly"
         app:layout_constraintTop_toBottomOf="@+id/relativeLayout"
-        app:layout_constraintVertical_bias="0.358" />
+        app:layout_constraintVertical_bias="0.374" />
 
     <Button
         android:id="@+id/edit_move_in_button"
@@ -336,7 +336,7 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/listing_date"
-        app:layout_constraintVertical_bias="0.0" />
+        app:layout_constraintVertical_bias="0.6" />
 
     <Button
         android:id="@+id/map_button"
@@ -348,6 +348,25 @@
         app:layout_constraintHorizontal_bias="0.957"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/cardView"
-        app:layout_constraintVertical_bias="0.529" />
+        app:layout_constraintVertical_bias="1.0" />
+
+    <Button
+        android:id="@+id/delete_button"
+        android:layout_width="169dp"
+        android:layout_height="38dp"
+        android:layout_alignParentTop="true"
+        android:layout_alignParentEnd="true"
+        android:layout_alignParentBottom="true"
+        android:background="@android:color/transparent"
+        android:scaleX="1"
+        android:scaleY="1"
+        android:text="@string/delete_listing_text"
+        android:textColor="@color/black"
+        app:icon="@drawable/ic_delete"
+        app:iconTint="#F44336"
+        app:layout_constraintBottom_toTopOf="@+id/housing_type"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/relativeLayout" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

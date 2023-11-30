@@ -61,6 +61,7 @@
     <string name="datetime_regex">T</string>
     <string name="add_listing_button_text">+</string>
     <string name="report_scam_text">Report Listing</string>
+    <string name="delete_listing_text">Delete Listing</string>
     <string name="view_map">View Map</string>
     <string name="title_activity_maps">Maps</string>
     <string name="lat_long">Lat and Long</string>
