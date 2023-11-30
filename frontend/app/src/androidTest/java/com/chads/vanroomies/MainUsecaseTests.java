@@ -17,6 +17,7 @@ import static androidx.test.espresso.matcher.ViewMatchers.withParent;
 import static androidx.test.espresso.matcher.ViewMatchers.withText;
 import static org.hamcrest.CoreMatchers.allOf;
 import static org.hamcrest.CoreMatchers.is;
+import static org.hamcrest.Matchers.either;
 import static org.hamcrest.Matchers.not;
 import static org.junit.Assert.assertTrue;
 
@@ -420,7 +421,8 @@ public class MainUsecaseTests {
         toggleListings.perform(click());
 
         // Assert that our listing was deleted by checking the name
-        onView(withId(R.id.idTVListing)).check(matches(not(withText("Amazing Studio in Kits"))));
+        onView(allOf(withId(R.id.idTVListing), withText("Amazing Studio in Kits")))
+                .check(doesNotExist());
     }
 
     @Test

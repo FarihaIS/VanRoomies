@@ -59,6 +59,7 @@ public class ListingsFragment extends Fragment implements ListingsItemSelectList
     final static int view_cols = 2;
     private RecyclerView recyclerView;
     private ArrayList<ListingsRecyclerData> recyclerDataArrayList;
+    private View view;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -70,7 +71,7 @@ public class ListingsFragment extends Fragment implements ListingsItemSelectList
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.fragment_listings, container, false);
+        view = inflater.inflate(R.layout.fragment_listings, container, false);
         recyclerView = view.findViewById(R.id.idListingsRV);
 
         SharedPreferences sharedPref = getActivity().getSharedPreferences(Constants.userData, Context.MODE_PRIVATE);
@@ -390,5 +391,23 @@ public class ListingsFragment extends Fragment implements ListingsItemSelectList
     public String getTodayAsString() {
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
         return LocalDate.now().format(formatter);
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        SharedPreferences sharedPref = getActivity().getSharedPreferences(Constants.userData, Context.MODE_PRIVATE);
+        String userId = sharedPref.getString(Constants.userIdKey, Constants.userDefault);
+        if (toggleButton.isChecked()){
+            addListingButton.setEnabled(true);
+            addListingButton.setVisibility(View.VISIBLE);
+            titleText.setText(getString(R.string.listings_header_owned));
+            getOwnedListings(httpClient, view, getActivity(), userId);
+        } else {
+            addListingButton.setEnabled(false);
+            addListingButton.setVisibility(View.INVISIBLE);
+            titleText.setText(getString(R.string.listings_header_recommended));
+            getRecommendedListings(httpClient, view, getActivity(), userId);
+        }
     }
 }
