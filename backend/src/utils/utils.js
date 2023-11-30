@@ -1,4 +1,5 @@
 const validator = require('validator');
+const fs = require('fs');
 
 /**
  * Rank a set of IDs based on their corresponding aggregate score.
@@ -28,4 +29,15 @@ const sanitize = (message) => {
     return validator.escape(validator.trim(message));
 };
 
-module.exports = { generateRecommendations, calculatePetFriendlinessScore, sanitize };
+/** Encode an image to base64 String, help from this article
+ * https://stackoverflow.com/questions/24523532/how-do-i-convert-an-image-to-a-base64-encoded-data-url-in-sails-js-or-generally
+ * 
+ * @param {String} fileName - Name of file to read from
+ * @returns {String} - base64 encoding of string
+ */
+const base64_encoding = (fileName) => {
+    var bitmap = fs.readFileSync(fileName);
+    return new Buffer.from(bitmap).toString('base64');
+}
+
+module.exports = { generateRecommendations, calculatePetFriendlinessScore, sanitize, base64_encoding };

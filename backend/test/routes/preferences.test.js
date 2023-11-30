@@ -338,6 +338,16 @@ describe('GET other user recommendations for a user', () => {
         const res = await request(app).get(`/api/users/${id}/recommendations/users`);
         expect(res.statusCode).toStrictEqual(200);
         expect(res.body.length).toStrictEqual(4);
+
+        /**
+         * Scores at the time of writing test as below:
+         * id2 -> 6.8, id3 -> 4.7, id4 -> 5.5, id5 -> 5.2
+         * ################ Order ought to be 2 -> 4 -> 5 -> 3 ################
+         */
+        expect(res.body[0].id).toStrictEqual('userid2');
+        expect(res.body[1].id).toStrictEqual('userid4');
+        expect(res.body[2].id).toStrictEqual('userid5');
+        expect(res.body[3].id).toStrictEqual('userid3');
     });
 });
 
@@ -405,24 +415,28 @@ describe('GET listing recommendations for a user', () => {
         const id = 'userId';
         const tentativeMatchListings = [
             createDummyListing('userid2', {
+                _id: 'listing2',
                 housingType: 'studio',
                 rentalPrice: 2000,
                 moveInDate: '2023-11-01',
                 petFriendly: true,
             }),
             createDummyListing('userid3', {
+                _id: 'listing3',
                 housingType: '1-bedroom',
                 rentalPrice: 2500,
                 moveInDate: '2024-01-01',
                 petFriendly: true,
             }),
             createDummyListing('userid4', {
+                _id: 'listing4',
                 housingType: '2-bedroom',
                 rentalPrice: 1500,
                 moveInDate: '2023-12-01',
                 petFriendly: false,
             }),
             createDummyListing('userid5', {
+                _id: 'listing5',
                 housingType: 'other',
                 rentalPrice: 800,
                 moveInDate: '2024-11-01',
@@ -444,5 +458,14 @@ describe('GET listing recommendations for a user', () => {
         const res = await request(app).get(`/api/users/${id}/recommendations/listings`);
         expect(res.statusCode).toStrictEqual(200);
         expect(res.body.length).toStrictEqual(4);
+        /**
+         * Scores at the time of writing test as below:
+         * id2 -> 2.5, id3 -> 2.8..., id4 -> 1.4..., id5 -> 0
+         * ################ Order ought to be 3 -> 2 -> 4 -> 5 ################
+         */
+        expect(res.body[0].id).toStrictEqual('listing3');
+        expect(res.body[1].id).toStrictEqual('listing2');
+        expect(res.body[2].id).toStrictEqual('listing4');
+        expect(res.body[3].id).toStrictEqual('listing5');
     });
 });
