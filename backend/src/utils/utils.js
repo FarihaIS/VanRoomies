@@ -35,9 +35,9 @@ const sanitize = (message) => {
  * @param {String} fileName - Name of file to read from
  * @returns {String} - base64 encoding of string
  */
-const base64_encoding = (fileName) => {
+const base64Encoding = (fileName) => {
     var bitmap = fs.readFileSync(fileName);
-    return new Buffer.from(bitmap).toString('base64');
+    return Buffer.from(bitmap).toString('base64');
 };
 
-module.exports = { generateRecommendations, calculatePetFriendlinessScore, sanitize, base64_encoding };
+module.exports = { generateRecommendations, calculatePetFriendlinessScore, sanitize, base64Encoding };

@@ -88,7 +88,7 @@ describe('Middlewares', () => {
     test('logErrors Function', () => {
         const error = new Error('Test Error Message');
         const next = jest.fn();
-        const consoleMock = jest.spyOn(console, 'error').mockImplementation();
+        jest.spyOn(console, 'error').mockImplementation();
 
         logErrors(error, 'req', 'res', next);
 

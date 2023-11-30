@@ -1,4 +1,4 @@
-const { base64_encoding } = require('./utils');
+const { base64Encoding } = require('./utils');
 
 // House Type related constants
 const NONSHAREABLE = ['studio', '1-bedroom'];
@@ -20,11 +20,11 @@ const SCAM_THRESHOLD = 5;
 
 // Default images
 const DEFAULT_IMAGES = {
-    studio: base64_encoding('./src/utils/imgs/studio.jpeg'),
-    '1-bedroom': base64_encoding('./src/utils/imgs/1-bed.jpeg'),
-    '2-bedroom': base64_encoding('./src/utils/imgs/2-bed.jpeg'),
-    other: base64_encoding('./src/utils/imgs/other.jpeg'),
-    person: base64_encoding('./src/utils/imgs/person.png'),
+    studio: base64Encoding('./src/utils/imgs/studio.jpeg'),
+    '1-bedroom': base64Encoding('./src/utils/imgs/1-bed.jpeg'),
+    '2-bedroom': base64Encoding('./src/utils/imgs/2-bed.jpeg'),
+    other: base64Encoding('./src/utils/imgs/other.jpeg'),
+    person: base64Encoding('./src/utils/imgs/person.png'),
 };
 
 module.exports = {
