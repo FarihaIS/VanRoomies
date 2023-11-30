@@ -32,6 +32,7 @@ import okhttp3.Request;
 import okhttp3.RequestBody;
 import okhttp3.Response;
 
+// ChatGPT usage: No
 public class MainActivity extends AppCompatActivity {
     final static String TAG = "MainActivity";
     private int RC_SIGN_IN = 1;

@@ -14,6 +14,7 @@ import androidx.cardview.widget.CardView;
 import androidx.recyclerview.widget.RecyclerView;
 import java.util.ArrayList;
 
+// ChatGPT usage: No
 public class ListingsRecyclerViewAdapter extends RecyclerView.Adapter<ListingsRecyclerViewAdapter.RecyclerViewHolder> {
 
     private ArrayList<ListingsRecyclerData> listingsDataArrayList;

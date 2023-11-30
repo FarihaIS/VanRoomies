@@ -7,6 +7,7 @@ import javax.net.ssl.SSLSocketFactory;
 
 import okhttp3.OkHttpClient;
 
+// ChatGPT usage: No
 public class HTTPSClientFactory {
     public static OkHttpClient createClient(Context con){
         return new OkHttpClient.Builder()

@@ -49,6 +49,7 @@ import okhttp3.RequestBody;
 import okhttp3.Response;
 import okhttp3.ResponseBody;
 
+// ChatGPT usage: No
 public class ListingsFragment extends Fragment implements ListingsItemSelectListener{
     final static String TAG = "ListingsFragment";
     private OkHttpClient httpClient;
