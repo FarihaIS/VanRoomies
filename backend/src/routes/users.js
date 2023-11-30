@@ -98,6 +98,11 @@ router.post('/:userId/block', async (req, res, next) => {
     let blockedUser = await User.findById(req.body.blockedId);
 
     if (currentUser && blockedUser) {
+        // if the user is already blocked, do nothing
+        if (currentUser.notRecommended.includes(req.body.blockedId)) {
+            res.status(403).json({ message: 'User already blocked!' });
+            return;
+        }
         await User.findByIdAndUpdate(
             req.params.userId,
             { $addToSet: { notRecommended: req.body.blockedId } },

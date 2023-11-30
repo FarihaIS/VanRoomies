@@ -66,6 +66,18 @@ describe('GET conversations from user', () => {
         expect(res.statusCode).toStrictEqual(404);
         expect(res.body).toStrictEqual({ error: 'User not found' });
     });
+
+    // Input: userId is valid id for a User that exists in the database, but the User has no Conversations  (empty array)
+    // Expected status code: 200
+    // Expected behavior: return an empty array
+    // Expected output: []
+    test('User has no conversations', async () => {
+        const id = 'someUserId';
+        Conversation.find.mockResolvedValueOnce([]);
+        const res = await request(app).get(`/api/chat/conversations/user/${id}`);
+        expect(res.statusCode).toStrictEqual(200);
+        expect(res.body).toStrictEqual([]);
+    });
 });
 
 // Interface POST /api/chat/conversations/user/:userId
@@ -141,5 +153,21 @@ describe('POST a new conversation between users ', () => {
         });
         expect(res.statusCode).toStrictEqual(404);
         expect(res.body).toStrictEqual({ error: 'content was not provided' });
+    });
+
+    // Input: params valid, but conversation already exists
+    // Expected status code: 404
+    // Expected behavior: return an error message
+    // Expected output: { error: "Conversation already exists" }
+    test('Conversation already exists', async () => {
+        const id = 'someUserId';
+        User.findById.mockResolvedValue(user);
+        Conversation.exists.mockResolvedValueOnce(true);
+        const res = await request(app).post(`/api/chat/conversations/user/${id}`).send({
+            to: 'alice123',
+            content: 'Hello!',
+        });
+        expect(res.statusCode).toStrictEqual(409);
+        expect(res.body).toStrictEqual({ error: 'Conversation already exists' });
     });
 });

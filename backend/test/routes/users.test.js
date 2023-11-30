@@ -186,7 +186,7 @@ describe('POST block user by id from another user', () => {
     test('Valid userId and blockedId', async () => {
         const id = 'someUserId';
         const blockedId = 'someBlockedId';
-        User.findById.mockResolvedValueOnce({ _id: id });
+        User.findById.mockResolvedValueOnce({ _id: id, notRecommended: [] });
         User.findById.mockResolvedValueOnce({ _id: blockedId, blockedCount: 0 });
 
         User.findByIdAndUpdate.mockResolvedValueOnce(null);
@@ -215,6 +215,21 @@ describe('POST block user by id from another user', () => {
         expect(res.body).toStrictEqual({ error: 'User blocking failed!' });
     });
 
+    // Input: id has already blocked blockedId
+    // Expected status code: 403
+    // Expected behavior: return an error message
+    // Expected output: { message: "User already blocked!" }
+    test('User already blocked blockedId', async () => {
+        const id = 'someUserId';
+        const blockedId = 'someBlockedId';
+        User.findById.mockResolvedValueOnce({ _id: id, notRecommended: [blockedId] });
+        User.findById.mockResolvedValueOnce({ _id: blockedId, blockedCount: 1 });
+
+        const res = await request(app).post(`/api/users/${id}/block`).send({ blockedId });
+        expect(res.statusCode).toStrictEqual(403);
+        expect(res.body).toStrictEqual({ message: 'User already blocked!' });
+    });
+
     // Input: valid ids and blockedUser will have been blocked by >= BLOCK_THRESHOLD users
     // Expected status code: 200
     // Expected behavior: delete User object that matches the blockedId
@@ -222,7 +237,7 @@ describe('POST block user by id from another user', () => {
     test('User blocked by >= BLOCK_THRESHOLD users', async () => {
         const id = 'someUserId';
         const blockedId = 'someBlockedId';
-        User.findById.mockResolvedValueOnce({ _id: id });
+        User.findById.mockResolvedValueOnce({ _id: id, notRecommended: [] });
         User.findById.mockResolvedValueOnce({ _id: blockedId, blockedCount: 4 });
 
         User.findByIdAndUpdate.mockResolvedValueOnce(null);
@@ -241,7 +256,7 @@ describe('POST block user by id from another user', () => {
 });
 
 // Interface POST /api/users/:userId/unmatch
-describe('POST block user by id from another user', () => {
+describe('POST unmatch user by id from another user', () => {
     afterEach(() => {
         jest.restoreAllMocks();
     });
