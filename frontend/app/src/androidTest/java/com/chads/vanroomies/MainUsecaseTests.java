@@ -557,6 +557,7 @@ public class MainUsecaseTests {
         });
 
         // Check that "John Man" is in list of matches again
+        swipeDeck.perform(new GeneralSwipeAction(Swipe.FAST, GeneralLocation.CENTER, GeneralLocation.CENTER_LEFT, Press.FINGER));
         onView(Matchers.allOf(withId(R.id.matches_name), withText(matches.get(0)),
                 withParent(withParent(IsInstanceOf.<View>instanceOf(android.widget.LinearLayout.class))),
                 isDisplayed()));
