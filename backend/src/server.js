@@ -13,6 +13,7 @@ const credentials = {
 
 const app = require('./app');
 
+// Starting server
 const httpsServer = https.createServer(credentials, app);
 const port = process.env.PORT || 3000;
 
