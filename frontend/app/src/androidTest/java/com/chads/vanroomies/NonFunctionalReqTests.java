@@ -85,7 +85,7 @@ public class NonFunctionalReqTests {
 
     public void timeReport(String task) {
         currTaskElapsedTime = System.currentTimeMillis() - currTaskStartTime;
-        assert currTaskElapsedTime <= 5000;
+        assert currTaskElapsedTime <= 1000;
         Log.d(TAG, task + ": " + currTaskElapsedTime + " milliseconds");
     }
 
